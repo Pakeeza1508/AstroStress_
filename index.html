@@ -1610,6 +1610,79 @@ function showPhysiologyRestricted() {
   message('phys-wave-status', RESTRICTED_RECORDS_NOTE);
   byId('phys-signal-badge').textContent = 'Individual records restricted';
 }
+function renderPublicResearchMode() {
+  // Public mode shows only existing aggregate held-out results: never individual WESAD records.
+  const physPage = byId('page-physiology');
+  const physSelector = physPage?.querySelector('.selector-row');
+  const physChart = byId('chart-timeline')?.closest('.card');
+  const physTables = byId('ecg-feature-table')?.closest('.grid-2');
+  for (const el of [physSelector, physChart, physTables]) if (el) el.style.display = 'none';
+  if (physPage && !byId('public-physiology-note')) {
+    const card = document.createElement('section');
+    card.id = 'public-physiology-note';
+    card.className = 'card';
+    card.style.marginBottom = '24px';
+    const body = document.createElement('div'); body.className = 'card-body';
+    const title = document.createElement('h3'); title.textContent = 'Why are individual ECG and EDA traces unavailable?';
+    const p = document.createElement('p');
+    p.style.margin = '12px 0'; p.style.lineHeight = '1.8';
+    p.textContent = 'This public research demo does not redistribute the original WESAD recordings or derived per-window features. The original recorded-signal explorer remains available when using the trusted data locally. Public, verified aggregate study results are still available.';
+    const link = document.createElement('button'); link.type = 'button';
+    link.className = 'btn btn-primary'; link.textContent = 'Explore verified research results';
+    link.addEventListener('click', () => {
+      const nav = document.querySelector('[data-page="results"]');
+      if (nav) nav.click();
+    });
+    body.append(title, p, link); card.appendChild(body);
+    physSelector?.parentNode?.insertBefore(card, physSelector);
+  }
+  const aiPage = byId('page-analysis');
+  const aiSelector = aiPage?.querySelector('.selector-row');
+  if (aiSelector) aiSelector.style.display = 'none';
+  if (aiPage && !byId('public-ai-summary')) {
+    const card = document.createElement('section'); card.className = 'card';
+    card.id = 'public-ai-summary'; card.style.margin = '0 0 24px';
+    const body = document.createElement('div'); body.className = 'card-body';
+    const title = document.createElement('h3'); title.textContent = 'Explore held-out model results by participant';
+    const description = document.createElement('p'); description.style.margin = '10px 0 16px';
+    description.textContent = 'Choose a laboratory study participant to view their aggregate leave-one-subject-out evaluation, not a recording or personal stress prediction.';
+    const select = document.createElement('select'); select.id = 'public-ai-subject';
+    select.setAttribute('aria-label', 'Evaluation participant');
+    select.style.maxWidth = '320px'; select.style.width = '100%';
+    const rows = Array.isArray(researchFromServer?.loso) ? researchFromServer.loso : [];
+    for (const row of rows) {
+      const option = document.createElement('option');
+      option.value = String(row.subject); option.textContent = String(row.subject);
+      select.appendChild(option);
+    }
+    const results = document.createElement('p'); results.id = 'public-ai-metrics';
+    results.setAttribute('role', 'status'); results.style.marginTop = '18px';
+    results.style.lineHeight = '1.8';
+    function update() {
+      const row = rows.find(x => String(x.subject) === select.value);
+      if (!row) { results.textContent = 'Participant-level evaluation unavailable.'; return; }
+      results.textContent = 'Held-out evaluation for ' + row.subject + ': Accuracy ' +
+        (100 * Number(row.accuracy)).toFixed(2) + '%, F1 ' +
+        (100 * Number(row.f1)).toFixed(2) + '%, test windows ' + row.n_test +
+        '. These metrics are aggregate research results, not a live or per-window prediction.';
+    }
+    select.addEventListener('change', update);
+    body.append(title, description, select, results); card.appendChild(body);
+    aiSelector?.parentNode?.insertBefore(card, aiSelector);
+    update();
+  }
+  const checkin = byId('page-checkin');
+  const recordedCard = byId('checkin-example-button')?.closest('.card');
+  if (recordedCard) recordedCard.style.display = 'none';
+  const formTitle = checkin?.querySelector('#health-check-form')?.closest('.card')?.querySelector('.card-header h3');
+  if (formTitle) formTitle.textContent = '1. Your self-check — available on this public demo';
+  const resultTitle = byId('health-check-result')?.querySelector('.card-header h3');
+  if (resultTitle) resultTitle.textContent = '2. Your next steps';
+  const description = aiPage?.querySelector('.page-description');
+  if (description) description.textContent = 'Explore verified study-level AI evaluation results. Individual WESAD recording predictions are available only in authorized local research mode.';
+  const physDescription = physPage?.querySelector('.page-description');
+  if (physDescription) physDescription.textContent = 'Learn about the original WESAD heart and skin recordings, and explore verified public research results.';
+}
 function applyRestrictedWindowMode(status) {
   byId('overview-demo-run').disabled = true;
   message('overview-demo-status', RESTRICTED_RECORDS_NOTE);
@@ -1619,6 +1692,7 @@ function applyRestrictedWindowMode(status) {
   message('ai-live-status', 'Verified model: ' + safeText(status?.model) + ' · research run ' + safeText(status?.run_id)
     + '. Per-window predictions are disabled on this public demo. ' + RESTRICTED_RECORDS_NOTE);
   showPhysiologyRestricted();
+  renderPublicResearchMode();
 }
 let reliabilityFromServer = null;
 let lastSavedPrediction = null;
