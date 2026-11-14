@@ -2,6 +2,7 @@
 
 - GitHub repository: `Pakeeza1508/AstroStress_`, branch `develop-nasa-2026`.
 - Vercel project: `astrostress-nasa-2026` (CLI deployments, no Git integration). Do not reuse or modify the older `astrostress` project.
+- `vercel.json` pins `"framework": "flask"`. A project created with `vercel project add` defaults to "Other", and the deploy then fails with "pattern app.py ... doesn't match any Serverless Functions".
 - Deploy Preview first. Production needs explicit approval.
 
 ## Research bundle (why there is no public download)
