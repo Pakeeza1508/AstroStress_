@@ -38,6 +38,22 @@ class NasaD1DashboardTests(unittest.TestCase):
                 self.assertTrue(r["weekly_medians"])
                 self.assertTrue(all(len(item) == 4 for item in r["weekly_medians"]))
 
+    def test_flat_sensor_runs_are_flagged_not_removed(self):
+        # Recomputed from the SHA-pinned CSVs: identical ISS readings dominate these weeks.
+        expected = {"RR-1": ("2014-09-20", 314, 2016, "2014-09-21 10:44", "2014-09-22 12:49"),
+                    "RR-6": ("2017-12-06", 1449, 2016, "2017-12-06 15:06", "2017-12-11 15:46")}
+        for mission, values in expected.items():
+            with self.subTest(mission=mission):
+                r = self.embedded["missions"][mission]
+                flat = r["simultaneous_flat_run"]
+                self.assertEqual(tuple(flat[k] for k in ("week_start_gmt", "rows", "week_rows",
+                                                         "first_gmt", "last_gmt")), values)
+                self.assertEqual(r["weekly_medians"][0][0], flat["week_start_gmt"])
+        # The affected RR-6 median stays as computed; it is annotated, not edited.
+        self.assertEqual(self.embedded["missions"]["RR-6"]["weekly_medians"][0], ["2017-12-06", 23, 50, 500])
+        for marker in ('id="nasa-chart-caveat"', "r.simultaneous_flat_run", "markLine:flat"):
+            self.assertIn(marker, self.html)
+
     def test_rr9_is_summary_only(self):
         rr9 = self.embedded["missions"]["RR-9"]
         self.assertEqual(rr9["rows"], 10)

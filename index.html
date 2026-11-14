@@ -1611,6 +1611,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             <option value="co2">ISS-channel CO₂ (ppm)</option><option value="temp">ISS-channel temperature (°C)</option><option value="humidity">ISS-channel relative humidity (%)</option>
           </select>
           <div id="chart-nasa-d1" role="img" aria-label="Median NASA environmental hardware readings by week" style="height:310px;width:100%"></div>
+          <p id="nasa-chart-caveat" role="note" style="margin-top:12px;font-size:.85rem;line-height:1.7;color:var(--text-secondary)"></p>
         </div>
       </div>
       <div class="card" style="margin-bottom:18px">
@@ -1627,7 +1628,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
   </main>
 </div>
 
-<script id="nasa-d1-data" type="application/json">{"scope":"NASA rodent-research environmental hardware, not astronaut cabin or stress","is_astronaut_validation":false,"is_health_assessment":false,"comparison_note":"Different mission years and durations; not matched or causal","exploratory_co2_threshold_ppm":4000,"threshold_rule":"Strictly greater than; counts of rows only, not duration or compliance","missions":{"RR-1":{"sha256":"6f252984805e8e9a1e7d19927f88b70160ebc30fa3cd7e842572f2b806e5a805","rows":12087,"first_gmt":"2014-09-20 03:59","last_gmt":"2014-11-01 03:54","co2_above_4000_rows":993,"co2_at_or_above_4000_rows":996,"gaps_over_10m":2,"short_intervals_under_5m":6,"largest_gap_minutes":33,"co2_median_ppm":3192,"temperature_median_c":22.6,"humidity_median_pct":43,"weekly_medians":[["2014-09-20",23.3,36,2646],["2014-09-27",22.6,43,3010],["2014-10-04",22.5,45,3654],["2014-10-11",22.6,44,3159],["2014-10-18",22.5,43,3646],["2014-10-25",22.6,44,3525]]},"RR-6":{"sha256":"7c8d8f9c2c61856e749c3ac64abb3cdbaabf4f35254c2d5198e1c202e5e0f68f","rows":17572,"first_gmt":"2017-12-06 15:06","last_gmt":"2018-02-06 14:39","co2_above_4000_rows":95,"co2_at_or_above_4000_rows":96,"gaps_over_10m":2,"short_intervals_under_5m":12,"largest_gap_minutes":1392,"co2_median_ppm":3151,"temperature_median_c":22.8,"humidity_median_pct":41,"weekly_medians":[["2017-12-06",23,50,500],["2017-12-13",22.5,40,2432],["2017-12-20",23.1,42,3159],["2017-12-27",22.6,43,3187.5],["2018-01-03",22.6,41,3265],["2018-01-10",22.8,42,3186],["2018-01-17",22.8,42,3157],["2018-01-24",22.6,41,3337],["2018-01-31",22.8,39,3172]]},"RR-9":{"sha256":"341c82277a5803f381c603cfe55d899718b753e10bc989ba956e7d10832f360c","rows":10,"type":"summary_only","timeline_available":false,"note":"Radiation accumulated [mGy/day] source label ambiguous; no timeline created"}},"weekly_columns":["week_start_gmt","median_temperature_iss_c","median_humidity_iss_pct","median_co2_iss_ppm"],"aggregation":"Descriptive 7-day bins from each file start, median of observed rows; not duration-weighted and not phase-filtered"}</script>
+<script id="nasa-d1-data" type="application/json">{"scope":"NASA rodent-research environmental hardware, not astronaut cabin or stress","is_astronaut_validation":false,"is_health_assessment":false,"comparison_note":"Different mission years and durations; not matched or causal","exploratory_co2_threshold_ppm":4000,"threshold_rule":"Strictly greater than; counts of rows only, not duration or compliance","missions":{"RR-1":{"sha256":"6f252984805e8e9a1e7d19927f88b70160ebc30fa3cd7e842572f2b806e5a805","rows":12087,"first_gmt":"2014-09-20 03:59","last_gmt":"2014-11-01 03:54","co2_above_4000_rows":993,"co2_at_or_above_4000_rows":996,"gaps_over_10m":2,"short_intervals_under_5m":6,"largest_gap_minutes":33,"co2_median_ppm":3192,"temperature_median_c":22.6,"humidity_median_pct":43,"weekly_medians":[["2014-09-20",23.3,36,2646],["2014-09-27",22.6,43,3010],["2014-10-04",22.5,45,3654],["2014-10-11",22.6,44,3159],["2014-10-18",22.5,43,3646],["2014-10-25",22.6,44,3525]],"simultaneous_flat_run":{"week_start_gmt":"2014-09-20","rows":314,"week_rows":2016,"first_gmt":"2014-09-21 10:44","last_gmt":"2014-09-22 12:49","iss_values":"temperature 26.8 °C, humidity 70%, CO₂ 2,646 ppm"}},"RR-6":{"sha256":"7c8d8f9c2c61856e749c3ac64abb3cdbaabf4f35254c2d5198e1c202e5e0f68f","rows":17572,"first_gmt":"2017-12-06 15:06","last_gmt":"2018-02-06 14:39","co2_above_4000_rows":95,"co2_at_or_above_4000_rows":96,"gaps_over_10m":2,"short_intervals_under_5m":12,"largest_gap_minutes":1392,"co2_median_ppm":3151,"temperature_median_c":22.8,"humidity_median_pct":41,"weekly_medians":[["2017-12-06",23,50,500],["2017-12-13",22.5,40,2432],["2017-12-20",23.1,42,3159],["2017-12-27",22.6,43,3187.5],["2018-01-03",22.6,41,3265],["2018-01-10",22.8,42,3186],["2018-01-17",22.8,42,3157],["2018-01-24",22.6,41,3337],["2018-01-31",22.8,39,3172]],"simultaneous_flat_run":{"week_start_gmt":"2017-12-06","rows":1449,"week_rows":2016,"first_gmt":"2017-12-06 15:06","last_gmt":"2017-12-11 15:46","iss_values":"CO₂ 500 ppm, temperature 23.0 °C, humidity 50%"}},"RR-9":{"sha256":"341c82277a5803f381c603cfe55d899718b753e10bc989ba956e7d10832f360c","rows":10,"type":"summary_only","timeline_available":false,"note":"Radiation accumulated [mGy/day] source label ambiguous; no timeline created"}},"weekly_columns":["week_start_gmt","median_temperature_iss_c","median_humidity_iss_pct","median_co2_iss_ppm"],"aggregation":"Descriptive 7-day bins from each file start, median of observed rows; not duration-weighted and not phase-filtered","flat_run_rule":"Consecutive rows where all three ISS channels repeat identical values; flagged for investigation, not removed from the medians"}</script>
 <!-- ============================================================
      JAVASCRIPT
      ============================================================ -->
@@ -2345,6 +2346,12 @@ function initNasaD1Chart() {
                   temp:{idx:1,label:'Median temperature (°C)',color:'#4A7AE5'},
                   humidity:{idx:2,label:'Median relative humidity (%)',color:'#E07A5F'}};
   const field = fields[metric];
+  // Repeated identical ISS readings dominate some weekly medians; flag them instead of hiding or editing values.
+  const flat = r.simultaneous_flat_run;
+  document.getElementById('nasa-chart-caveat').textContent = flat ?
+    'Data caution (dashed line, week of ' + flat.week_start_gmt + '): ' + fmt(flat.rows) + ' of ' + fmt(flat.week_rows) +
+    ' rows (' + Math.round(100 * flat.rows / flat.week_rows) + '%) are one run of identical ISS-channel readings (' +
+    flat.iss_values + ') from ' + flat.first_gmt + ' to ' + flat.last_gmt + ' GMT. That week\'s median is shown unchanged but may reflect repeated sensor values rather than actual conditions.' : '';
   const node = document.getElementById('chart-nasa-d1');
   if (!node || typeof echarts === 'undefined') return;
   const chart = echarts.getInstanceByDom(node) || echarts.init(node);
@@ -2357,7 +2364,10 @@ function initNasaD1Chart() {
     yAxis:{type:'value',name:field.label,nameGap:40,nameLocation:'middle',scale:true},
     series:[{name:field.label,type:'line',smooth:false,showSymbol:true,
              data:r.weekly_medians.map(v=>v[field.idx]),
-             lineStyle:{color:field.color,width:2},itemStyle:{color:field.color},areaStyle:{opacity:.08}}]
+             lineStyle:{color:field.color,width:2},itemStyle:{color:field.color},areaStyle:{opacity:.08},
+             markLine:flat ? {silent:true,symbol:'none',lineStyle:{color:'#C2593F',type:'dashed',width:1.5},
+               label:{show:true,position:'end',fontSize:10,color:'#9A4A35',formatter:'Repeated values'},
+               data:[{xAxis:flat.week_start_gmt}]} : undefined}]
   },true);
   chart.resize();
 }

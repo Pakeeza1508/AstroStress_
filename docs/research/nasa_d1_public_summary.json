@@ -56,7 +56,15 @@
           44,
           3525
         ]
-      ]
+      ],
+      "simultaneous_flat_run": {
+        "week_start_gmt": "2014-09-20",
+        "rows": 314,
+        "week_rows": 2016,
+        "first_gmt": "2014-09-21 10:44",
+        "last_gmt": "2014-09-22 12:49",
+        "iss_values": "temperature 26.8 °C, humidity 70%, CO₂ 2,646 ppm"
+      }
     },
     "RR-6": {
       "sha256": "7c8d8f9c2c61856e749c3ac64abb3cdbaabf4f35254c2d5198e1c202e5e0f68f",
@@ -126,7 +134,15 @@
           39,
           3172
         ]
-      ]
+      ],
+      "simultaneous_flat_run": {
+        "week_start_gmt": "2017-12-06",
+        "rows": 1449,
+        "week_rows": 2016,
+        "first_gmt": "2017-12-06 15:06",
+        "last_gmt": "2017-12-11 15:46",
+        "iss_values": "CO₂ 500 ppm, temperature 23.0 °C, humidity 50%"
+      }
     },
     "RR-9": {
       "sha256": "341c82277a5803f381c603cfe55d899718b753e10bc989ba956e7d10832f360c",
@@ -142,5 +158,6 @@
     "median_humidity_iss_pct",
     "median_co2_iss_ppm"
   ],
-  "aggregation": "Descriptive 7-day bins from each file start, median of observed rows; not duration-weighted and not phase-filtered"
+  "aggregation": "Descriptive 7-day bins from each file start, median of observed rows; not duration-weighted and not phase-filtered",
+  "flat_run_rule": "Consecutive rows where all three ISS channels repeat identical values; flagged for investigation, not removed from the medians"
 }
