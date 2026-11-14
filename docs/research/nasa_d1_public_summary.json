@@ -1,0 +1,146 @@
+{
+  "scope": "NASA rodent-research environmental hardware, not astronaut cabin or stress",
+  "is_astronaut_validation": false,
+  "is_health_assessment": false,
+  "comparison_note": "Different mission years and durations; not matched or causal",
+  "exploratory_co2_threshold_ppm": 4000,
+  "threshold_rule": "Strictly greater than; counts of rows only, not duration or compliance",
+  "missions": {
+    "RR-1": {
+      "sha256": "6f252984805e8e9a1e7d19927f88b70160ebc30fa3cd7e842572f2b806e5a805",
+      "rows": 12087,
+      "first_gmt": "2014-09-20 03:59",
+      "last_gmt": "2014-11-01 03:54",
+      "co2_above_4000_rows": 993,
+      "co2_at_or_above_4000_rows": 996,
+      "gaps_over_10m": 2,
+      "short_intervals_under_5m": 6,
+      "largest_gap_minutes": 33,
+      "co2_median_ppm": 3192,
+      "temperature_median_c": 22.6,
+      "humidity_median_pct": 43,
+      "weekly_medians": [
+        [
+          "2014-09-20",
+          23.3,
+          36,
+          2646
+        ],
+        [
+          "2014-09-27",
+          22.6,
+          43,
+          3010
+        ],
+        [
+          "2014-10-04",
+          22.5,
+          45,
+          3654
+        ],
+        [
+          "2014-10-11",
+          22.6,
+          44,
+          3159
+        ],
+        [
+          "2014-10-18",
+          22.5,
+          43,
+          3646
+        ],
+        [
+          "2014-10-25",
+          22.6,
+          44,
+          3525
+        ]
+      ]
+    },
+    "RR-6": {
+      "sha256": "7c8d8f9c2c61856e749c3ac64abb3cdbaabf4f35254c2d5198e1c202e5e0f68f",
+      "rows": 17572,
+      "first_gmt": "2017-12-06 15:06",
+      "last_gmt": "2018-02-06 14:39",
+      "co2_above_4000_rows": 95,
+      "co2_at_or_above_4000_rows": 96,
+      "gaps_over_10m": 2,
+      "short_intervals_under_5m": 12,
+      "largest_gap_minutes": 1392,
+      "co2_median_ppm": 3151,
+      "temperature_median_c": 22.8,
+      "humidity_median_pct": 41,
+      "weekly_medians": [
+        [
+          "2017-12-06",
+          23,
+          50,
+          500
+        ],
+        [
+          "2017-12-13",
+          22.5,
+          40,
+          2432
+        ],
+        [
+          "2017-12-20",
+          23.1,
+          42,
+          3159
+        ],
+        [
+          "2017-12-27",
+          22.6,
+          43,
+          3187.5
+        ],
+        [
+          "2018-01-03",
+          22.6,
+          41,
+          3265
+        ],
+        [
+          "2018-01-10",
+          22.8,
+          42,
+          3186
+        ],
+        [
+          "2018-01-17",
+          22.8,
+          42,
+          3157
+        ],
+        [
+          "2018-01-24",
+          22.6,
+          41,
+          3337
+        ],
+        [
+          "2018-01-31",
+          22.8,
+          39,
+          3172
+        ]
+      ]
+    },
+    "RR-9": {
+      "sha256": "341c82277a5803f381c603cfe55d899718b753e10bc989ba956e7d10832f360c",
+      "rows": 10,
+      "type": "summary_only",
+      "timeline_available": false,
+      "note": "Radiation accumulated [mGy/day] source label ambiguous; no timeline created"
+    }
+  },
+  "weekly_columns": [
+    "week_start_gmt",
+    "median_temperature_iss_c",
+    "median_humidity_iss_pct",
+    "median_co2_iss_ppm"
+  ],
+  "aggregation": "Descriptive 7-day bins from each file start, median of observed rows; not duration-weighted and not phase-filtered"
+}
