@@ -1,0 +1,45 @@
+# ---- Raw dataset (download separately; never commit) ----
+WESAD/
+*.pkl
+
+# ---- Python virtual environments ----
+astrostress_env/
+.venv/
+venv/
+env/
+
+# ---- Python caches / test artefacts ----
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ---- Generated pipeline outputs (regenerate by running the pipeline) ----
+astrostress_output/
+experiment_c_output/
+*.joblib
+
+# ---- Third-party repositories cloned locally for reference ----
+ECG-to-stress/
+Stress_detection/
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- React frontend build dependencies and output ----
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/*.tsbuildinfo
+
+# ---- Local-only backups, logs and credentials ----
+astrostress_output_backup*/
+*_test*.log
+final_tests.log
+.env
+.env.local
+frontend/.env.local
+
+# Export bundle stays local; do not commit prebuilt models or WESAD-derived data.
+astrostress-render-artifacts.zip

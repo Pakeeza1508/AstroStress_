@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AstroStress — Explainable AI for Physiological Stress Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root {
+  /* Canvas */
+  --bg-base: #F7F6F3;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #FAFAF8;
+  --bg-inset: #F0EFEC;
+  --bg-hover: #EEEDEA;
+
+  /* Text */
+  --text-primary: #1A1D23;
+  --text-secondary: #5A5F6B;
+  --text-tertiary: #8C919D;
+  --text-inverse: #FFFFFF;
+
+  /* Brand */
+  --teal-600: #0D7377;
+  --teal-500: #0F8B8D;
+  --teal-400: #17A2A5;
+  --teal-100: #E0F4F4;
+  --teal-50: #F0FAFA;
+
+  /* Accent */
+  --blue-600: #3366CC;
+  --blue-500: #4A7AE5;
+  --blue-100: #E8EEFB;
+  --coral-500: #E07A5F;
+  --coral-100: #FBF0EC;
+  --green-500: #57A773;
+  --green-100: #EAF5EE;
+  --amber-500: #D4A843;
+  --amber-100: #FDF6E3;
+  --red-500: #D45858;
+  --red-100: #FBECEC;
+
+  /* Borders */
+  --border-subtle: #E8E7E4;
+  --border-default: #D9D8D5;
+  --border-strong: #C1C0BD;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-xl: 0 8px 40px rgba(0,0,0,0.10);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Type */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--bg-base);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1, h2, h3, h4, h5 { line-height: 1.25; font-weight: 700; letter-spacing: -0.02em; }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+h4 { font-size: 0.95rem; font-weight: 600; }
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.mono { font-family: var(--font-mono); font-size: 0.85em; }
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  padding: var(--space-6) var(--space-6) var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--teal-500), var(--teal-600));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.brand-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.brand-tag {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+.sidebar-nav {
+  padding: var(--space-4) var(--space-3);
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  margin-bottom: 2px;
+  user-select: none;
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: var(--teal-50);
+  color: var(--teal-600);
+}
+
+.nav-item i {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.sidebar-footer-text {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+/* Main */
+.main-content {
+  flex: 1;
+  margin-left: 240px;
+  padding: var(--space-8) var(--space-10);
+  max-width: 1200px;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.page-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-title {
+  margin-bottom: var(--space-2);
+}
+
+.page-description {
+  color: var(--text-secondary);
+  font-size: 0.925rem;
+  max-width: 640px;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card-body {
+  padding: var(--space-6);
+}
+
+.card-body-compact {
+  padding: var(--space-4) var(--space-6);
+}
+
+/* ============================================================
+   STAT TILES
+   ============================================================ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.stat-tile {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-tile .label {
+  margin-bottom: var(--space-2);
+}
+
+.stat-value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.stat-value.teal { color: var(--teal-600); }
+.stat-value.blue { color: var(--blue-600); }
+.stat-value.coral { color: var(--coral-500); }
+.stat-value.green { color: var(--green-500); }
+
+.stat-context {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: var(--space-1);
+}
+
+/* ============================================================
+   SELECTORS
+   ============================================================ */
+.selector-row {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.selector-group .label { margin-bottom: 0; }
+
+select, .select-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-10) var(--space-2) var(--space-3);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235A5F6B' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s;
+  min-width: 160px;
+}
+
+select:hover { border-color: var(--teal-400); }
+select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3px var(--teal-100); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.btn-primary {
+  background: var(--teal-600);
+  color: white;
+}
+.btn-primary:hover { background: var(--teal-500); box-shadow: var(--shadow-md); }
+
+.btn-secondary {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border-color: var(--border-default);
+}
+.btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+/* ============================================================
+   BADGE / PILL
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-teal { background: var(--teal-100); color: var(--teal-600); }
+.badge-coral { background: var(--coral-100); color: var(--coral-500); }
+.badge-green { background: var(--green-100); color: var(--green-500); }
+.badge-blue { background: var(--blue-100); color: var(--blue-600); }
+.badge-amber { background: var(--amber-100); color: var(--amber-500); }
+.badge-red { background: var(--red-100); color: var(--red-500); }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-6);
+}
+
+.tab-item {
+  padding: var(--space-3) var(--space-5);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.tab-item:hover { color: var(--text-secondary); }
+.tab-item.active {
+  color: var(--teal-600);
+  border-bottom-color: var(--teal-500);
+  font-weight: 600;
+}
+
+/* ============================================================
+   CHARTS
+   ============================================================ */
+.chart-container {
+  width: 100%;
+  position: relative;
+}
+
+.chart-note {
+  position: absolute;
+  bottom: 6px;
+  right: 12px;
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* ============================================================
+   ANALYSIS RESULT PANEL
+   ============================================================ */
+.result-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.result-card {
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.result-card .label { margin-bottom: var(--space-2); }
+
+.result-big {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.result-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* ============================================================
+   GRID LAYOUTS
+   ============================================================ */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.grid-2-1 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
+}
+
+.grid-1-2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-6);
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.data-table td {
+  font-size: 0.85rem;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg-elevated); }
+
+/* ============================================================
+   EXPANDABLE
+   ============================================================ */
+.expandable-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal-600);
+  padding: var(--space-3) 0;
+  user-select: none;
+}
+
+.expandable-trigger i { transition: transform 0.2s; }
+.expandable-trigger.open i { transform: rotate(90deg); }
+
+.expandable-content {
+  display: none;
+  padding: var(--space-3) 0 var(--space-3) var(--space-6);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.expandable-content.open { display: block; }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress-bar {
+  height: 6px;
+  background: var(--bg-inset);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* ============================================================
+   PARTICIPANT LIST
+   ============================================================ */
+.participant-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.12s;
+  border: 1px solid transparent;
+}
+
+.participant-item:hover { background: var(--bg-hover); }
+.participant-item.active {
+  background: var(--teal-50);
+  border-color: var(--teal-400);
+}
+
+.participant-id {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.participant-meta {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   METHODOLOGY STEP
+   ============================================================ */
+.method-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.method-step {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--teal-100);
+  color: var(--teal-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-content h4 { margin-bottom: var(--space-1); }
+
+.step-content p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ============================================================
+   ILLUSTRATIVE BANNER
+   ============================================================ */
+.illustrative-banner {
+  background: var(--amber-100);
+  color: var(--amber-500);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ============================================================
+   SHAP BAR
+   ============================================================ */
+.shap-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.shap-feature-name {
+  width: 160px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.shap-bar-track {
+  flex: 1;
+  height: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shap-bar-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-default);
+}
+
+.shap-bar-fill {
+  height: 14px;
+  border-radius: 3px;
+  position: absolute;
+  top: 3px;
+  transition: width 0.5s ease;
+}
+
+.shap-bar-fill.positive { background: var(--coral-500); left: 50%; }
+.shap-bar-fill.negative { background: var(--teal-500); right: 50%; }
+
+.shap-bar-value {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  width: 60px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.analyzing { animation: pulse 1.2s ease-in-out infinite; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .grid-2, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .result-panel { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   REVIEW V2 — HORIZONTAL PRODUCT NAVIGATION & EXPLANATORY CHARTS
+   ============================================================ */
+.app-layout{display:block;min-height:100vh}
+.sidebar{position:sticky;top:0;left:auto;bottom:auto;width:100%;min-height:78px;height:auto;z-index:100;display:flex;flex-direction:row;align-items:center;padding:0 clamp(20px,4vw,72px);gap:clamp(20px,3vw,56px);border-right:none;border-bottom:1px solid var(--border-subtle);box-shadow:0 4px 25px rgba(25,40,50,.035);background:rgba(255,255,255,.97)}
+.sidebar-brand{padding:0;border:0;flex-shrink:0}
+.brand-mark{gap:10px}.brand-name{font-size:1.08rem}.brand-tag{font-size:.62rem}
+.sidebar-nav{padding:0;flex:1;display:flex;justify-content:center;align-items:center;gap:clamp(2px,.6vw,14px);min-width:0}
+.nav-item{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;margin:0;padding:12px 13px;border-radius:7px;font-size:.83rem;line-height:1.3;border-bottom:2px solid transparent}
+.nav-item.active{background:var(--teal-50);border-bottom-color:var(--teal-500)}
+.nav-item i{width:16px;height:16px}
+.sidebar-footer{border:0;padding:0;flex-shrink:0;text-align:right}.sidebar-footer-text{font-size:.64rem;line-height:1.6;max-width:190px}
+.main-content{margin-left:0;max-width:1520px;width:100%;padding:34px clamp(20px,5vw,78px) 65px;margin-inline:auto}
+.page-header{margin-bottom:27px}.page-title{font-size:clamp(1.65rem,2.5vw,2.2rem);letter-spacing:-.035em}.page-description{max-width:860px;font-size:.94rem;line-height:1.75}
+.chart-explainer{color:var(--text-secondary);font-size:.78rem;line-height:1.6;margin-top:5px;max-width:680px;font-weight:400}
+.card-header{gap:16px;align-items:center}.card-header>div:first-child{min-width:0}.card-header h3{line-height:1.4}
+.section-intro{padding:12px 16px 14px;border-left:3px solid var(--teal-500);background:var(--teal-50);border-radius:0 8px 8px 0;margin-bottom:20px;color:#285c60;font-size:.85rem;line-height:1.7}
+.signal-title{font-size:.86rem;font-weight:700;color:var(--text-primary);letter-spacing:-.01em}.signal-desc{color:var(--text-tertiary);font-size:.74rem;line-height:1.5;margin-top:3px}
+@media(max-width:1190px){.sidebar{flex-wrap:wrap;padding:13px 24px;gap:8px 20px}.sidebar-brand{flex:1}.sidebar-nav{order:3;flex:0 0 100%;justify-content:flex-start;overflow-x:auto;padding-bottom:3px}.sidebar-footer{margin-left:auto}.main-content{padding:27px 24px 55px}}
+@media(max-width:650px){.sidebar{padding:12px 15px}.sidebar-footer{display:none}.sidebar-nav{gap:3px}.nav-item{padding:9px 10px;font-size:.76rem}.nav-item i{display:none}.main-content{padding:24px 15px 44px}.card-header{align-items:flex-start;flex-wrap:wrap}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.selector-row{gap:10px}}
+
+/* REVIEW V3: minimal brand header and judge-first narrative overview */
+.app-layout{display:block}
+.site-header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--border-subtle);box-shadow:0 1px 10px rgba(20,38,43,.025)}
+.site-header-inner{width:min(100%,1510px);padding:0 clamp(20px,4vw,68px);margin:auto;min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.site-brand{font-size:1.36rem;font-weight:800;letter-spacing:-.04em;color:#17252e;flex-shrink:0}
+.site-nav{display:flex;align-items:center;gap:clamp(2px,1.2vw,17px);overflow-x:auto;scrollbar-width:none;min-width:0}
+.site-nav::-webkit-scrollbar{display:none}
+.site-nav .nav-item{font-family:var(--font-sans);font-size:.86rem;font-weight:600;white-space:nowrap;cursor:pointer;padding:26px 12px 23px;border:0;border-bottom:3px solid transparent;background:transparent;color:#65717c;border-radius:0;display:block}
+.site-nav .nav-item:hover{color:var(--teal-600);background:transparent}
+.site-nav .nav-item.active{border-bottom-color:var(--teal-600);color:var(--teal-600);background:transparent}
+.main-content{max-width:1460px;margin:0 auto;padding:42px clamp(20px,5vw,76px) 90px}
+.overview-lead{padding:32px 0 30px;border-bottom:1px solid var(--border-subtle);max-width:1060px}
+.overview-eyebrow{display:block;font-size:.73rem;color:#0d7377;font-weight:700;letter-spacing:.11em;margin-bottom:13px}
+.overview-lead h1{font-size:clamp(2rem,3.3vw,3.15rem);font-weight:750;line-height:1.16;letter-spacing:-.047em;max-width:820px}
+.overview-lead>p{font-size:1.04rem;line-height:1.85;color:#596673;max-width:840px;margin:18px 0}
+.overview-disclaimer{color:#7d858f;font-size:.81rem;margin-top:18px}
+.overview-section{margin-top:34px}
+.overview-section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:25px;margin-bottom:22px}
+.overview-section-heading h2{font-size:1.58rem;letter-spacing:-.035em;line-height:1.28}
+.overview-section-heading p{font-size:.9rem;color:#69747d;margin-top:8px;line-height:1.7;max-width:830px}
+.workflow-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.workflow-step{border:1px solid #dfebe9;border-radius:13px;padding:23px 20px 19px;background:#fff;display:flex;flex-direction:column;min-height:270px;box-shadow:0 1px 4px #0a333309}
+.workflow-number{font-family:var(--font-mono);font-size:.85rem;color:#0d7377;background:#e8f5f4;display:grid;place-items:center;width:37px;height:37px;border-radius:9px;margin-bottom:21px}
+.workflow-step h3{font-size:1.02rem;line-height:1.35;letter-spacing:-.025em;margin-bottom:9px}
+.workflow-step p{color:#67737e;font-size:.85rem;line-height:1.65;margin-bottom:18px;flex:1}
+.workflow-link{border:0;background:transparent;color:#0d7377;text-align:left;font-weight:700;font-size:.81rem;cursor:pointer;padding:0;display:flex;gap:8px;align-items:center}
+.workflow-link:hover{text-decoration:underline}
+.research-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.research-story{background:#fff;border:1px solid var(--border-subtle);border-radius:12px;padding:24px}
+.research-story-top{font-size:.72rem;letter-spacing:.09em;font-weight:700;color:#0c7779;margin-bottom:12px}
+.research-story h3{font-size:1.1rem;margin-bottom:12px}
+.research-story p{color:#65717e;font-size:.89rem;line-height:1.75}
+.research-story strong{color:#263c41}
+.overview-results-link{background:#eaf6f4;border:1px solid #d1eae6;border-radius:13px;padding:23px 26px;display:flex;align-items:center;justify-content:space-between;gap:25px;margin-top:16px}
+.overview-results-link h3{font-size:1.09rem;margin-bottom:6px}
+.overview-results-link p{font-size:.85rem;color:#61727a;line-height:1.65;max-width:690px}
+.overview-results-link .btn{white-space:nowrap;padding:12px 16px}
+.overview-next-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.overview-next-grid button{background:white;border:1px solid var(--border-subtle);border-radius:12px;padding:24px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.overview-next-grid button:hover{border-color:#6eb8b6;box-shadow:0 5px 17px #0b767514}
+.overview-next-grid span{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#0d7377;font-weight:700}
+.overview-next-grid strong{font-size:1rem;line-height:1.45}
+.overview-next-grid small{color:#0d7377;font-weight:600;font-size:.81rem;margin-top:8px}
+.research-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+.research-stat{border:1px solid #e0e9e7;border-radius:12px;background:white;padding:24px}
+.research-stat strong{display:block;font-size:2rem;letter-spacing:-.03em;color:#0d7377}
+.research-stat span{display:block;font-weight:700;font-size:.91rem;margin:4px 0 8px}
+.research-stat p{color:#6c7782;font-size:.81rem;line-height:1.65}
+.research-context{font-size:.79rem;line-height:1.6;color:#727b86;margin-bottom:26px}
+@media(max-width:1120px){.site-header-inner{display:block;padding:14px 24px 0}.site-brand{margin-bottom:8px}.site-nav .nav-item{padding:12px 12px}}
+@media(max-width:720px){.main-content{padding:25px 17px 55px}.site-header-inner{padding:12px 17px 0}.workflow-grid,.research-summary-grid,.overview-next-grid,.research-stat-grid{grid-template-columns:1fr}.workflow-step{min-height:0}.overview-results-link{display:block}.overview-results-link .btn{margin-top:20px}.overview-lead{padding-top:18px}.overview-lead h1{font-size:2rem}}
+
+/* Space-mission framing: scientific, not theatrical */
+.mission-hero{display:block;padding:27px 0 29px}
+.mission-hero-copy{padding:12px 0 6px}
+.mission-hero h1{font-size:clamp(2rem,3.15vw,3.2rem);font-weight:750;line-height:1.17;letter-spacing:-.043em;max-width:780px;margin-bottom:18px}
+.mission-intro{font-size:1.01rem;color:#5b6772;line-height:1.85;max-width:740px}
+.mission-hero-copy{max-width:960px}
+.mission-data-source{font-size:.84rem;color:#637580;margin-top:15px;line-height:1.6}
+.mission-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:26px}
+.mission-actions .btn{min-height:43px}
+.mission-context{border:1px solid #cbdedc;border-radius:16px;background:linear-gradient(150deg,#f5faf8 0%,#ebf4f3 100%);padding:26px 27px 20px;align-self:stretch;box-shadow:0 5px 25px rgba(13,115,119,.035)}
+.mission-context-kicker{font-size:.66rem;font-weight:750;letter-spacing:.12em;color:#0d7377;margin-bottom:13px}
+.mission-context-heading{font-size:1.31rem;line-height:1.3;letter-spacing:-.025em;font-weight:700;color:#22363c}
+.mission-context>p{font-size:.84rem;color:#61717a;line-height:1.72;margin-top:11px}
+.mission-context-divider{border-top:1px solid #cbdedd;margin:18px 0 9px}
+.mission-context-item{display:flex;gap:13px;align-items:baseline;padding:7px 0}
+.mission-context-item>span{font:600 .69rem var(--font-mono);color:#0d7377}
+.mission-context-item p{font-size:.82rem;line-height:1.5;color:#5d6e76}
+.mission-context-item strong{color:#24464a}
+.mission-context-foot{font-size:.72rem;color:#59777b;padding-top:14px;margin-top:10px;border-top:1px solid #cbdedd}
+.space-boundary{display:grid;grid-template-columns:155px 1fr;gap:18px;padding:20px 23px;background:#fff;border:1px solid #e1e7e5;border-left:4px solid #0d7377;border-radius:9px;margin:2px 0 33px}
+.space-boundary-marker{font-size:.68rem;font-weight:750;letter-spacing:.07em;color:#0d7377;padding-top:3px}
+.space-boundary strong{font-size:.94rem;color:#283d43}
+.space-boundary p{font-size:.82rem;color:#62717a;line-height:1.7;margin-top:6px}
+@media(max-width:1000px){.mission-hero{grid-template-columns:1fr;gap:19px}.mission-context{max-width:none}.space-boundary{grid-template-columns:1fr;gap:5px}}
+@media(max-width:640px){.mission-hero{padding:12px 0 20px}.mission-hero h1{font-size:2rem}.mission-context{padding:21px}.space-boundary{padding:18px}.mission-actions>.btn{width:100%;justify-content:center}}
+
+
+/* Final overview layout: each numbered section displays its cards in one row. */
+.workflow-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.research-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.workflow-step{padding:20px 16px 17px;min-height:290px}
+.research-story{padding:21px 19px}
+@media(max-width:760px){
+  .workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .research-summary-grid{grid-template-columns:1fr}
+  .workflow-step{min-height:0}
+}
+@media(max-width:520px){.workflow-grid{grid-template-columns:1fr}}
+
+/* Narrow-screen refinements. Desktop visual language is unchanged. */
+#page-analysis .card-header,#page-results .card-header,#page-physiology .card-header{display:block}
+#page-analysis .card-header .chart-explainer,#page-results .card-header .chart-explainer,#page-physiology .card-header .chart-explainer{margin-top:8px}
+#page-results .data-table th,#page-results .data-table td{white-space:nowrap}
+#page-results .data-table{min-width:275px}
+#chart-model-comparison,#chart-personalization{min-height:295px}
+@media(max-width:760px){
+  .main-content{padding:24px 16px 55px}
+  .site-nav{max-width:100%;padding-bottom:2px}
+  .grid-2,.grid-3,.grid-2-1,.grid-1-2,.result-panel{grid-template-columns:minmax(0,1fr)}
+  .card,.card-body,.card-header{min-width:0}
+  .card-body{padding:18px 16px}
+  .card-header{padding:17px 16px}
+  .selector-row{align-items:stretch}
+  .selector-group{min-width:min(100%,180px);flex:1}
+  .selector-group select{width:100%;min-width:0}
+  .selector-group .btn{width:100%;justify-content:center}
+  .data-table th,.data-table td{padding:10px 8px;font-size:.76rem}
+  #page-physiology .data-table{table-layout:fixed;width:100%}
+  #page-physiology .data-table th:first-child{width:43%}
+  #page-physiology .data-table th:last-child{width:29%}
+  .shap-feature-name{width:105px;font-size:.7rem;overflow-wrap:anywhere}
+  .shap-bar-value{width:48px;font-size:.68rem}
+  .shap-bar-row{gap:7px}
+  .research-stat{padding:19px}
+}
+
+/* Simple return link on each inner page */
+.simple-back{display:inline-flex;align-items:center;gap:5px;background:none;border:0;padding:4px 0;margin:0 0 17px;color:#41616a;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit}
+.simple-back:hover{text-decoration:underline;color:#0d7377}
+.simple-back:focus-visible{outline:2px solid #0d7377;outline-offset:4px;border-radius:2px}
+.health-question{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;max-width:440px}
+.health-question label{font-size:.88rem;color:var(--text-primary);font-weight:650}
+.health-question select{width:100%;padding:11px 12px;background:#fff;border:1px solid #ccd9d8;border-radius:8px;font:inherit;color:var(--text-primary)}
+.health-question select:focus-visible{outline:2px solid #0d7377;outline-offset:2px}
+.health-advice-list{padding-left:21px;color:var(--text-secondary);font-size:.88rem;line-height:1.85}
+.health-advice-list li{margin:7px 0}
+@media(max-width:420px){#health-check-form .btn{margin:7px 0!important;width:100%}}
+.health-example-controls{display:flex;flex-wrap:wrap;align-items:end;gap:12px}
+.health-example-controls .health-question{flex:1 1 175px;min-width:160px;margin-bottom:0}
+.health-ai-example{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;padding-top:14px;border-top:1px solid #dce6e5}
+.health-ai-example div{display:flex;flex-direction:column;gap:5px}
+.health-ai-example span{font-size:.78rem;color:var(--text-secondary)}
+.health-ai-example p{grid-column:1/-1;font-size:.78rem;color:var(--text-secondary);line-height:1.7}
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <header class="site-header" role="banner">
+    <div class="site-header-inner">
+      <div class="site-brand">AstroStress</div>
+      <nav class="site-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="overview">Overview</button>
+        <button class="nav-item" data-page="physiology">Physiological Data</button>
+        <button class="nav-item" data-page="analysis">AI Analysis</button>
+        <button class="nav-item" data-page="checkin">Daily Check-in</button>
+        <button class="nav-item" data-page="explainability">Explainability</button>
+        <button class="nav-item" data-page="results">Test Results</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT AREA
+       ============================================================ -->
+  <main class="main-content">
+
+    <!-- ============================================================
+         PAGE: OVERVIEW
+         ============================================================ -->
+    <div class="page active" id="page-overview">
+      <div class="mission-hero">
+        <div class="mission-hero-copy">
+          <h1>Can AI help astronauts spot stress during space missions?</h1>
+          <p class="mission-intro">Space missions can be stressful. AstroStress studies heart signals (ECG) and skin signals (EDA). Our AI looks for patterns linked to stress. One day, a system like this could help astronauts.</p>
+          <p class="mission-data-source">Data used: <strong>WESAD</strong> — real heart and skin recordings from 15 people.</p>
+          <div class="mission-actions">
+            <button class="btn btn-primary" type="button" data-go="physiology">Explore physiological data <span aria-hidden="true">→</span></button>
+            <button class="btn btn-secondary" type="button" data-go="results">Review research evidence <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+
+      </div>
+
+      <section class="overview-section">
+        <div class="overview-section-heading">
+          <div>
+            <span class="overview-eyebrow">01 · HOW IT WORKS</span>
+            <h2>How AstroStress looks for stress</h2>
+            <p>Here are the four steps. Open any step to see what our system does.</p>
+          </div>
+        </div>
+        <div class="workflow-grid">
+          <article class="workflow-step">
+            <div class="workflow-number">01</div>
+            <h3>Read heart and skin signals</h3>
+            <p>We use ECG (heart signals) and EDA (skin signals) from real recordings.</p>
+            <button class="workflow-link" type="button" data-go="physiology">Explore recordings <span>→</span></button>
+          </article>
+          <article class="workflow-step">
+            <div class="workflow-number">02</div>
+            <h3>Measure changes in the body</h3>
+            <p>Every two-minute recording gives us 19 measurements to study.</p>
+            <button class="workflow-link" type="button" data-go="physiology">View measurements <span>→</span></button>
+          </article>
+          <article class="workflow-step">
+            <div class="workflow-number">03</div>
+            <h3>Check for stress with AI</h3>
+            <p>Our trained Random Forest model predicts stress or non-stress.</p>
+            <button class="workflow-link" type="button" data-go="analysis">See AI classification <span>→</span></button>
+          </article>
+          <article class="workflow-step">
+            <div class="workflow-number">04</div>
+            <h3>Show why the AI chose its answer</h3>
+            <p>SHAP shows which measurements made the AI choose its answer.</p>
+            <button class="workflow-link" type="button" data-go="explainability">Explore explanations <span>→</span></button>
+          </article>
+        </div>
+      </section>
+
+      <section class="overview-section" style="margin-top:38px">
+        <div class="overview-section-heading">
+          <div>
+            <span class="overview-eyebrow">02 · WHAT WE TESTED</span>
+            <h2>What have we built and tested?</h2>
+            <p>We trained and tested four AI models on real WESAD data. You can explore recorded signals and real saved-model predictions in this app.</p>
+          </div>
+        </div>
+        <div class="research-summary-grid">
+          <div class="research-story">
+            <div class="research-story-top">DATA USED</div>
+            <h3>Real heart and skin recordings</h3>
+            <p><strong>15 participants</strong> from the WESAD study, providing <strong>608 valid two-minute windows</strong> after filtering ambiguous and undefined labels.</p>
+          </div>
+          <div class="research-story">
+            <div class="research-story-top">MODELS COMPARED</div>
+            <h3>Four AI models tested</h3>
+            <p>Random Forest, Gradient Boosting, XGBoost and LightGBM were compared. <strong>Random Forest</strong> achieved the highest mean F1 score in the corrected evaluation.</p>
+          </div>
+          <div class="research-story">
+            <div class="research-story-top">TESTING METHOD</div>
+            <h3>Tested on people the AI had not trained on</h3>
+            <p>Each time, we trained on 14 people and tested on the 15th. We repeated this for all 15 people.</p>
+          </div>
+        </div>
+        <div class="overview-results-link">
+          <div>
+            <h3>See how well the AI worked</h3>
+            <p>See accuracy, F1 score, ROC-AUC, participant-level variation and personalization outcomes, with clear explanations of what each measure means.</p>
+          </div>
+          <button class="btn btn-primary" type="button" data-go="results">Explore research results <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section class="overview-section" style="margin-top:38px">
+        <div class="overview-section-heading">
+          <div>
+            <span class="overview-eyebrow">03 · EXPLORE ASTROSTRESS</span>
+            <h2>Choose what you want to see</h2>
+            <p>Look at recordings, try a prediction, or see how the AI made its choice.</p>
+          </div>
+        </div>
+        <div class="overview-next-grid">
+          <button type="button" data-go="physiology"><span>Physiological Data</span><strong>What changes in the recorded body signals?</strong><small>Open data explorer →</small></button>
+          <button type="button" data-go="analysis"><span>AI Analysis</span><strong>How does the model recognize stress?</strong><small>Open classification preview →</small></button>
+          <button type="button" data-go="checkin"><span>Daily Check-in</span><strong>How are you feeling today?</strong><small>Open self-check →</small></button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Daily Health Check-in: manual, not a sensor or diagnosis -->
+    <div class="page" id="page-checkin">
+      <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
+      <div class="page-header">
+        <h1 class="page-title">Daily Health Check-in</h1>
+        <p class="page-description">Tell us how you feel and get simple next steps. Your answers are separate from the AI's WESAD recordings.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header"><h3>1. Recorded AI example</h3><p class="chart-explainer">See what the model predicts from a WESAD study recording. This recording is not your own health data and is not linked to your check-in.</p></div>
+        <div class="card-body">
+          <div class="health-example-controls">
+            <div class="health-question"><label for="checkin-participant">Study participant</label><select id="checkin-participant" disabled><option>Connect local server</option></select></div>
+            <div class="health-question"><label for="checkin-window">Recorded window</label><select id="checkin-window" disabled><option>Select a window</option></select></div>
+            <button class="btn btn-secondary" id="checkin-example-button" type="button" disabled>View recorded prediction</button>
+          </div>
+          <p id="checkin-ai-status" role="status" style="font-size:.82rem;color:var(--text-secondary);margin:12px 0">Connect the local model to view a recorded example.</p>
+          <div id="checkin-ai-example" class="health-ai-example" style="display:none">
+            <div><span>Prediction</span><strong id="checkin-ai-label"></strong></div>
+            <div><span>Stress probability</span><strong id="checkin-ai-probability"></strong></div>
+            <div><span>Recorded protocol</span><strong id="checkin-ai-groundtruth"></strong></div>
+            <p>In-sample replay: the final model was trained on all WESAD windows. This is not a held-out test or a reading from your body.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header">
+          <h3>2. Your self-check</h3>
+          <p class="chart-explainer">Three quick questions. Your answers stay on this page and are not saved or sent to a server.</p>
+        </div>
+        <div class="card-body">
+          <form id="health-check-form">
+            <div class="health-question">
+              <label for="health-stress">How stressed do you feel?</label>
+              <select id="health-stress" required>
+                <option value="" selected disabled>Select an answer</option>
+                <option value="low">Not stressed</option>
+                <option value="medium">A little stressed</option>
+                <option value="high">Very stressed</option>
+              </select>
+            </div>
+            <div class="health-question">
+              <label for="health-sleep">How did you sleep?</label>
+              <select id="health-sleep" required>
+                <option value="" selected disabled>Select an answer</option>
+                <option value="good">Slept well</option>
+                <option value="poor">Did not sleep well</option>
+              </select>
+            </div>
+            <div class="health-question">
+              <label for="health-feeling">How do you feel right now?</label>
+              <select id="health-feeling" required>
+                <option value="" selected disabled>Select an answer</option>
+                <option value="okay">Okay</option>
+                <option value="tired">Tired or overwhelmed</option>
+                <option value="urgent">Unwell or need help</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" type="submit">See my next steps</button>
+            <button class="btn btn-secondary" type="reset" style="margin-left:8px">Clear</button>
+          </form>
+        </div>
+      </div>
+      <div class="card" id="health-check-result" style="display:none;margin-bottom:var(--space-6)">
+        <div class="card-header"><h3>3. Your next steps</h3><p class="chart-explainer">Based on your answers only, not the recorded AI example or an AI diagnosis.</p></div>
+        <div class="card-body">
+          <p id="health-check-summary" role="status" style="font-weight:700;margin-bottom:12px"></p>
+          <ul id="health-check-steps" class="health-advice-list"></ul>
+          <p style="font-size:.79rem;color:var(--text-secondary);margin-top:16px">During a mission, follow crew health procedures and contact your medical team if concerned. This demo does not prescribe treatment.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>What does AstroStress measure?</h3></div>
+        <div class="card-body"><p style="font-size:.87rem;line-height:1.8;color:var(--text-secondary)">
+          <strong>AI:</strong> Heart and skin signals from real WESAD lab recordings.
+          <strong>Self-check:</strong> Your own answers about stress, sleep and how you feel.
+          Blood pressure, body temperature and astronaut sensors are not connected.
+          The study participant and you are different people. We do not combine these sources into a health score. These answers do not change the model or research results.
+        </p></div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE: PHYSIOLOGICAL DATA
+         ============================================================ -->
+    <div class="page" id="page-physiology">
+      <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
+      <div class="page-header">
+        <h1 class="page-title">Heart and Skin Signals</h1>
+        <p class="page-description">
+          Choose a person and a two-minute recording to see real heart and skin signals from the WESAD study.
+        </p>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-body">
+          <h3 style="margin-bottom:8px">Where did we get the data?</h3>
+          <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7">
+            AstroStress uses <strong>WESAD (Wearable Stress and Affect Detection)</strong>, an Earth-based
+            laboratory dataset from the University of Siegen. The original dataset is about
+            <strong>2.5 GB compressed</strong> and includes chest and wrist sensor recordings from 15 participants.
+            Our recorded-window analysis uses locally extracted features; raw waveform plots are loaded only when the trusted WESAD recording is available locally. This is not astronaut or ISS data.
+          </p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:15px">
+            <a class="btn btn-primary" href="https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html" target="_blank" rel="noopener noreferrer">Official WESAD dataset page</a>
+            <a class="btn btn-secondary" href="https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx/download" target="_blank" rel="noopener noreferrer">Download original ZIP (~2.5 GB)</a>
+          </div>
+          <p style="font-size:0.75rem;color:var(--text-tertiary);margin-top:12px">
+            Dataset credit: Schmidt et al., ICMI 2018. Scientific, non-commercial use with attribution.
+            If WESAD is already downloaded on your computer, you do not need to download it again.
+          </p>
+        </div>
+      </div>
+
+
+
+      <div class="selector-row" style="margin-bottom:var(--space-6)">
+        <div class="selector-group">
+          <div class="label">Participant</div>
+          <select id="phys-participant" onchange="updatePhysiologyCharts()">
+            <option value="S2">S2</option><option value="S3">S3</option>
+            <option value="S4">S4</option><option value="S5">S5</option>
+            <option value="S6">S6</option><option value="S7">S7</option>
+            <option value="S8" selected>S8</option><option value="S9">S9</option>
+            <option value="S10">S10</option><option value="S11">S11</option>
+            <option value="S13">S13</option><option value="S14">S14</option>
+            <option value="S15">S15</option><option value="S16">S16</option>
+            <option value="S17">S17</option>
+          </select>
+        </div>
+        <div class="selector-group">
+          <div class="label">Recorded window</div>
+          <select id="phys-window" onchange="updatePhysiologyCharts()"></select>
+        </div>
+        <div class="selector-group" style="align-self:flex-end">
+          <span class="illustrative-banner" id="phys-signal-badge">Waiting for local WESAD recordings</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header"><div><h3 id="phys-chart-heading">Original WESAD recordings — selected window</h3>
+        <p class="chart-explainer" id="phys-chart-description">ECG shows a 10-second detail of the 120-second window at 700 Hz; EDA shows the full window at 4 Hz. These are laboratory measurements, not live astronaut telemetry.</p></div></div>
+        <div class="card-body">
+          <p role="status" id="phys-wave-status" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:14px">Select a participant and recorded window to load original signals.</p>
+          <h4 id="phys-heart-heading">Chest ECG · original sensor amplitude</h4>
+          <div id="chart-timeline" style="width:100%;height:255px;margin-bottom:22px"></div>
+          <h4 id="phys-eda-heading">Wrist EDA · skin conductance (μS)</h4>
+          <div id="chart-phys-detail" style="width:100%;height:255px"></div>
+        </div>
+      </div>
+
+      <!-- Feature summary -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><h3>What does the heart signal tell us?</h3><p class="chart-explainer">Heart-rate and heart-rate-variability measurements summarize cardiac activity within the selected window.</p></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Feature</th><th>Value</th><th>Unit</th></tr></thead>
+              <tbody id="ecg-feature-table"><tr><td colspan="3">Loading measured features from local verified dataset…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>How does skin conductance change?</h3><p class="chart-explainer">Electrodermal activity describes changes associated with sympathetic nervous system activation.</p></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Feature</th><th>Value</th><th>Unit</th></tr></thead>
+              <tbody id="eda-feature-table"><tr><td colspan="3">Loading measured EDA features…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE: AI ANALYSIS
+         ============================================================ -->
+    <div class="page" id="page-analysis">
+      <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
+      <div class="page-header">
+        <h1 class="page-title">AI Analysis</h1>
+        <p class="page-description">
+          Choose a person and a recorded window. Our trained AI will show its stress prediction and what helped it decide.
+        </p>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header">
+          <h3>How does the AI check for stress?</h3><p class="chart-explainer">We turn two minutes of heart and skin signals into numbers. Our AI uses them to predict stress.</p>
+        </div>
+        <div class="card-body">
+          <!-- Pipeline visualization -->
+          <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-6)">
+            <div style="background:var(--teal-100);color:var(--teal-600);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
+              Raw Signal<br><span style="font-weight:400;font-size:0.72rem">120s window</span>
+            </div>
+            <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
+            <div style="background:var(--blue-100);color:var(--blue-600);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
+              Feature Extraction<br><span style="font-weight:400;font-size:0.72rem">19 candidate features</span>
+            </div>
+            <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
+            <div style="background:var(--amber-100);color:var(--amber-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
+              Preprocessing<br><span style="font-weight:400;font-size:0.72rem">impute → filter → scale</span>
+            </div>
+            <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
+            <div style="background:var(--coral-100);color:var(--coral-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
+              Random Forest Classifier<br><span style="font-weight:400;font-size:0.72rem">binary prediction</span>
+            </div>
+            <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
+            <div style="background:var(--green-100);color:var(--green-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
+              SHAP Explanation<br><span style="font-weight:400;font-size:0.72rem">per-feature attribution</span>
+            </div>
+          </div>
+
+          <div class="selector-row">
+            <div class="selector-group">
+              <div class="label">Participant</div>
+              <select id="ai-participant">
+                <option value="S2">S2</option><option value="S3">S3</option><option value="S4">S4</option>
+                <option value="S10" selected>S10</option><option value="S15">S15</option><option value="S17">S17</option>
+              </select>
+            </div>
+            <div class="selector-group">
+              <div class="label">Window</div>
+              <select id="ai-window">
+                <option>Window 7</option><option>Window 12</option><option>Window 18</option><option>Window 23</option>
+              </select>
+            </div>
+            <div class="selector-group" style="align-self:flex-end">
+              <button class="btn btn-primary" id="btn-ai-run" onclick="runAIAnalysis()">
+                <i data-lucide="zap" style="width:14px;height:14px"></i>
+                Classify Window
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result area -->
+      <div id="ai-live-status" role="status" style="margin:0 0 16px;font-size:.82rem;color:var(--text-secondary)">Connect local server to view verified predictions. Preview-only mode shows no classification.</div>
+      <div id="ai-result-area" style="display:none">
+        <div class="grid-2" style="margin-bottom:var(--space-6)">
+          <div class="card">
+            <div class="card-header">
+              <h3>How likely is this window to show stress?</h3><p class="chart-explainer">Shows the saved model's stress probability for the selected recorded window when the local server is connected.</p>
+              <span class="illustrative-banner"><i data-lucide="info" style="width:10px;height:10px"></i> Saved-model prediction (when connected)</span>
+            </div>
+            <div class="card-body">
+              <div id="chart-ai-gauge" style="width:100%;height:220px"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>What did the model decide?</h3><p class="chart-explainer">Compare the predicted class, reference label and preprocessing context for the selected example.</p></div>
+            <div class="card-body">
+              <table class="data-table">
+                <tbody>
+                  <tr><td><strong>Model</strong></td><td>Random Forest (illustrative preview)</td></tr>
+                  <tr><td><strong>Predicted Class</strong></td><td><span class="badge badge-coral">Stress</span></td></tr>
+                  <tr><td><strong>Probability</strong></td><td class="mono">0.847</td></tr>
+                  <tr><td><strong>Protocol Label</strong></td><td><span class="badge badge-coral">Stress (TSST)</span></td></tr>
+                  <tr><td><strong>Verdict</strong></td><td><span class="badge badge-green">✓ Correct</span></td></tr>
+                  <tr><td><strong>Features Used</strong></td><td class="mono">19 candidate features (selection may vary)</td></tr>
+                  <tr><td><strong>Preprocessing</strong></td><td>Impute → σ-filter → StandardScaler</td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:var(--space-4);padding:var(--space-3) var(--space-4);background:var(--bg-inset);border-radius:var(--radius-sm);font-size:0.78rem;color:var(--text-tertiary)">
+                This is a real in-sample replay from the saved Random Forest fitted on all WESAD windows. Separate Leave-One-Subject-Out (LOSO) scores measure performance on held-out participants; this individual replay is not held-out testing.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Which measurements influenced this classification?</h3><p class="chart-explainer">SHAP attributes each feature’s contribution to a model decision; positive and negative effects are not proof of cause.</p>
+            <span class="illustrative-banner"><i data-lucide="info" style="width:10px;height:10px"></i> Saved-model SHAP (when connected)</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;gap:var(--space-4);margin-bottom:var(--space-4)">
+              <div style="display:flex;align-items:center;gap:var(--space-2);font-size:0.75rem;color:var(--text-tertiary)">
+                <div style="width:12px;height:12px;background:var(--coral-500);border-radius:2px"></div> Pushes toward Stress
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--space-2);font-size:0.75rem;color:var(--text-tertiary)">
+                <div style="width:12px;height:12px;background:var(--teal-500);border-radius:2px"></div> Pushes toward No-Stress
+              </div>
+            </div>
+            <div id="shap-bars"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE: EXPLAINABILITY
+         ============================================================ -->
+    <div class="page" id="page-explainability">
+      <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
+      <div class="page-header">
+        <h1 class="page-title">Explainability</h1>
+        <p class="page-description">
+          See which heart and skin measurements mattered most to the AI's answer.
+        </p>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header">
+          <h3>Which physiological features matter most overall?</h3><p class="chart-explainer">Compare feature attribution magnitudes across the model. Larger values mean greater modeled influence, not a medical diagnosis.</p>
+          <span id="global-shap-badge" class="illustrative-banner">Requires local verified artifacts</span>
+        </div>
+        <div class="card-body">
+          <div id="chart-global-shap" style="width:100%;height:360px"></div>
+          <p id="global-shap-status" role="status" style="font-size:.79rem;color:var(--text-secondary);line-height:1.65;margin-top:10px">Open through the local Python server to load actual SHAP values.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:var(--space-6)">
+        <div class="card">
+          <div class="card-header"><h3>How should the AI explanation be interpreted?</h3><p class="chart-explainer">Understand the difference between a feature influencing a prediction and causing stress.</p></div>
+          <div class="card-body">
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7;margin-bottom:var(--space-4)">
+              <strong>SHAP (SHapley Additive exPlanations)</strong> assigns each feature a value representing its
+              contribution to the model's prediction for a specific window. Positive SHAP values push the prediction
+              toward stress; negative values push toward no-stress.
+            </p>
+            <div class="expandable-trigger" onclick="toggleExpand(this)">
+              <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
+              Why is explainability important?
+            </div>
+            <div class="expandable-content">
+              In safety-critical applications like astronaut health monitoring, it is not sufficient for a model to be
+              accurate. Clinicians and mission planners need to understand <em>why</em> a stress classification was made,
+              verify it against physiological intuition, and identify potential failure modes.
+            </div>
+            <div class="expandable-trigger" onclick="toggleExpand(this)">
+              <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
+              Computation details
+            </div>
+            <div class="expandable-content">
+              SHAP values are computed using <code>TreeExplainer</code> on the best model from the corrected Leave-One-Subject-Out (LOSO) evaluation.
+              The local server can provide per-window in-sample SHAP for the saved final model. Attribution is not an average of Leave-One-Subject-Out (LOSO) folds.
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>What physiological information is analyzed?</h3><p class="chart-explainer">An overview of heart-rate, heart-rate-variability and electrodermal activity measurements.</p></div>
+          <div class="card-body">
+            <div style="margin-bottom:var(--space-4)">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2)">
+                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary)">❤️ Heart Rate Features</span>
+                <span style="font-size:0.78rem;color:var(--text-tertiary)">2 features</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:72%;background:var(--coral-500)"></div></div>
+              <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:var(--space-1)">HR mean, HR standard deviation</div>
+            </div>
+            <div style="margin-bottom:var(--space-4)">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2)">
+                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary)">💓 HRV Features</span>
+                <span style="font-size:0.78rem;color:var(--text-tertiary)">11 features</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:88%;background:var(--teal-500)"></div></div>
+              <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:var(--space-1)">MeanNN, SDNN, RMSSD, pNN50, LF, HF, LF/HF, SampEn, SD1, SD2, MedianNN</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2)">
+                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary)">💧 EDA Features</span>
+                <span style="font-size:0.78rem;color:var(--text-tertiary)">6 features</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:54%;background:var(--blue-500)"></div></div>
+              <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:var(--space-1)">Mean, std, min, max, range, SCR peaks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE: RESEARCH RESULTS
+         ============================================================ -->
+    <div class="page" id="page-results">
+      <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
+      <div class="page-header">
+        <h1 class="page-title">Research Results</h1>
+        <p class="page-description">
+          See how well our AI detected stress, how results changed from person to person, and whether learning from each person helped.
+        </p>
+      </div>
+      <div id="research-live-status" role="status" style="margin-bottom:16px;font-size:.82rem;color:var(--text-secondary)">Connecting to locally verified research outputs…</div>
+      <div class="research-stat-grid">
+        <div class="research-stat"><strong>88.74%</strong><span>Mean participant accuracy</span><p>On average, the AI got about 89 out of 100 recorded windows right when tested on a person it had not trained on.</p></div>
+        <div class="research-stat"><strong>78.35%</strong><span>Mean F1 score</span><p>Shows how well the AI finds stress while avoiding false alarms. We used this score to choose our model.</p></div>
+        <div class="research-stat"><strong>0.9436</strong><span>Pooled ROC-AUC</span><p>Shows how well the AI separates stress from non-stress.</p></div>
+      </div>
+      <p class="research-context">These scores come from testing on WESAD lab recordings. Our Random Forest had the highest average F1 of the four models we compared. We have not tested it on astronauts.</p>
+
+
+      <!-- Model comparison chart -->
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header">
+          <h3>Which of our four AI models worked best?</h3><p class="chart-explainer">We tested each model on people whose data it had not trained on.</p>
+          <span class="illustrative-banner"><i data-lucide="info" style="width:10px;height:10px"></i> Illustrative data</span>
+        </div>
+        <div class="card-body">
+          <div id="chart-model-comparison" style="width:100%;height:320px"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:var(--space-6)">
+        <!-- Per-participant table -->
+        <div class="card">
+          <div class="card-header"><h3>How well did our AI detect stress for each person?</h3><p class="chart-explainer">Each row shows how well the AI worked for one person it had not trained on. Accuracy means correct answers overall. Stress F1 shows how well it found stress.</p></div>
+          <div class="card-body" style="max-height:460px;overflow:auto">
+            <table class="data-table">
+              <thead><tr><th>Participant</th><th>Accuracy</th><th>Stress F1</th></tr></thead>
+              <tbody id="loso-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Personalization -->
+        <div class="card">
+          <div class="card-header"><h3>Does AI work better when it learns about a person?</h3><p class="chart-explainer">Generic = trained on other people. Personalized = also learns from some recordings of that person. Compare the results below.</p></div>
+          <div class="card-body">
+            <div id="chart-personalization" style="width:100%;height:320px"></div>
+            <p style="font-size:0.78rem;color:var(--text-tertiary);margin-top:var(--space-3);line-height:1.6">
+              We tested both models on the same recordings. Personalization improved accuracy for 4 of 15 people, but not everyone.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Experiment C results are optional and remain separate from original model scores. -->
+      <section class="card" id="reliability-panel" style="margin-bottom:var(--space-6)">
+        <div class="card-header">
+          <h3>Can the AI tell when it might be wrong?</h3>
+          <p class="chart-explainer">We checked how often the AI was correct when it gave a higher-confidence answer. These are tests on people the model had not trained on.</p>
+        </div>
+        <div class="card-body">
+          <p id="reliability-status" role="status" style="font-size:.83rem;color:var(--text-secondary);margin-bottom:16px">Checking for Experiment C results…</p>
+          <div id="reliability-content" style="display:none">
+            <div class="grid-2" style="gap:16px;margin-bottom:14px">
+              <div>
+                <h4 style="font-size:.9rem;margin-bottom:6px">What happens when the AI is more confident?</h4>
+                <p class="chart-explainer">Higher accuracy can mean fewer windows get a prediction. The chart shows that trade-off.</p>
+                <div id="chart-confidence-coverage" style="height:285px;width:100%"></div>
+              </div>
+              <div>
+                <h4 style="font-size:.9rem;margin-bottom:6px">Do AI probabilities match real results?</h4>
+                <p class="chart-explainer">The closer the points are to the diagonal line, the better the predicted chances match actual stress rates.</p>
+                <div id="chart-reliability" style="height:285px;width:100%"></div>
+              </div>
+            </div>
+            <p id="reliability-takeaway" style="font-size:.85rem;line-height:1.75"></p>
+            <p style="font-size:.77rem;color:var(--text-tertiary);line-height:1.7;margin-top:9px">
+              These are held-out Leave-One-Subject-Out test results, not the in-sample predictions in AI Analysis. Confidence cutoffs are examples from the measured curve, not independently tested safety rules. Data comes from WESAD, not astronauts.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- A brief guide to what the results show. Full technical limits stay in README. -->
+      <div class="card">
+        <div class="card-header">
+          <h3>What do these results tell us?</h3>
+          <p class="chart-explainer">Our results are strong overall, but the AI does not work equally well for every person.</p>
+        </div>
+        <div class="card-body">
+          <p style="font-size:.87rem;color:var(--text-secondary);line-height:1.8">
+            We compared four AI models using real WESAD recordings. Random Forest had the best average Stress F1 in our tests. Some people had lower scores, so there is still room to improve. We tested lab recordings, not astronauts or live space missions.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// VERIFIED LOCAL MODEL BRIDGE (file:// previews remain read-only)
+// ============================================================
+let serverConnected = false;
+let subjectsFromServer = [];
+let researchFromServer = null;
+let reliabilityFromServer = null;
+let lastSavedPrediction = null;
+let activeAnalysisChart = null;
+
+const byId = id => document.getElementById(id);
+function safeText(v) { return String(v == null ? '—' : v); }
+function message(id, value, isError=false) {
+  const node = byId(id);
+  if (!node) return;
+  node.textContent = value;
+  node.style.color = isError ? 'var(--red-500)' : 'var(--text-secondary)';
+}
+async function getVerifiedData(path) {
+  const response = await fetch(path, { cache: 'no-store' });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || 'Data unavailable');
+  return payload;
+}
+function refreshWindows(participantId, windowId) {
+  const participant = byId(participantId)?.value;
+  const entry = subjectsFromServer.find(x => x.id === participant);
+  const selector = byId(windowId);
+  if (!entry || !selector) return;
+  selector.replaceChildren();
+  for (let i=0; i<entry.windows; i++) {
+    const option = document.createElement('option');
+    option.value = String(i);
+    option.textContent = 'Window ' + (i + 1) + ' of ' + entry.windows;
+    selector.appendChild(option);
+  }
+}
+function setSubjectOptions(id, selected) {
+  const element = byId(id);
+  if (!element) return;
+  element.replaceChildren();
+  for (const item of subjectsFromServer) {
+    const option = document.createElement('option');
+    option.value = item.id;
+    option.textContent = item.id + ' (' + item.windows + ' windows)';
+    element.appendChild(option);
+  }
+  if (subjectsFromServer.some(s => s.id === selected)) element.value = selected;
+}
+function setAnalysisFields(payload) {
+  const p = payload.prediction;
+  const table = byId('ai-result-area');
+  if (!table) return;
+  const cells = table.querySelectorAll('.data-table tbody tr td:last-child');
+  const values = [
+    payload.model + ' (saved final model refitted on all windows)',
+    p.class === 1 ? 'Stress' : 'Non-stress',
+    (p.stress_probability * 100).toFixed(2) + '%',
+    p.actual_class === 1 ? 'Stress protocol' : 'Non-stress protocol',
+    p.matches_protocol_label ? 'Matches protocol label' : 'Does not match protocol label',
+    Object.keys(payload.features).length + ' candidate physiological features',
+    'Stored model preprocessing'
+  ];
+  cells.forEach((cell, i) => { if (i < values.length) cell.textContent = values[i]; });
+}
+async function loadRealWindow(subjectId, windowId) {
+  const subject = byId(subjectId).value;
+  const index = byId(windowId).value;
+  const data = await getVerifiedData('/api/window?subject='+encodeURIComponent(subject)+'&index='+encodeURIComponent(index));
+  if (data.run_id !== researchFromServer?.run_id) throw new Error('Model and research run IDs do not match');
+  lastSavedPrediction = data;
+  setAnalysisFields(data);
+  return data;
+}
+async function updatePhysiologyFeatures() {
+  if (!serverConnected) return;
+  try {
+    const subject = byId('phys-participant').value;
+    const index = Number(byId('phys-window')?.value||0);
+    const data = await getVerifiedData('/api/window?subject='+encodeURIComponent(subject)+'&index='+index);
+    const items = Object.entries(data.features);
+    // The two summary tables must show measured values, never old sample numbers.
+    const fillTable = (id, entries) => {
+      const body = byId(id); body.replaceChildren();
+      for (const [name, value] of entries) {
+        const row = document.createElement('tr');
+        const label = document.createElement('td'); label.textContent = name.replaceAll('_', ' ');
+        const number = document.createElement('td'); number.className = 'mono';
+        number.textContent = value == null ? 'Not available' : Number(value).toFixed(3);
+        const unit = document.createElement('td');
+        const units = {'HRV_MeanNN':'ms','HRV_SDNN':'ms','HRV_RMSSD':'ms','HRV_pNN50':'%','HRV_MedianNN':'ms','HRV_LFHF':'ratio','HRV_SampEn':'dimensionless','HRV_SD1':'ms','HRV_SD2':'ms','HR_mean':'BPM','HR_std':'BPM','EDA_peaks':'count'};
+        unit.textContent = units[name] || (name.startsWith('EDA_') ? 'μS' : name==='HRV_LF'||name==='HRV_HF' ? 'spectral estimate' : '—');
+        row.append(label, number, unit);body.appendChild(row);
+      }
+    };
+    fillTable('ecg-feature-table', items.filter(([name]) => name.startsWith('HR_') || name.startsWith('HRV_')));
+    fillTable('eda-feature-table', items.filter(([name]) => name.startsWith('EDA_')));
+
+  } catch (err) { console.warn('Verified physiology data:',err.message); }
+}
+async function connectResearch() {
+  if (location.protocol === 'file:') {
+    message('research-live-status','Open through python app_server.py to see verified per-subject research results.');
+    return;
+  }
+  try {
+    const [subjects, research] = await Promise.all([getVerifiedData('/api/subjects'),getVerifiedData('/api/research')]);
+    subjectsFromServer = subjects.subjects;
+    researchFromServer = research;
+    serverConnected = true;
+    // The approved Overview is narrative-only; its old selectors were removed.
+    // Bind only controls that exist in the current five-tab HTML layout.
+    for (const id of ['ai-participant','phys-participant','checkin-participant']) setSubjectOptions(id, 'S10');
+    byId('checkin-participant').disabled=false;
+    byId('checkin-window').disabled=false;
+    byId('checkin-example-button').disabled=false;
+    refreshWindows('checkin-participant','checkin-window');
+    byId('checkin-participant').addEventListener('change',()=>{refreshWindows('checkin-participant','checkin-window');clearCheckinAIExample();});
+    byId('checkin-window').addEventListener('change',clearCheckinAIExample);
+    message('checkin-ai-status','Select a study participant and window to view the recorded prediction.');
+    refreshWindows('ai-participant','ai-window');
+    refreshWindows('phys-participant','phys-window');
+    byId('ai-participant').addEventListener('change', () => refreshWindows('ai-participant','ai-window'));
+    byId('phys-participant').addEventListener('change',()=>{ refreshWindows('phys-participant','phys-window');updatePhysiologyFeatures();updatePhysiologyCharts(); });
+    byId('phys-window').addEventListener('change',updatePhysiologyFeatures);
+    updatePhysiologyFeatures();
+    message('research-live-status','Verified WESAD research run: '+research.run_id);
+    loadReliabilityResults();
+    message('ai-live-status','Connected to local Random Forest model · recorded WESAD windows · in-sample replay, not held-out evaluation.');
+    byId('research-live-status').dataset.verified = 'true';
+    document.querySelectorAll('#page-results .illustrative-banner').forEach(node => { node.textContent='Verified local outputs'; node.style.color='var(--teal-600)'; });
+    if (byId('page-results').classList.contains('active')) initResultsCharts();
+    document.querySelectorAll('.research-stat strong').forEach((node,i) => {
+      const values=[(research.accuracy*100).toFixed(2)+'%',(research.f1*100).toFixed(2)+'%',Number(research.auc).toFixed(4)];
+      if(i<values.length)node.textContent=values[i];
+    });
+  } catch (err) {
+    serverConnected = false;
+    message('research-live-status','Verified local outputs unavailable: '+err.message,true);
+    message('ai-live-status','Model unavailable. Run python app_server.py with local trained artifacts. No fake predictions are generated.',true);
+  }
+}
+// ============================================================
+// NAVIGATION
+// ============================================================
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); } });
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+
+    // Init charts for that page
+    setTimeout(() => {
+      if (page === 'physiology') initPhysiologyCharts();
+      if (page === 'analysis' && byId('ai-result-area').style.display !== 'none') { const chart=echarts.getInstanceByDom(byId('chart-ai-gauge')); if(chart) chart.resize(); }
+      if (page === 'explainability') initExplainabilityCharts();
+      if (page === 'results') initResultsCharts();
+      if (page === 'results') renderReliabilityCharts();
+    }, 50);
+  });
+});
+
+// Overview links open their corresponding working tabs.
+document.querySelectorAll('[data-go]').forEach(link => {
+  link.addEventListener('click', () => {
+    const destination = document.querySelector('.site-nav .nav-item[data-page="' + link.dataset.go + '"]');
+    if (destination) {
+      destination.click();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+});
+
+// ============================================================
+// EXPANDABLES
+// ============================================================
+function toggleExpand(trigger) {
+  trigger.classList.toggle('open');
+  const content = trigger.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+// ============================================================
+// PHYSIOLOGY PAGE CHARTS
+// ============================================================
+// Plot measured signals only; never construct synthetic ECG/EDA data here.
+let signalRequestSerial = 0;
+function initPhysiologyCharts() { updatePhysiologyCharts(); }
+function renderRecordedSignal(elementId, data, rate, unit, color) {
+  const element=byId(elementId);
+  const chart=echarts.getInstanceByDom(element)||echarts.init(element);
+  const points=data.map((value,index)=>[Number((index/rate).toFixed(4)),value]);
+  chart.setOption({
+    animation:false,
+    grid:{top:20,right:25,bottom:52,left:72},
+    xAxis:{type:'value',name:'Seconds',nameLocation:'center',nameGap:28,axisLabel:{color:'#5A5F6B'}},
+    yAxis:{type:'value',name:unit,scale:true,axisLabel:{color:'#5A5F6B'},splitLine:{lineStyle:{color:'#F0EFEC'}}},
+    dataZoom:[{type:'inside'},{type:'slider',height:14,bottom:5}],
+    tooltip:{trigger:'axis',axisPointer:{type:'cross'}},
+    series:[{type:'line',data:points,showSymbol:false,lineStyle:{color,width:1.3},large:true,
+      sampling:'lttb',emphasis:{disabled:true}}],
+  },true);
+  chart.resize();
+}
+function setPhysiologyChartLabels(derived) {
+  byId('phys-chart-heading').textContent=derived ? 'Verified physiological feature trends — recorded windows' : 'Original WESAD recordings — selected window';
+  byId('phys-chart-description').textContent=derived
+    ? 'Each point is a measured feature from a two-minute WESAD laboratory window, NOT a raw ECG/EDA waveform or live astronaut telemetry. Windows can overlap.'
+    : 'ECG shows a 10-second detail of the 120-second window at 700 Hz; EDA shows the full window at 4 Hz. These are laboratory measurements, not live astronaut telemetry.';
+  byId('phys-heart-heading').textContent=derived ? 'Mean heart rate across windows · BPM' : 'Chest ECG · original sensor amplitude';
+  byId('phys-eda-heading').textContent=derived ? 'Mean skin conductance across windows · μS' : 'Wrist EDA · skin conductance (μS)';
+}
+function renderPhysiologyTrend(elementId, windows, feature, unit, color, selectedIndex) {
+  const element=byId(elementId);
+  const chart=echarts.getInstanceByDom(element)||echarts.init(element);
+  const labels=windows.map(row=>'Window '+(row.index+1));
+  const values=windows.map(row=>row[feature]==null ? null : Number(row[feature]));
+  chart.setOption({
+    animation:false,
+    grid:{top:24,right:25,bottom:68,left:72},
+    tooltip:{trigger:'axis',formatter:items=>{
+      const entry=items[0]; if(!entry)return '';
+      return entry.axisValue+'<br>Measured '+feature.replaceAll('_',' ')+': '+
+        (entry.value==null ? 'Not measured' : Number(entry.value).toFixed(3)+' '+unit);
+    }},
+    xAxis:{type:'category',data:labels,name:'Recorded window',nameLocation:'center',nameGap:45,
+      axisLabel:{color:'#5A5F6B',interval:'auto'}},
+    yAxis:{type:'value',name:unit,scale:true,axisLabel:{color:'#5A5F6B'},
+      splitLine:{lineStyle:{color:'#F0EFEC'}}},
+    dataZoom:[{type:'inside'},{type:'slider',height:14,bottom:5}],
+    series:[{type:'line',data:values,connectNulls:false,showSymbol:true,symbolSize:5,
+      lineStyle:{color,width:2},itemStyle:{color},
+      markLine:{silent:true,symbol:'none',lineStyle:{color:'#BD8328',type:'dashed'},
+        label:{formatter:'Selected window'},data:[{xAxis:'Window '+(selectedIndex+1)}]}}],
+  },true);
+  chart.resize();
+}
+async function updatePhysiologyCharts() {
+  const token=++signalRequestSerial;
+  const status=byId('phys-wave-status');
+  if (!serverConnected) {
+    status.textContent='No verified local source connected. Open through python app_server.py.';
+    return;
+  }
+  const subject=byId('phys-participant').value;
+  const index=Number(byId('phys-window').value||0);
+  status.textContent='Loading original WESAD recordings for '+subject+', window '+(index+1)+'…';
+  try {
+    const data=await getVerifiedData('/api/signals?subject='+encodeURIComponent(subject)+'&index='+index);
+    if (token!==signalRequestSerial)return;
+    if(data.run_id!==researchFromServer.run_id || data.subject!==subject || data.window_index!==index)throw Error('Signal provenance mismatch');
+    renderRecordedSignal('chart-timeline',data.ecg.samples,data.ecg.sampling_rate_hz,data.ecg.unit,'#0D7377');
+    renderRecordedSignal('chart-phys-detail',data.eda.samples,data.eda.sampling_rate_hz,data.eda.unit,'#4A7AE5');
+    status.textContent='Real WESAD signals · '+subject+' · window '+(index+1)+' · starts at '+data.window_start_s+'s. ECG first 10s; EDA full 120s.';
+    setPhysiologyChartLabels(false);
+    byId('phys-signal-badge').textContent='Original recorded signals';
+  } catch(error) {
+    if(token!==signalRequestSerial)return;
+    try {
+      const trend=await getVerifiedData('/api/physiology-trend?subject='+encodeURIComponent(subject));
+      if(token!==signalRequestSerial)return;
+      if(trend.run_id!==researchFromServer.run_id || trend.subject!==subject
+          || trend.is_raw_waveform!==false || !Array.isArray(trend.windows)
+          || trend.windows.length===0)throw Error('Feature-trend provenance mismatch');
+      setPhysiologyChartLabels(true);
+      renderPhysiologyTrend('chart-timeline',trend.windows,'HR_mean','BPM','#0D7377',index);
+      renderPhysiologyTrend('chart-phys-detail',trend.windows,'EDA_mean','μS','#4A7AE5',index);
+      status.textContent='Original ECG/EDA waveforms are unavailable on this public server. Showing verified processed heart-rate and EDA features for '+subject+', selected window '+(index+1)+'. These are NOT simulated waveforms.';
+      byId('phys-signal-badge').textContent='Verified processed features';
+    } catch(trendError) {
+      if(token!==signalRequestSerial)return;
+      for(const id of ['chart-timeline','chart-phys-detail']){
+        const instance=echarts.getInstanceByDom(byId(id));
+        if(instance)instance.clear();
+      }
+      setPhysiologyChartLabels(false);
+      status.textContent='Original recordings and verified processed feature trends unavailable: '+trendError.message;
+      byId('phys-signal-badge').textContent='Physiological charts unavailable';
+    }
+  }
+}
+
+// ============================================================
+// AI ANALYSIS PAGE
+// ============================================================
+async function runAIAnalysis() {
+  const btn=byId('btn-ai-run');const old=btn.innerHTML;
+  btn.disabled=true;btn.textContent='Classifying…';
+  try {
+    if(!serverConnected)throw new Error('Start python app_server.py to connect the trained model.');
+    const prediction=await loadRealWindow('ai-participant','ai-window');
+    byId('ai-result-area').style.display='block';
+    const chart=echarts.getInstanceByDom(byId('chart-ai-gauge'))||echarts.init(byId('chart-ai-gauge'));
+    chart.setOption({series:[{type:'gauge',startAngle:200,endAngle:-20,min:0,max:100,radius:'90%',center:['50%','60%'],progress:{show:true,width:14,roundCap:true,itemStyle:{color:'#0D7377'}},pointer:{show:false},axisLine:{lineStyle:{width:14,color:[[1,'#F0EFEC']]}},axisTick:{show:false},splitLine:{show:false},axisLabel:{show:false},detail:{fontSize:32,offsetCenter:[0,'-10%'],formatter:'{value}%'},data:[{value:Number((prediction.prediction.stress_probability*100).toFixed(2)),name:'P(stress)'}]}]});
+    message('ai-live-status','Actual saved-model prediction for '+prediction.subject+' · recorded window '+(prediction.window_index+1)+'. In-sample WESAD replay; not an independent test.');
+    byId('shap-bars').textContent='Computing saved-model feature contributions…';
+    try {
+      const explanation=await getVerifiedData('/api/explain?subject='+encodeURIComponent(prediction.subject)+'&index='+prediction.window_index);
+      if (explanation.run_id !== prediction.run_id || explanation.subject !== prediction.subject || explanation.window_index !== prediction.window_index) throw new Error('SHAP result does not match selected recording');
+      const list=explanation.contributions||[];const max=Math.max(...list.map(x=>Math.abs(x.value)),0.001);
+      const target=byId('shap-bars');target.replaceChildren();
+      for (const item of list) {
+        const row=document.createElement('div');row.className='shap-bar-row';
+        const name=document.createElement('div');name.className='shap-feature-name';name.textContent=item.feature;
+        const track=document.createElement('div');track.className='shap-bar-track';
+        const zero=document.createElement('div');zero.className='shap-bar-center';
+        const fill=document.createElement('div');fill.className='shap-bar-fill '+(item.value>=0?'positive':'negative');
+        fill.style.width=(Math.abs(item.value)/max*45)+'%';
+        const value=document.createElement('div');value.className='shap-bar-value';value.textContent=item.value.toFixed(3);
+        track.append(zero,fill);row.append(name,track,value);target.append(row);
+      }
+    } catch (error) {byId('shap-bars').textContent='Saved-model SHAP unavailable: '+error.message;}
+  } catch(err) {
+    byId('ai-result-area').style.display='none';
+    message('ai-live-status','Unable to classify: '+err.message,true);
+  } finally {btn.innerHTML=old;btn.disabled=false;lucide.createIcons();}
+}
+
+// ============================================================
+// EXPLAINABILITY PAGE
+// ============================================================
+let globalShapRequest = null;
+async function initExplainabilityCharts() {
+  const node=byId('chart-global-shap');
+  const chart=echarts.getInstanceByDom(node)||echarts.init(node);
+  const status=byId('global-shap-status');
+  const badge=byId('global-shap-badge');
+  chart.clear();
+  status.textContent='Loading verified global SHAP values…';
+  badge.textContent='Checking verified data';
+  if(!serverConnected || !researchFromServer) {
+    status.textContent='Global SHAP values need the local Python server and verified research artifacts.';
+    badge.textContent='Verified data unavailable';
+    return;
+  }
+  if(!globalShapRequest)globalShapRequest=getVerifiedData('/api/global-shap').catch(err=>{globalShapRequest=null;throw err;});
+  try {
+    const result=await globalShapRequest;
+    if(result.run_id!==researchFromServer.run_id||result.model!==researchFromServer.best_model||result.evaluation_type!=='in_sample_final_model_explanation')throw Error('SHAP results do not match the verified research run');
+    const entries=Array.isArray(result.features)?result.features.slice(0,10):[];
+    if(!entries.length||entries.some(x=>typeof x.feature!=='string'||!Number.isFinite(x.importance)||x.importance<0))throw Error('Invalid SHAP values');
+    const labels=entries.map(x=>x.feature.replaceAll('_',' ')).reverse();
+    const values=entries.map(x=>x.importance).reverse();
+    chart.setOption({
+      grid:{top:16,right:70,bottom:40,left:125},
+      xAxis:{type:'value',name:'Mean |SHAP value|',nameLocation:'center',nameGap:25,axisLabel:{fontSize:10,color:'#8C919D'},splitLine:{lineStyle:{color:'#F0EFEC'}}},
+      yAxis:{type:'category',data:labels,axisLabel:{fontSize:11,color:'#5A5F6B'},axisTick:{show:false}},
+      series:[{name:'Real global importance',type:'bar',data:values,itemStyle:{color:'#0D7377',borderRadius:[0,4,4,0]},barMaxWidth:20,label:{show:true,position:'right',formatter:p=>Number(p.value).toFixed(4)}}],
+      tooltip:{trigger:'axis',axisPointer:{type:'shadow'}}
+    },true);
+    status.textContent='Actual global SHAP values from '+result.model+' · '+result.n_windows_explained+' WESAD windows. In-sample model explanations, not held-out testing or physiological causes.';
+    badge.textContent='Verified saved SHAP data';
+    chart.resize();
+  } catch(err) {
+    chart.clear();
+    status.textContent='Verified global SHAP unavailable: '+err.message;
+    badge.textContent='No verified SHAP data';
+  }
+}
+
+// ============================================================
+// RESULTS PAGE
+// ============================================================
+function initResultsCharts() {
+  const compNode=byId('chart-model-comparison');
+  const persNode=byId('chart-personalization');
+  const table=byId('loso-table');
+  const comp=echarts.getInstanceByDom(compNode)||echarts.init(compNode);
+  const pers=echarts.getInstanceByDom(persNode)||echarts.init(persNode);
+  if (!researchFromServer) {
+    comp.clear();pers.clear();
+    table.replaceChildren();
+    const row=document.createElement('tr');
+    const cell=document.createElement('td');
+    cell.colSpan=3;cell.textContent='Open this website through the local Python server to load real participant results.';
+    row.appendChild(cell);table.appendChild(row);
+    return;
+  }
+  const comparison=researchFromServer.comparison || [];
+  comp.setOption({
+    grid:{top:47,right:22,bottom:76,left:48},
+    legend:{top:4,textStyle:{fontSize:11,color:'#5A5F6B'}},
+    xAxis:{type:'category',data:comparison.map(r=>r.model),axisLabel:{fontSize:11,interval:0,rotate:23}},
+    yAxis:{type:'value',min:0,max:1,axisLabel:{formatter:v=>(v*100).toFixed(0)+'%'}},
+    series:[
+      {name:'Mean accuracy',type:'bar',data:comparison.map(r=>r.accuracy),itemStyle:{color:'#0D7377'},barMaxWidth:24},
+      {name:'Mean F1',type:'bar',data:comparison.map(r=>r.f1),itemStyle:{color:'#4A7AE5'},barMaxWidth:24},
+      {name:'Pooled AUC',type:'bar',data:comparison.map(r=>r.auc),itemStyle:{color:'#E07A5F'},barMaxWidth:24}
+    ],
+    tooltip:{trigger:'axis'}
+  },true);
+  table.replaceChildren();
+  const losoRows=[...(researchFromServer.loso||[])].sort((a,b)=>parseInt(String(a.subject).slice(1),10)-parseInt(String(b.subject).slice(1),10));
+  for (const entry of losoRows) {
+    const tr=document.createElement('tr');
+    const fmt=x=>x==null?'Not reported':(Number(x)*100).toFixed(1)+'%';
+    for (const text of [entry.subject,fmt(entry.accuracy),fmt(entry.f1)]) {
+      const td=document.createElement('td');td.textContent=String(text);tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  const rows=[...(researchFromServer.personalized || [])].sort((a,b)=>parseInt(String(a.subject).slice(1),10)-parseInt(String(b.subject).slice(1),10));
+  pers.setOption({
+    grid:{top:36,right:16,bottom:35,left:46},
+    legend:{top:2,textStyle:{fontSize:10,color:'#5A5F6B'}},
+    xAxis:{type:'category',data:rows.map(r=>r.subject),axisLabel:{fontSize:10}},
+    yAxis:{type:'value',min:0,max:1,axisLabel:{formatter:v=>(v*100).toFixed(0)+'%'}},
+    series:[
+      {name:'Generic model',type:'bar',data:rows.map(r=>r.generic_accuracy),itemStyle:{color:'#D9D8D5'},barMaxWidth:12},
+      {name:'Personalized model',type:'bar',data:rows.map(r=>r.personal_accuracy),itemStyle:{color:'#0D7377'},barMaxWidth:12}
+    ],
+    tooltip:{trigger:'axis'}
+  },true);
+  comp.resize();pers.resize();
+}
+async function loadReliabilityResults() {
+  try {
+    const result=await getVerifiedData('/api/reliability');
+    if (result.run_id!==researchFromServer?.run_id) throw Error('Research run ID mismatch');
+    reliabilityFromServer=result;
+    byId('reliability-status').textContent='Held-out test results from '+result.n_windows+' recorded windows across 15 people.';
+    byId('reliability-content').style.display='block';
+    if(byId('page-results').classList.contains('active')) renderReliabilityCharts();
+  } catch(err) {
+    reliabilityFromServer=null;
+    byId('reliability-content').style.display='none';
+    byId('reliability-status').textContent='Experiment C results are not available yet. Run python experiment_c.py on this computer, then refresh.';
+  }
+}
+function renderReliabilityCharts() {
+  const r=reliabilityFromServer;
+  if(!r || !byId('reliability-content') || byId('reliability-content').style.display==='none') return;
+  const mainChart=echarts.getInstanceByDom(byId('chart-confidence-coverage'))||echarts.init(byId('chart-confidence-coverage'));
+  const calibrationChart=echarts.getInstanceByDom(byId('chart-reliability'))||echarts.init(byId('chart-reliability'));
+  const data=r.selective_curve.filter(x=>x.accuracy!==null).map(x=>[Number((x.coverage*100).toFixed(2)), Number((x.accuracy*100).toFixed(2))]).sort((a,b)=>a[0]-b[0]);
+  const conservative=r.nonoverlap_curve.filter(x=>x.accuracy!==null).map(x=>[Number((x.coverage*100).toFixed(2)),Number((x.accuracy*100).toFixed(2))]).sort((a,b)=>a[0]-b[0]);
+  mainChart.setOption({
+    grid:{left:48,right:15,top:44,bottom:53},
+    legend:{top:0,textStyle:{fontSize:10}},
+    xAxis:{type:'value',min:0,max:100,name:'Windows kept (%)',nameLocation:'center',nameGap:30},
+    yAxis:{type:'value',min:0,max:100,name:'Accuracy (%)',nameGap:35},
+    tooltip:{trigger:'axis',formatter:items=>items.map(x=>x.seriesName+': '+Number(x.value[1]).toFixed(1)+'% accurate at '+Number(x.value[0]).toFixed(1)+'% kept').join('<br>')},
+    series:[
+      {name:'All windows',type:'line',data,symbolSize:5,lineStyle:{color:'#0D7377',width:2},itemStyle:{color:'#0D7377'}},
+      {name:'Non-overlapping',type:'line',data:conservative,symbolSize:5,lineStyle:{color:'#4A7AE5',width:2},itemStyle:{color:'#4A7AE5'}}
+    ],
+  },true);
+  calibrationChart.setOption({
+    grid:{left:48,right:16,top:28,bottom:53},
+    xAxis:{type:'value',min:0,max:100,name:'Predicted stress (%)',nameLocation:'center',nameGap:29},
+    yAxis:{type:'value',min:0,max:100,name:'Actual stress (%)',nameGap:37},
+    tooltip:{trigger:'item',formatter:item=>item.seriesName+': '+item.value[0].toFixed(1)+'% predicted, '+item.value[1].toFixed(1)+'% actual'},
+    series:[
+      {name:'Perfect match',type:'line',data:[[0,0],[100,100]],symbol:'none',lineStyle:{type:'dashed',color:'#A4B4B8',width:1.5}},
+      {name:'Observed',type:'line',data:r.calibration_bins.map(x=>[x.mean_predicted*100,x.observed_stress_rate*100]),lineStyle:{color:'#0D7377',width:2},symbolSize:8,itemStyle:{color:'#0D7377'}}
+    ]
+  },true);
+  const reference=r.selective_curve.find(x=>Math.abs(x.threshold-0.8)<1e-7);
+  const nonOverlap=r.nonoverlap_curve.find(x=>Math.abs(x.threshold-0.8)<1e-7);
+  const baseline=r.selective_curve[0];
+  const improvement=reference&&baseline?(100*(reference.accuracy-baseline.accuracy)).toFixed(1):null;
+  byId('reliability-takeaway').textContent=reference&&baseline&&nonOverlap?
+    'In our held-out tests, all-window accuracy was '+(100*baseline.accuracy).toFixed(1)+'%. With an example 80% confidence cutoff, it was '+(100*reference.accuracy).toFixed(1)+'% ('+reference.n_accepted+' of '+r.n_windows+' windows kept), a '+improvement+' percentage-point increase. On the non-overlapping set, the result was '+(100*nonOverlap.accuracy).toFixed(1)+'% with '+(100*nonOverlap.coverage).toFixed(1)+'% kept. The cutoff was not independently validated.':
+    'Compare the full accuracy-and-coverage curve; no cutoff has been validated for deployment.';
+  mainChart.resize();calibrationChart.resize();
+}
+
+
+let checkinExampleSerial=0;
+function clearCheckinAIExample(){
+  checkinExampleSerial++;
+  byId('checkin-ai-example').style.display='none';
+  message('checkin-ai-status','Choose a recording, then view the prediction.');
+}
+byId('checkin-example-button').addEventListener('click',async()=>{
+  if(!serverConnected)return;
+  const token=++checkinExampleSerial;
+  const participant=byId('checkin-participant').value;
+  const windowIndex=byId('checkin-window').value;
+  byId('checkin-ai-example').style.display='none';
+  message('checkin-ai-status','Loading the recorded prediction…');
+  try{
+    const data=await getVerifiedData('/api/window?subject='+encodeURIComponent(participant)+'&index='+encodeURIComponent(windowIndex));
+    if(token!==checkinExampleSerial||participant!==byId('checkin-participant').value||windowIndex!==byId('checkin-window').value)return;
+    if(data.run_id!==researchFromServer?.run_id||data.evaluation_type!=='in_sample_final_model_replay')throw Error('Model verification failed');
+    byId('checkin-ai-label').textContent=data.prediction.class===1?'Stress':'Non-stress';
+    byId('checkin-ai-probability').textContent=(100*data.prediction.stress_probability).toFixed(1)+'%';
+    byId('checkin-ai-groundtruth').textContent=data.prediction.actual_class===1?'Stress condition':'Non-stress condition';
+    byId('checkin-ai-example').style.display='grid';
+    message('checkin-ai-status','Study participant '+data.subject+', recorded window '+(Number(data.window_index)+1)+'. Not your personal reading.');
+  }catch(err){if(token===checkinExampleSerial)message('checkin-ai-status','Unable to load verified prediction: '+err.message,true);}
+});
+const healthForm=byId('health-check-form');
+healthForm.addEventListener('submit', event=>{
+  event.preventDefault();
+  const stress=byId('health-stress').value;
+  const sleep=byId('health-sleep').value;
+  const feeling=byId('health-feeling').value;
+  if(!stress||!sleep||!feeling)return;
+  const steps=[];
+  let heading='Your check-in is ready.';
+  if(feeling==='urgent'){
+    heading='You said you feel unwell or need help.';
+    steps.push('Tell a crew member and contact the mission medical team using the approved procedure.');
+    steps.push('Do not rely on an AI stress score to decide whether to ask for help.');
+  }else{
+    if(stress==='high'){
+      heading='You said you feel very stressed.';
+      steps.push('When it is safe and your duties allow, take a short pause and try slow, comfortable breathing.');
+      steps.push('Tell your crew or mission health team if the feeling continues or gets worse.');
+    }else if(stress==='medium'){
+      heading='You said you feel a little stressed.';
+      steps.push('Consider a short break and check how you feel afterward, when duties allow.');
+    }else{
+      heading='You said you do not feel stressed.';
+      steps.push('Keep following your usual health check routine.');
+    }
+    if(sleep==='poor')steps.push('You said you did not sleep well. Mention it during your crew health check and discuss rest with your team.');
+    if(feeling==='tired')steps.push('You said you feel tired. Tell your team if this may affect your work or safety.');
+  }
+  byId('health-check-summary').textContent=heading;
+  const list=byId('health-check-steps');list.replaceChildren();
+  for(const step of steps){const li=document.createElement('li');li.textContent=step;list.appendChild(li);}
+  byId('health-check-result').style.display='block';
+});
+healthForm.addEventListener('reset',()=>{
+  byId('health-check-result').style.display='none';
+  byId('health-check-summary').textContent='';
+  byId('health-check-steps').replaceChildren();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  connectResearch();
+  // Overview is narrative-only; charts initialize when their tabs are opened.
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+[project]
+name = "astrostress-vercel-demo"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "Flask>=3.0,<4",
+    "numpy>=1.26,<3",
+    "pandas>=2.0,<3",
+    "scipy>=1.10,<2",
+    "scikit-learn==1.9.1",
+    "joblib>=1.3,<2",
+]
+
+[tool.vercel.scripts]
+build = "python scripts/fetch_vercel_bundle.py"

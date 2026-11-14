@@ -1,0 +1,7 @@
+# Inference-only requirements for Vercel. Training deps stay on main.
+Flask>=3.0,<4
+numpy>=1.26,<3
+pandas>=2.0,<3
+scipy>=1.10,<2
+scikit-learn==1.9.1
+joblib>=1.3,<2

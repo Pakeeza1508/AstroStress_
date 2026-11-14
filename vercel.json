@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "includeFiles": "{astrostress_output/**,experiment_c_output/**}",
+      "excludeFiles": "{tests/**,frontend/**,WESAD/**}"
+    }
+  }
+}
