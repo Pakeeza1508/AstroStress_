@@ -890,6 +890,13 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 }
 @media(max-width:520px){.workflow-grid{grid-template-columns:1fr}}
 
+/* Six-stage research overview: three cards per desktop row, two on tablets, one on phones. */
+#page-overview .workflow-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+#page-overview .workflow-step{min-width:0;min-height:250px;padding:21px 20px}
+#page-overview .workflow-step h3{overflow-wrap:anywhere}
+@media(max-width:900px){#page-overview .workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){#page-overview .workflow-grid{grid-template-columns:minmax(0,1fr)}#page-overview .workflow-step{min-height:0}}
+
 /* Narrow-screen refinements. Desktop visual language is unchanged. */
 #page-analysis .card-header,#page-results .card-header,#page-physiology .card-header{display:block}
 #page-analysis .card-header .chart-explainer,#page-results .card-header .chart-explainer,#page-physiology .card-header .chart-explainer{margin-top:8px}
@@ -1071,34 +1078,46 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         <div class="overview-section-heading">
           <div>
             <span class="overview-eyebrow">01 · HOW IT WORKS</span>
-            <h2>How we evaluate physiological stress detection</h2>
-            <p>Explore the recorded-data research workflow and its verified evaluations.</p>
+            <h2>How AstroStress research works</h2>
+            <p>Six research steps spanning physiological stress evaluation, model reliability, and independent NASA environmental data analysis.</p>
           </div>
         </div>
         <div class="workflow-grid">
           <article class="workflow-step">
             <div class="workflow-number">01</div>
-            <h3>Read heart and skin signals</h3>
-            <p>We use ECG (heart signals) and EDA (skin signals) from real recordings.</p>
+            <h3>Physiological Data Collection</h3>
+            <p>Analyze recorded ECG (heart signals) and EDA (skin signals) from the WESAD laboratory study.</p>
             <button class="workflow-link" type="button" data-go="physiology">Understand the dataset <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">02</div>
-            <h3>Measure changes in the body</h3>
-            <p>Every two-minute recording gives us 19 measurements to study.</p>
+            <h3>Feature Engineering</h3>
+            <p>Extract 19 physiological features from 120-second windows to study patterns in the recorded signals.</p>
             <button class="workflow-link" type="button" data-go="physiology">Explore data methodology <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">03</div>
-            <h3>Evaluate stress classification</h3>
-            <p>We evaluate stress versus non-stress classification on held-out WESAD participants.</p>
+            <h3>Stress Detection &amp; Evaluation</h3>
+            <p>Compare four machine-learning models using leave-one-subject-out evaluation on WESAD participants.</p>
             <button class="workflow-link" type="button" data-go="analysis">View held-out evaluation <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">04</div>
-            <h3>Explain model behaviour</h3>
-            <p>Global SHAP highlights features associated with model predictions, not biological causation.</p>
-            <button class="workflow-link" type="button" data-go="explainability">Explore explanations <span>→</span></button>
+            <h3>Explainable AI</h3>
+            <p>Use global SHAP explanations to show which features influence model predictions, without implying causation.</p>
+            <button class="workflow-link" type="button" data-go="explainability">Explore SHAP explanations <span>→</span></button>
+          </article>
+          <article class="workflow-step">
+            <div class="workflow-number">05</div>
+            <h3>Uncertainty &amp; Reliability — Experiment C</h3>
+            <p>Assess confidence, calibration, and the accuracy–coverage trade-off on held-out WESAD predictions.</p>
+            <button class="workflow-link" type="button" data-go="results">Explore Experiment C <span>→</span></button>
+          </article>
+          <article class="workflow-step">
+            <div class="workflow-number">06</div>
+            <h3>ISS Environmental Analysis — Experiment D1</h3>
+            <p>Audit independent NASA RR-1 and RR-6 rodent-research telemetry for CO₂, temperature, humidity, and data-quality patterns.</p>
+            <button class="workflow-link" type="button" data-go="nasa">Explore NASA D1 analysis <span>→</span></button>
           </article>
         </div>
       </section>
