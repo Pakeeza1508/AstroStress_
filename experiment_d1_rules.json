@@ -1,0 +1,77 @@
+{
+  "schema_version": "d1-rules-v1",
+  "status": "provisional_pending_mission_metadata",
+  "research_scope": "descriptive NASA EDA hardware telemetry; not astronaut medical assessment",
+  "input_dir_env": "ASTROSTRESS_NASA_EDA_DIR",
+  "sources": {
+    "RR-1": {
+      "filename": "RR-1_EDA_Telemetry_table.csv",
+      "sha256": "6f252984805e8e9a1e7d19927f88b70160ebc30fa3cd7e842572f2b806e5a805",
+      "kind": "telemetry"
+    },
+    "RR-6": {
+      "filename": "RR-6_EDA_Telemetry_table.csv",
+      "sha256": "7c8d8f9c2c61856e749c3ac64abb3cdbaabf4f35254c2d5198e1c202e5e0f68f",
+      "kind": "telemetry"
+    },
+    "RR-9": {
+      "filename": "RR-9_EDA_Summary_table.csv",
+      "sha256": "341c82277a5803f381c603cfe55d899718b753e10bc989ba956e7d10832f360c",
+      "kind": "summary_only"
+    }
+  },
+  "telemetry_columns": [
+    "Controller_Time_GMT",
+    "Temp_degC_Ground",
+    "Temp_degC_ISS",
+    "RH_percent_Ground",
+    "RH_percent_ISS",
+    "CO2_ppm_Ground",
+    "CO2_ppm_ISS"
+  ],
+  "timestamp": {
+    "column": "Controller_Time_GMT",
+    "timezone": "GMT",
+    "expected_nominal_cadence_minutes": 5,
+    "require_strict_order": true,
+    "reject_duplicates": true
+  },
+  "gaps": {
+    "operator": ">",
+    "threshold_minutes": 10
+  },
+  "flat_runs": {
+    "min_consecutive_rows": 12,
+    "include_single_channel": true,
+    "include_multichannel": true,
+    "flag_not_defect": true
+  },
+  "co2_exploratory_row_threshold": {
+    "column": "CO2_ppm_ISS",
+    "ppm": 4000,
+    "primary_operator": ">",
+    "sensitivity_operator": ">="
+  },
+  "duration": {
+    "mode": "observed_intervals",
+    "exclude_intervals_over_gap_threshold": true,
+    "last_sample_interval": "unknown",
+    "flagged_overlap_union": true
+  },
+  "mission_phases": {
+    "RR-1": {
+      "verified": false,
+      "citation": null,
+      "intervals": []
+    },
+    "RR-6": {
+      "verified": false,
+      "citation": null,
+      "intervals": []
+    }
+  },
+  "allow_unverified_phase_filtering": false,
+  "rr9_timeline_allowed": false,
+  "output_dir": "experiment_d1_output",
+  "is_health_assessment": false
+}
