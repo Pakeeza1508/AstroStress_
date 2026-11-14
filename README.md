@@ -169,6 +169,27 @@ Useful entry points:
 
 A separate, non-deployed development branch `feature/nasa-d1-offline` contains a provisional offline D1 engine and analysis rules; the published D1 dashboard on `develop-nasa-2026` uses the verified **aggregate JSON**, not those raw CSVs.
 
+### Source tree (selected files)
+
+```text
+astrostress/
+├── index.html
+├── app.py
+├── app_server.py
+├── astrostress_complete.py
+├── astrostress_v2.py
+├── astrostress_preprocessing.py
+├── astrostress_outputs.py
+├── astrostress_inference.py
+├── astrostress_signals.py
+├── experiment_c.py
+├── experiment_d1.py
+├── prepare_dashboard_data.py
+├── requirements.txt
+├── vercel.json
+└── DEPLOY_VERCEL.md
+```
+
 ## Run locally and reproduce research
 
 **Recommended environment for the saved model:** Python **3.12** and scikit-learn **1.9.1**. The Vercel `requirements.txt` is intentionally inference-only; local training additionally needs the packages imported by the research scripts (for example NeuroKit2, SHAP, XGBoost and LightGBM). A clean research environment may need those installed separately.
