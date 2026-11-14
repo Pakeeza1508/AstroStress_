@@ -843,6 +843,15 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 .mission-status-examples span{display:inline-flex;align-items:center;padding:7px 13px;border:1px solid #d2e1dc;border-radius:999px;font-size:.8rem;font-weight:650;color:#2f6450;background:#eff8f2}
 .mission-status-examples .mission-status-watch{color:#80612c;background:#fff8e9;border-color:#efdfb7}
 .mission-hero h1 em{font-style:italic;color:#0d7377}
+/* AstroStress problem statement */
+.problem-section{padding:33px 0 37px;border-top:1px solid var(--border,#e3e9e8);border-bottom:1px solid var(--border,#e3e9e8);margin:12px 0 30px}
+.problem-section h2{font-size:clamp(1.65rem,2.7vw,2.55rem);line-height:1.2;letter-spacing:-.035em;max-width:810px;margin:11px 0 15px}
+.problem-intro{font-size:1rem;line-height:1.8;color:var(--text-secondary,#5b6772);max-width:740px;margin-bottom:24px}
+.problem-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.problem-column{background:var(--surface,#fff);border:1px solid #dfe7e5;border-radius:14px;padding:24px}
+.problem-column h3{font-size:1.05rem;letter-spacing:-.01em;margin:0 0 16px}
+.problem-column ul{list-style:disc;padding-left:21px;margin:0;display:grid;gap:12px;color:var(--text-secondary,#5b6772);line-height:1.65}
+@media(max-width:680px){.problem-columns{grid-template-columns:1fr}.problem-column{padding:20px}.problem-section{padding:25px 0}}
 .mission-hero{display:block;padding:27px 0 29px}
 .mission-hero-copy{padding:12px 0 6px}
 .mission-hero h1{font-size:clamp(2rem,3.15vw,3.2rem);font-weight:750;line-height:1.17;letter-spacing:-.043em;max-width:780px;margin-bottom:18px}
@@ -1033,6 +1042,30 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <button type="button" class="overview-demo-detail" data-go="analysis">Open full AI analysis and explanation <span aria-hidden="true">→</span></button>
         </section>
       </div>
+
+      <section class="problem-section" aria-labelledby="problem-heading">
+        <span class="overview-eyebrow">The Problem</span>
+        <h2 id="problem-heading">NASA has the sensors. What's missing is the brain.</h2>
+        <p class="problem-intro">Astronauts wear health monitors and the ISS tracks cabin air. But nothing connects these to predict stress or suggest actions.</p>
+        <div class="problem-columns">
+          <article class="problem-column">
+            <h3>What NASA already has</h3>
+            <ul>
+              <li>Heart rate &amp; skin sensors on astronauts</li>
+              <li>CO₂, temperature, humidity data from ISS</li>
+              <li>Safety thresholds (NASA-STD-3001)</li>
+            </ul>
+          </article>
+          <article class="problem-column">
+            <h3>What's missing</h3>
+            <ul>
+              <li>AI that predicts stress from sensor data</li>
+              <li>Combining body signals with cabin conditions</li>
+              <li>Actionable alerts — not just numbers</li>
+            </ul>
+          </article>
+        </div>
+      </section>
 
       <section class="overview-section">
         <div class="overview-section-heading">
