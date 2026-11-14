@@ -1000,8 +1000,9 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <h1>Context-Aware, Uncertainty-Guided Space Health Intelligence</h1>
           <p class="mission-intro">AstroStress investigates two independent foundations of trustworthy monitoring: reliable AI predictions and reliable sensor data. First, we analyzed ECG and skin-conductance recordings from 15 WESAD laboratory participants, comparing four machine-learning models with leave-one-subject-out evaluation and examining the selected model using SHAP explanations and confidence-based reliability analysis. Separately, we audited NASA RR-1 and RR-6 rodent-research environmental telemetry, identifying timestamp gaps, repeated readings, and patterns in CO₂, temperature, and humidity. Together, these studies demonstrate transparent model evaluation and data-quality reporting—not astronaut stress prediction or a validated connection between the two datasets.</p>
           <p class="mission-data-source" hidden><strong>Source:</strong> WESAD and NASA EDA, independent research datasets.</p>
-          <div class="mission-actions" hidden>
-            <button class="btn btn-secondary" type="button" data-go="results">Explore verified research results <span aria-hidden="true">→</span></button>
+          <div class="mission-actions">
+            <button class="btn btn-primary" type="button" data-go="results">Explore verified research results <span aria-hidden="true">→</span></button>
+            <button class="btn btn-secondary" type="button" data-go="nasa">Explore NASA environmental data <span aria-hidden="true">→</span></button>
           </div>
           <div class="overview-purpose" aria-label="Three parts of AstroStress" hidden>
             <span><strong>01</strong> Recordings</span>
@@ -1034,8 +1035,8 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         <div class="overview-section-heading">
           <div>
             <span class="overview-eyebrow">01 · HOW IT WORKS</span>
-            <h2>How AstroStress looks for stress</h2>
-            <p>Here are the four steps. Open any step to see what our system does.</p>
+            <h2>How we evaluate physiological stress detection</h2>
+            <p>Explore the recorded-data research workflow and its verified evaluations.</p>
           </div>
         </div>
         <div class="workflow-grid">
@@ -1043,24 +1044,24 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             <div class="workflow-number">01</div>
             <h3>Read heart and skin signals</h3>
             <p>We use ECG (heart signals) and EDA (skin signals) from real recordings.</p>
-            <button class="workflow-link" type="button" data-go="physiology">Explore recordings <span>→</span></button>
+            <button class="workflow-link" type="button" data-go="physiology">Understand the dataset <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">02</div>
             <h3>Measure changes in the body</h3>
             <p>Every two-minute recording gives us 19 measurements to study.</p>
-            <button class="workflow-link" type="button" data-go="physiology">View measurements <span>→</span></button>
+            <button class="workflow-link" type="button" data-go="physiology">Explore data methodology <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">03</div>
-            <h3>Check for stress with AI</h3>
-            <p>Our trained Random Forest model predicts stress or non-stress.</p>
-            <button class="workflow-link" type="button" data-go="analysis">See AI classification <span>→</span></button>
+            <h3>Evaluate stress classification</h3>
+            <p>We evaluate stress versus non-stress classification on held-out WESAD participants.</p>
+            <button class="workflow-link" type="button" data-go="analysis">View held-out evaluation <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">04</div>
-            <h3>Show why the AI chose its answer</h3>
-            <p>SHAP shows which measurements made the AI choose its answer.</p>
+            <h3>Explain model behaviour</h3>
+            <p>Global SHAP highlights features associated with model predictions, not biological causation.</p>
             <button class="workflow-link" type="button" data-go="explainability">Explore explanations <span>→</span></button>
           </article>
         </div>
@@ -1071,7 +1072,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <div>
             <span class="overview-eyebrow">02 · WHAT WE TESTED</span>
             <h2>What have we built and tested?</h2>
-            <p>We trained and tested four AI models on real WESAD data. You can explore recorded signals and real saved-model predictions in this app.</p>
+            <p>We trained and evaluated four AI models on WESAD laboratory recordings. Public pages show verified aggregate results; per-window predictions and traces remain restricted.</p>
           </div>
         </div>
         <div class="research-summary-grid">
@@ -1105,12 +1106,12 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <div>
             <span class="overview-eyebrow">03 · EXPLORE ASTROSTRESS</span>
             <h2>Choose what you want to see</h2>
-            <p>Look at recordings, try a prediction, or see how the AI made its choice.</p>
+            <p>Explore verified physiological research, model explanations, and the independent manual check-in.</p>
           </div>
         </div>
         <div class="overview-next-grid">
-          <button type="button" data-go="physiology"><span>Physiological Data</span><strong>What changes in the recorded body signals?</strong><small>Open data explorer →</small></button>
-          <button type="button" data-go="analysis"><span>AI Analysis</span><strong>How does the model recognize stress?</strong><small>Open classification preview →</small></button>
+          <button type="button" data-go="physiology"><span>Physiological Data</span><strong>What evidence supports our physiological study?</strong><small>View dataset and access details →</small></button>
+          <button type="button" data-go="analysis"><span>AI Analysis</span><strong>How does the model perform across participants?</strong><small>View held-out evaluation →</small></button>
           <button type="button" data-go="checkin"><span>Daily Check-in</span><strong>How are you feeling today?</strong><small>Open self-check →</small></button>
         </div>
       </section>
@@ -1221,7 +1222,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           </p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:15px">
             <a class="btn btn-primary" href="https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html" target="_blank" rel="noopener noreferrer">Official WESAD dataset page</a>
-            <a class="btn btn-secondary" href="https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx/download" target="_blank" rel="noopener noreferrer">Download original ZIP (~2.5 GB)</a>
+            <a class="btn btn-secondary" href="https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx" target="_blank" rel="noopener noreferrer">Open official WESAD ZIP download (~2.5 GB)</a>
           </div>
           <p style="font-size:0.75rem;color:var(--text-tertiary);margin-top:12px">
             Dataset credit: Schmidt et al., ICMI 2018. Scientific, non-commercial use with attribution.
