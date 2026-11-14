@@ -22,6 +22,10 @@ experiment_c_output/
 ECG-to-stress/
 Stress_detection/
 
+# ---- NASA D1 local data and generated analysis; never commit ----
+data/nasa_eda/
+experiment_d1_output/
+
 # ---- OS files ----
 .DS_Store
 Thumbs.db
