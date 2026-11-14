@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = Path(os.environ.get("ASTROSTRESS_OUTPUT_DIR", ROOT / "astrostress_output"))
 PORT = int(os.environ.get("PORT", os.environ.get("ASTROSTRESS_PORT", "8000")))
 PUBLIC_MODE = os.environ.get("ASTROSTRESS_PUBLIC", "0") == "1"
+ALLOW_PUBLIC_WESAD_WINDOWS = os.environ.get("ASTROSTRESS_ALLOW_PUBLIC_WESAD_WINDOWS") == "1"
 HOST = "0.0.0.0" if PUBLIC_MODE else "127.0.0.1"
 
 
@@ -288,6 +289,11 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"error": "Not found"}, 404)
             return
         try:
+            if PUBLIC_MODE and not ALLOW_PUBLIC_WESAD_WINDOWS and url.path in (
+                    "/api/window", "/api/physiology-trend", "/api/explain"):
+                self._json({"error": "Individual WESAD-derived records are not publicly available.",
+                            "code": "RESTRICTED_DATA"}, 403)
+                return
             data, artifact = self.context
             if url.path == "/api/status":
                 self._json({"ok": True, "run_id": data["summary"]["run_id"],
