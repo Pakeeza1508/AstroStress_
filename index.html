@@ -921,6 +921,38 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 .health-ai-example div{display:flex;flex-direction:column;gap:5px}
 .health-ai-example span{font-size:.78rem;color:var(--text-secondary)}
 .health-ai-example p{grid-column:1/-1;font-size:.78rem;color:var(--text-secondary);line-height:1.7}
+
+/* Judge-friendly first screen. Research pages and numerical results stay unchanged. */
+.mission-hero{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(330px,.88fr);gap:30px;align-items:start;padding:23px 0 30px}
+.mission-hero-copy{max-width:none;padding:24px 0 0}
+.mission-hero h1{font-size:clamp(2rem,3.2vw,3rem);max-width:680px;margin:17px 0}
+.overview-identity{font-size:.7rem;letter-spacing:.11em;font-weight:750;color:var(--teal-600)}
+.overview-purpose{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.overview-purpose span{border:1px solid #e1e7e5;background:white;padding:10px 12px;border-radius:9px;font-size:.8rem;color:#36545b}
+.overview-purpose strong{font:.7rem var(--font-mono);color:var(--teal-600);margin-right:7px}
+.overview-demo{min-width:0;background:#fff;border:1px solid #dce7e3;border-radius:16px;padding:24px;box-shadow:0 9px 28px rgba(31,67,67,.055)}
+.overview-demo-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+.overview-demo-kicker{font-size:.7rem;font-weight:750;letter-spacing:.09em;color:var(--teal-600)}
+.overview-demo-source{font-size:.73rem;color:var(--text-secondary)}
+.overview-demo h2{font-size:1.38rem;margin-bottom:7px}
+.overview-demo>p:not(.overview-demo-disclaimer):not(.overview-demo-status){font-size:.84rem;color:var(--text-secondary);line-height:1.7}
+.overview-demo>.btn{width:100%;justify-content:center;margin-top:18px}
+.overview-demo>.btn:disabled{opacity:.6;cursor:not-allowed}
+.overview-demo-status{font-size:.79rem;color:var(--text-secondary);min-height:20px;margin:13px 0}
+.overview-demo-result{padding:15px 0;border-top:1px solid var(--border-subtle)}
+.overview-demo-result[hidden]{display:none}
+.overview-demo-result-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;font-size:.83rem}
+.overview-demo-result-row span{color:var(--text-secondary)}
+.overview-demo-result-row strong{text-align:right;color:#22363c}
+.overview-demo-probability-bar{height:7px;background:#eef1ef;border-radius:10px;overflow:hidden;margin:5px 0 10px}
+.overview-demo-probability-bar>span{display:block;width:0;height:100%;background:var(--teal-600);border-radius:10px;transition:width .2s ease}
+.overview-demo-provenance{font-size:.75rem;line-height:1.6;color:var(--text-secondary);margin-top:10px}
+.overview-demo-disclaimer{font-size:.72rem;line-height:1.65;color:#667781;margin-top:13px}
+.overview-demo-detail{border:0;padding:10px 0 0;background:transparent;color:var(--teal-600);font:600 .81rem var(--font-sans);cursor:pointer}
+.overview-demo-detail:hover{text-decoration:underline}
+.overview-demo-detail:focus-visible{outline:2px solid var(--teal-600);outline-offset:3px}
+@media(max-width:1000px){.mission-hero{grid-template-columns:1fr;gap:18px}.mission-hero-copy{padding-top:10px}}
+@media(max-width:640px){.mission-hero{padding:10px 0 26px}.overview-demo{padding:20px}.overview-purpose{gap:7px}.overview-purpose span{padding:8px 10px}}
 </style>
 </head>
 <body>
@@ -955,15 +987,38 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
     <div class="page active" id="page-overview">
       <div class="mission-hero">
         <div class="mission-hero-copy">
-          <h1>Can AI help astronauts spot stress during space missions?</h1>
-          <p class="mission-intro">Space missions can be stressful. AstroStress studies heart signals (ECG) and skin signals (EDA). Our AI looks for patterns linked to stress. One day, a system like this could help astronauts.</p>
-          <p class="mission-data-source">Data used: <strong>WESAD</strong> — real heart and skin recordings from 15 people.</p>
+          <span class="overview-identity">ASTROSTRESS · PHYSIOLOGICAL STRESS RESEARCH</span>
+          <h1>See how AI identifies stress patterns in recorded heart and skin signals.</h1>
+          <p class="mission-intro">AstroStress analyzes ECG and EDA measurements from the WESAD laboratory study. Try one recorded example, then explore the model's explanation and its research results.</p>
+          <p class="mission-data-source"><strong>Source:</strong> WESAD · 15 study participants · two-minute recording windows. This is a space-health research prototype, not live astronaut monitoring.</p>
           <div class="mission-actions">
-            <button class="btn btn-primary" type="button" data-go="physiology">Explore physiological data <span aria-hidden="true">→</span></button>
-            <button class="btn btn-secondary" type="button" data-go="results">Review research evidence <span aria-hidden="true">→</span></button>
+            <button class="btn btn-secondary" type="button" data-go="results">Explore verified research results <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="overview-purpose" aria-label="Three parts of AstroStress">
+            <span><strong>01</strong> Recordings</span>
+            <span><strong>02</strong> AI prediction</span>
+            <span><strong>03</strong> Explanation</span>
           </div>
         </div>
-
+        <section class="overview-demo" aria-labelledby="overview-demo-heading">
+          <div class="overview-demo-head">
+            <span class="overview-demo-kicker">TRY THE WORKING MODEL</span>
+            <span class="overview-demo-source">WESAD · recorded example</span>
+          </div>
+          <h2 id="overview-demo-heading">What does the AI predict?</h2>
+          <p>One click runs the saved model on a real recorded study window.</p>
+          <button id="overview-demo-run" class="btn btn-primary" type="button" disabled>Run recorded example <span aria-hidden="true">→</span></button>
+          <p id="overview-demo-status" class="overview-demo-status" role="status" aria-live="polite">Connecting to verified research data…</p>
+          <div id="overview-demo-result" class="overview-demo-result" hidden>
+            <div class="overview-demo-result-row"><span>AI classification</span><strong id="overview-demo-class">—</strong></div>
+            <div class="overview-demo-result-row"><span>Stress probability</span><strong id="overview-demo-probability">—</strong></div>
+            <div class="overview-demo-probability-bar" aria-hidden="true"><span id="overview-demo-probability-fill"></span></div>
+            <div class="overview-demo-result-row"><span>Study protocol label</span><strong id="overview-demo-protocol">—</strong></div>
+            <p id="overview-demo-provenance" class="overview-demo-provenance"></p>
+          </div>
+          <p class="overview-demo-disclaimer">This is an <strong>in-sample replay</strong> from a final model trained on WESAD, not an independent test or a measurement of an astronaut. Reported LOSO scores are evaluated separately.</p>
+          <button type="button" class="overview-demo-detail" data-go="analysis">Open full AI analysis and explanation <span aria-hidden="true">→</span></button>
+        </section>
       </div>
 
       <section class="overview-section">
@@ -1635,6 +1690,7 @@ async function updatePhysiologyFeatures() {
 async function connectResearch() {
   if (location.protocol === 'file:') {
     message('research-live-status','Open through python app_server.py to see verified per-subject research results.');
+    message('overview-demo-status', 'Open through the local Python server or the deployed app to run the example.');
     return;
   }
   try {
@@ -1642,6 +1698,8 @@ async function connectResearch() {
     subjectsFromServer = subjects.subjects;
     researchFromServer = research;
     serverConnected = true;
+    byId('overview-demo-run').disabled = false;
+    message('overview-demo-status', 'Verified WESAD data available. Run the recorded example.');
     // The approved Overview is narrative-only; its old selectors were removed.
     // Bind only controls that exist in the current five-tab HTML layout.
     for (const id of ['ai-participant','phys-participant','checkin-participant']) setSubjectOptions(id, 'S10');
@@ -1670,10 +1728,56 @@ async function connectResearch() {
     });
   } catch (err) {
     serverConnected = false;
+    byId('overview-demo-run').disabled = true;
+    message('overview-demo-status', 'Recorded example unavailable: connect verified research artifacts.', true);
     message('research-live-status','Verified local outputs unavailable: '+err.message,true);
     message('ai-live-status','Model unavailable. Run python app_server.py with local trained artifacts. No fake predictions are generated.',true);
   }
 }
+
+/* Overview demo intentionally reuses the verified API; no synthetic values. */
+byId('overview-demo-run').addEventListener('click', async () => {
+  const button = byId('overview-demo-run');
+  const result = byId('overview-demo-result');
+  result.hidden = true;
+  if (!serverConnected || !researchFromServer) {
+    message('overview-demo-status', 'Verified WESAD data is not connected.', true);
+    return;
+  }
+  const subjectInfo = subjectsFromServer.find(x => x.id === 'S10' && x.windows > 0)
+    || subjectsFromServer.find(x => x.windows > 0);
+  if (!subjectInfo) {
+    message('overview-demo-status', 'No recorded study windows are available.', true);
+    return;
+  }
+  button.disabled = true;
+  message('overview-demo-status', 'Loading a verified WESAD recording…');
+  try {
+    const data = await getVerifiedData('/api/window?subject='+encodeURIComponent(subjectInfo.id)+'&index=0');
+    if (data.run_id !== researchFromServer.run_id
+      || data.subject !== subjectInfo.id
+      || data.window_index !== 0
+      || data.evaluation_type !== 'in_sample_final_model_replay'
+      || !data.prediction
+      || !Number.isFinite(data.prediction.stress_probability)
+      || data.prediction.stress_probability < 0
+      || data.prediction.stress_probability > 1) {
+      throw new Error('Recording provenance could not be verified');
+    }
+    byId('overview-demo-class').textContent = data.prediction.class === 1 ? 'Stress' : 'Non-stress';
+    byId('overview-demo-probability').textContent = (data.prediction.stress_probability*100).toFixed(1)+'%';
+    byId('overview-demo-probability-fill').style.width = (data.prediction.stress_probability*100)+'%';
+    byId('overview-demo-protocol').textContent = data.prediction.actual_class === 1 ? 'Stress condition' : 'Non-stress condition';
+    byId('overview-demo-provenance').textContent = 'Study participant '+data.subject+', recorded window '+(data.window_index+1)+'. Actual saved-model replay; not a held-out prediction.';
+    result.hidden = false;
+    message('overview-demo-status', 'Verified recorded example loaded.');
+  } catch (err) {
+    message('overview-demo-status', 'Could not load the recorded example: '+err.message, true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
 // ============================================================
 // NAVIGATION
 // ============================================================
