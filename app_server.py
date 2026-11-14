@@ -297,7 +297,8 @@ class Handler(BaseHTTPRequestHandler):
             data, artifact = self.context
             if url.path == "/api/status":
                 self._json({"ok": True, "run_id": data["summary"]["run_id"],
-                            "model": artifact["model_name"]})
+                            "model": artifact["model_name"],
+                            "window_records_public": not PUBLIC_MODE or ALLOW_PUBLIC_WESAD_WINDOWS})
             elif url.path == "/api/research":
                 self._json(research_payload(data))
             elif url.path == "/api/global-shap":

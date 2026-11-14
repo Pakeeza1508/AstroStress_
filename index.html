@@ -1593,6 +1593,32 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 let serverConnected = false;
 let subjectsFromServer = [];
 let researchFromServer = null;
+// Public deployments default-deny individual WESAD-derived windows (dataset terms).
+let windowRecordsPublic = true;
+const RESTRICTED_RECORDS_NOTE = 'Individual WESAD-derived recordings are not published on this public demo (dataset redistribution terms). Summary results remain available under Explainability and Research Results.';
+function showPhysiologyRestricted() {
+  for (const id of ['ecg-feature-table','eda-feature-table']) {
+    const body = byId(id); if (!body) continue;
+    const row = document.createElement('tr'); const cell = document.createElement('td');
+    cell.colSpan = 3; cell.textContent = 'Not available on the public demo: individual WESAD-derived windows are restricted.';
+    row.appendChild(cell); body.replaceChildren(row);
+  }
+  for (const id of ['chart-timeline','chart-phys-detail']) {
+    const instance = echarts.getInstanceByDom(byId(id)); if (instance) instance.clear();
+  }
+  message('phys-wave-status', RESTRICTED_RECORDS_NOTE);
+  byId('phys-signal-badge').textContent = 'Individual records restricted';
+}
+function applyRestrictedWindowMode(status) {
+  byId('overview-demo-run').disabled = true;
+  message('overview-demo-status', RESTRICTED_RECORDS_NOTE);
+  for (const id of ['checkin-participant','checkin-window','checkin-example-button']) byId(id).disabled = true;
+  message('checkin-ai-status', RESTRICTED_RECORDS_NOTE);
+  for (const id of ['ai-participant','ai-window','btn-ai-run']) { const node = byId(id); if (node) node.disabled = true; }
+  message('ai-live-status', 'Verified model: ' + safeText(status?.model) + ' · research run ' + safeText(status?.run_id)
+    + '. Per-window predictions are disabled on this public demo. ' + RESTRICTED_RECORDS_NOTE);
+  showPhysiologyRestricted();
+}
 let reliabilityFromServer = null;
 let lastSavedPrediction = null;
 let activeAnalysisChart = null;
@@ -1663,6 +1689,7 @@ async function loadRealWindow(subjectId, windowId) {
 }
 async function updatePhysiologyFeatures() {
   if (!serverConnected) return;
+  if (!windowRecordsPublic) { showPhysiologyRestricted(); return; }
   try {
     const subject = byId('phys-participant').value;
     const index = Number(byId('phys-window')?.value||0);
@@ -1694,10 +1721,11 @@ async function connectResearch() {
     return;
   }
   try {
-    const [subjects, research] = await Promise.all([getVerifiedData('/api/subjects'),getVerifiedData('/api/research')]);
+    const [subjects, research, status] = await Promise.all([getVerifiedData('/api/subjects'),getVerifiedData('/api/research'),getVerifiedData('/api/status').catch(()=>null)]);
     subjectsFromServer = subjects.subjects;
     researchFromServer = research;
     serverConnected = true;
+    windowRecordsPublic = status?.window_records_public !== false;
     byId('overview-demo-run').disabled = false;
     message('overview-demo-status', 'Verified WESAD data available. Run the recorded example.');
     // The approved Overview is narrative-only; its old selectors were removed.
@@ -1720,7 +1748,8 @@ async function connectResearch() {
     loadReliabilityResults();
     message('ai-live-status','Connected to local Random Forest model · recorded WESAD windows · in-sample replay, not held-out evaluation.');
     byId('research-live-status').dataset.verified = 'true';
-    document.querySelectorAll('#page-results .illustrative-banner').forEach(node => { node.textContent='Verified local outputs'; node.style.color='var(--teal-600)'; });
+    if (!windowRecordsPublic) applyRestrictedWindowMode(status);
+    document.querySelectorAll('#page-results .illustrative-banner').forEach(node => { node.textContent='Verified research outputs'; node.style.color='var(--teal-600)'; });
     if (byId('page-results').classList.contains('active')) initResultsCharts();
     document.querySelectorAll('.research-stat strong').forEach((node,i) => {
       const values=[(research.accuracy*100).toFixed(2)+'%',(research.f1*100).toFixed(2)+'%',Number(research.auc).toFixed(4)];
@@ -1883,6 +1912,7 @@ async function updatePhysiologyCharts() {
     status.textContent='No verified local source connected. Open through python app_server.py.';
     return;
   }
+  if (!windowRecordsPublic) { ++signalRequestSerial; showPhysiologyRestricted(); return; }
   const subject=byId('phys-participant').value;
   const index=Number(byId('phys-window').value||0);
   status.textContent='Loading original WESAD recordings for '+subject+', window '+(index+1)+'…';

@@ -1,18 +1,41 @@
-# AstroStress — isolated Vercel deployment test
+# AstroStress — Vercel deployment (NASA Space Apps 2026 MVP)
 
-Use the `vercel-deployment` branch. Never change the production `main` branch for this test.
+- GitHub repository: `Pakeeza1508/AstroStress_`, branch `develop-nasa-2026`.
+- Vercel project: `astrostress-nasa-2026` (CLI deployments, no Git integration). Do not reuse or modify the older `astrostress` project.
+- Deploy Preview first. Production needs explicit approval.
 
-- Import `Pakeeza1508/astroStress` with root directory `./`.
-- Set **Framework Preset** to Python (Flask detection) and keep the default build/output settings.
-- Deploy the `vercel-deployment` branch as a Preview deployment. If the Vercel project is configured to produce Production from `main`, Preview deployment must target this new branch explicitly.
-- Vercel reads the inference-only dependencies in `pyproject.toml` (and `requirements.txt`) and the Python 3.12 constraint. It executes `[tool.vercel.scripts].build` to download the exact release bundle, validated by SHA256.
-- The root `app.py` exports a Flask `app`, serves unchanged `index.html` and exposes the same-origin `/api/*` endpoints. There are no frontend code changes.
-- Public mode deliberately blocks raw WESAD waveform loading. Saved-model window predictions are **in-sample replays**, not held-out validation or real astronaut measurements.
+## Research bundle (why there is no public download)
 
-After deployment open `/`, `/healthz`, `/api/status`, `/api/subjects`, `/api/research`, `/api/global-shap`, `/api/reliability`, `/api/window?subject=S10&index=0`, and `/api/explain?subject=S10&index=0`.
+The model and verified outputs ship as `astrostress-render-artifacts.zip` (SHA256 `734c471c96f20584e74fc5842b3845e8f44f5365a61f03c01b91088c7ee57551`). It contains WESAD-derived per-window features, labels and subject IDs. WESAD terms allow scientific, non-commercial use and do not clearly permit redistribution, so the bundle is **never** published on GitHub Releases or any other public URL. It is gitignored.
 
-If a Vercel build fails, inspect the Build Logs. In particular, confirm that the Vercel build hook runs and that the validated `astrostress_output` files are included in the Python function package. Do not ship without successful `/api/status` and `/api/window` tests.
+`scripts/fetch_vercel_bundle.py` runs as the Vercel build hook (`[tool.vercel.scripts].build` in `pyproject.toml`) and installs the bundle from one of two private sources. Both are checked against the hash pinned in the script, which the environment cannot override:
 
-The saved model was built with scikit-learn 1.9.1. Never downgrade the Python runtime to a scikit-learn version that raises `InconsistentVersionWarning`.
+1. **Local CLI upload (default):** the zip sits at the root of the snapshot passed to `vercel deploy`. It goes only to the private deployment source and is excluded from the function bundle (`vercel.json`).
+2. **Private URL:** set a short-lived HTTPS `ASTROSTRESS_ARTIFACT_URL` as a Vercel environment variable. Never commit it.
 
-No secrets should be pasted into code or deployment logs.
+If neither source is present, the build fails. A deployment never serves unverified or fabricated results.
+
+## Deploy steps
+
+```bash
+git archive --format=tar develop-nasa-2026 | tar -x -C <empty-snapshot-dir>
+cp astrostress-render-artifacts.zip <empty-snapshot-dir>/
+cd <empty-snapshot-dir>
+npx vercel@65.16.0 link --yes --project astrostress-nasa-2026
+rm -f .env.local && git checkout -- .gitignore 2>/dev/null || true   # link may write these
+npx vercel@65.16.0 deploy --yes --meta gitCommitSha=$(git -C <repo> rev-parse develop-nasa-2026)
+```
+
+Deploy from a clean snapshot, never from the working repository (it holds the 17 GB WESAD data and the virtualenv).
+
+## Public data policy
+
+Public deployments default-deny individual WESAD-derived records. `/api/window`, `/api/explain` and `/api/physiology-trend` return `403 RESTRICTED_DATA` unless `ASTROSTRESS_ALLOW_PUBLIC_WESAD_WINDOWS=1` is set. Do not set that variable without confirmed redistribution permission. `/api/status` reports `window_records_public`, and the UI then shows a clear restriction notice instead of per-window predictions.
+
+Summary-level endpoints stay public: `/api/status`, `/api/subjects` (IDs and window counts only), `/api/research`, `/api/global-shap` and `/api/reliability` (Experiment C).
+
+## After deployment
+
+Check `/`, `/healthz`, `/api/status`, `/api/subjects`, `/api/research`, `/api/global-shap` and `/api/reliability` (all 200). Check that `/api/window?subject=S10&index=0`, `/api/explain?subject=S10&index=0` and `/api/physiology-trend?subject=S10` return 403. Check that `/astrostress_output/features.csv` and `/astrostress-render-artifacts.zip` return 404.
+
+The saved model was built with scikit-learn 1.9.1 on Python 3.12. Do not change the runtime to a version that raises `InconsistentVersionWarning`. Predictions are in-sample WESAD laboratory replays, not held-out validation and not astronaut measurements. No secrets belong in code or deployment logs.

@@ -3,7 +3,7 @@
   "functions": {
     "app.py": {
       "includeFiles": "{astrostress_output/**,experiment_c_output/**}",
-      "excludeFiles": "{tests/**,frontend/**,WESAD/**}"
+      "excludeFiles": "{tests/**,frontend/**,WESAD/**,astrostress-render-artifacts.zip,docs/**}"
     }
   }
 }

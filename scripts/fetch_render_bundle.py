@@ -26,21 +26,14 @@ ALLOWED = {
 MAX_BYTES = 12 * 1024 * 1024
 
 
-def main():
-    url = os.environ.get("ASTROSTRESS_ARTIFACT_URL", "").strip()
-    expected = os.environ.get("ASTROSTRESS_ARTIFACT_SHA256", "").strip().lower()
-    if not url or not expected:
-        raise SystemExit("Set ASTROSTRESS_ARTIFACT_URL and ASTROSTRESS_ARTIFACT_SHA256 on Render before deploying.")
-    parsed = urlparse(url)
-    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
-        raise SystemExit("Artifact URL must use HTTPS without embedded credentials.")
+def check_sha256(expected):
     if len(expected) != 64 or any(ch not in "0123456789abcdef" for ch in expected):
         raise SystemExit("Artifact SHA256 must be exactly 64 hexadecimal digits.")
-    request = Request(url, headers={"User-Agent": "AstroStress-Artifact-Installer/1.0"})
-    with urlopen(request, timeout=45) as response:
-        if urlparse(response.url).scheme != "https":
-            raise ValueError("Artifact redirect must remain HTTPS")
-        payload = response.read(MAX_BYTES + 1)
+
+
+def install_verified_zip(payload, expected, root=ROOT):
+    """Refuse anything but the exact pinned ZIP with exactly the allowed files."""
+    check_sha256(expected)
     if len(payload) > MAX_BYTES:
         raise ValueError("Artifact archive is unexpectedly large")
     actual = hashlib.sha256(payload).hexdigest()
@@ -53,9 +46,30 @@ def main():
         for item in archive.infolist():
             if item.is_dir() or item.file_size > MAX_BYTES:
                 raise ValueError("Invalid artifact archive member")
-            target = ROOT / item.filename
+        for item in archive.infolist():
+            target = Path(root) / item.filename
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(archive.read(item))
+
+
+def download(url):
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+        raise SystemExit("Artifact URL must use HTTPS without embedded credentials.")
+    request = Request(url, headers={"User-Agent": "AstroStress-Artifact-Installer/1.0"})
+    with urlopen(request, timeout=45) as response:
+        if urlparse(response.url).scheme != "https":
+            raise ValueError("Artifact redirect must remain HTTPS")
+        return response.read(MAX_BYTES + 1)
+
+
+def main():
+    url = os.environ.get("ASTROSTRESS_ARTIFACT_URL", "").strip()
+    expected = os.environ.get("ASTROSTRESS_ARTIFACT_SHA256", "").strip().lower()
+    if not url or not expected:
+        raise SystemExit("Set ASTROSTRESS_ARTIFACT_URL and ASTROSTRESS_ARTIFACT_SHA256 on Render before deploying.")
+    check_sha256(expected)
+    install_verified_zip(download(url), expected)
     print("Verified artifact ZIP installed; model provenance rechecked at server startup.")
 
 

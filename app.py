@@ -65,7 +65,8 @@ def api(endpoint):
 
         if endpoint == "status":
             return jsonify(ok=True, run_id=data["summary"]["run_id"],
-                           model=artifact["model_name"])
+                           model=artifact["model_name"],
+                           window_records_public=public_window_access_enabled())
         if endpoint == "research":
             return jsonify(research_payload(data))
         if endpoint == "global-shap":
