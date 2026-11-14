@@ -954,6 +954,13 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 .overview-demo-detail:focus-visible{outline:2px solid var(--teal-600);outline-offset:3px}
 @media(max-width:1000px){.mission-hero{grid-template-columns:1fr;gap:18px}.mission-hero-copy{padding-top:10px}}
 @media(max-width:640px){.mission-hero{padding:10px 0 26px}.overview-demo{padding:20px}.overview-purpose{gap:7px}.overview-purpose span{padding:8px 10px}}
+
+/* Copy-first research hero; preserve original hidden model hooks for local mode. */
+#page-overview .mission-hero{grid-template-columns:minmax(0,1fr);max-width:1080px}
+#page-overview .mission-hero-copy{max-width:1020px}
+#page-overview .mission-hero h1{max-width:980px}
+#page-overview .mission-intro{max-width:960px;font-size:clamp(1rem,1.3vw,1.12rem);line-height:1.85}
+#page-overview .mission-data-source[hidden],#page-overview .mission-actions[hidden],#page-overview .overview-purpose[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -989,20 +996,20 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
     <div class="page active" id="page-overview">
       <div class="mission-hero">
         <div class="mission-hero-copy">
-          <span class="overview-identity">ASTROSTRESS · PHYSIOLOGICAL STRESS RESEARCH</span>
-          <h1>See how AI identifies stress patterns in recorded heart and skin signals.</h1>
-          <p class="mission-intro">AstroStress analyzes ECG and EDA measurements from the WESAD laboratory study. Try one recorded example, then explore the model's explanation and its research results.</p>
-          <p class="mission-data-source"><strong>Source:</strong> WESAD · 15 study participants · two-minute recording windows. This is a space-health research prototype, not live astronaut monitoring.</p>
-          <div class="mission-actions">
+          <span class="overview-identity">ASTROSTRESS · RESEARCH OVERVIEW</span>
+          <h1>Building trustworthy AI for future space-health monitoring.</h1>
+          <p class="mission-intro">AstroStress investigates two independent foundations of trustworthy monitoring: reliable AI predictions and reliable sensor data. First, we analyzed ECG and skin-conductance recordings from 15 WESAD laboratory participants, comparing four machine-learning models with leave-one-subject-out evaluation and examining the selected model using SHAP explanations and confidence-based reliability analysis. Separately, we audited NASA RR-1 and RR-6 rodent-research environmental telemetry, identifying timestamp gaps, repeated readings, and patterns in CO₂, temperature, and humidity. Together, these studies demonstrate transparent model evaluation and data-quality reporting—not astronaut stress prediction or a validated connection between the two datasets.</p>
+          <p class="mission-data-source" hidden><strong>Source:</strong> WESAD and NASA EDA, independent research datasets.</p>
+          <div class="mission-actions" hidden>
             <button class="btn btn-secondary" type="button" data-go="results">Explore verified research results <span aria-hidden="true">→</span></button>
           </div>
-          <div class="overview-purpose" aria-label="Three parts of AstroStress">
+          <div class="overview-purpose" aria-label="Three parts of AstroStress" hidden>
             <span><strong>01</strong> Recordings</span>
             <span><strong>02</strong> AI prediction</span>
             <span><strong>03</strong> Explanation</span>
           </div>
         </div>
-        <section class="overview-demo" aria-labelledby="overview-demo-heading">
+        <section class="overview-demo" aria-labelledby="overview-demo-heading" hidden style="display:none">
           <div class="overview-demo-head">
             <span class="overview-demo-kicker">TRY THE WORKING MODEL</span>
             <span class="overview-demo-source">WESAD · recorded example</span>
