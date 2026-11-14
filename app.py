@@ -4,6 +4,7 @@ The existing index.html and app_server.py remain unchanged on this branch.
 Only recorded WESAD windows and verified precomputed SHAP data are served.
 """
 import logging
+import os
 from functools import lru_cache
 
 from flask import Flask, jsonify, request, send_file
@@ -14,6 +15,16 @@ from app_server import (
 )
 
 app = Flask(__name__, static_folder=None)
+
+
+def public_window_access_enabled():
+    """Only an explicit opt-in allows distribution of WESAD-derived windows."""
+    return os.environ.get("ASTROSTRESS_ALLOW_PUBLIC_WESAD_WINDOWS") == "1"
+
+
+def restricted_response():
+    return jsonify(error="Individual WESAD-derived records are not publicly available.",
+                   code="RESTRICTED_DATA"), 403
 
 
 @lru_cache(maxsize=1)
@@ -48,6 +59,8 @@ def health():
 @app.get("/api/<endpoint>")
 def api(endpoint):
     try:
+        if endpoint in ("window", "physiology-trend", "explain") and not public_window_access_enabled():
+            return restricted_response()
         data, artifact = verified_context()
 
         if endpoint == "status":
