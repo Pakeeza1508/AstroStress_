@@ -839,6 +839,10 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 @media(max-width:720px){.main-content{padding:25px 17px 55px}.site-header-inner{padding:12px 17px 0}.workflow-grid,.research-summary-grid,.overview-next-grid,.research-stat-grid{grid-template-columns:1fr}.workflow-step{min-height:0}.overview-results-link{display:block}.overview-results-link .btn{margin-top:20px}.overview-lead{padding-top:18px}.overview-lead h1{font-size:2rem}}
 
 /* Space-mission framing: scientific, not theatrical */
+.mission-status-examples{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.mission-status-examples span{display:inline-flex;align-items:center;padding:7px 13px;border:1px solid #d2e1dc;border-radius:999px;font-size:.8rem;font-weight:650;color:#2f6450;background:#eff8f2}
+.mission-status-examples .mission-status-watch{color:#80612c;background:#fff8e9;border-color:#efdfb7}
+.mission-hero h1 em{font-style:italic;color:#0d7377}
 .mission-hero{display:block;padding:27px 0 29px}
 .mission-hero-copy{padding:12px 0 6px}
 .mission-hero h1{font-size:clamp(2rem,3.15vw,3.2rem);font-weight:750;line-height:1.17;letter-spacing:-.043em;max-width:780px;margin-bottom:18px}
@@ -997,8 +1001,12 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <div class="mission-hero">
         <div class="mission-hero-copy">
           <span class="overview-identity">ASTROSTRESS · RESEARCH OVERVIEW</span>
-          <h1>Context-Aware, Uncertainty-Guided Space Health Intelligence</h1>
-          <p class="mission-intro">AstroStress investigates two independent foundations of trustworthy monitoring: reliable AI predictions and reliable sensor data. First, we analyzed ECG and skin-conductance recordings from 15 WESAD laboratory participants, comparing four machine-learning models with leave-one-subject-out evaluation and examining the selected model using SHAP explanations and confidence-based reliability analysis. Separately, we audited NASA RR-1 and RR-6 rodent-research environmental telemetry, identifying timestamp gaps, repeated readings, and patterns in CO₂, temperature, and humidity. Together, these studies demonstrate transparent model evaluation and data-quality reporting—not astronaut stress prediction or a validated connection between the two datasets.</p>
+          <h1>What if astronauts' stress could be<br>detected <em>before</em> they report it?</h1>
+          <p class="mission-intro">AstroStress explores combining wearable sensor data with ISS environmental conditions to anticipate crew stress and inform future triage decisions — with the goal of giving flight surgeons earlier, more useful alerts.</p>
+          <div class="mission-status-examples" aria-label="Illustrative alert concepts, not real-time crew monitoring">
+            <span class="mission-status-all-clear">All clear</span>
+            <span class="mission-status-watch">Watch closely</span>
+          </div>
           <p class="mission-data-source" hidden><strong>Source:</strong> WESAD and NASA EDA, independent research datasets.</p>
           <div class="mission-actions">
             <button class="btn btn-primary" type="button" data-go="results">Explore verified research results <span aria-hidden="true">→</span></button>
