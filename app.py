@@ -46,6 +46,12 @@ def dashboard():
     return send_file(ROOT / "index.html", mimetype="text/html")
 
 
+@app.get("/api/mission-scenarios")
+def mission_scenarios():
+    """Public fictional training scenarios; no participant data or model output."""
+    return send_file(ROOT / "mission_checkin_scenarios.json", mimetype="application/json")
+
+
 @app.get("/healthz")
 def health():
     try:
