@@ -2022,14 +2022,29 @@ byId('overview-demo-run').addEventListener('click', async () => {
 // ============================================================
 // NAVIGATION
 // ============================================================
+// Remember each page's scroll offset BEFORE switching tabs. In particular,
+// returning from an Overview card should land where the card was clicked.
+const pageScrollPositions = new Map([['overview', 0]]);
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); } });
   item.addEventListener('click', () => {
     const page = item.dataset.page;
+    const current = document.querySelector('.page.active');
+    const currentPage = current?.id.replace(/^page-/, '');
+    if (currentPage === page) return;
+    if (currentPage) pageScrollPositions.set(currentPage, window.scrollY);
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     item.classList.add('active');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
+
+    // New destinations start at their top; returning to Overview restores
+    // the exact prior reading position, including from a lower card row.
+    const restoreY = page === 'overview' ? (pageScrollPositions.get('overview') ?? 0) : 0;
+    window.scrollTo({ top: restoreY, behavior: 'instant' });
+    requestAnimationFrame(() => {
+      if (page === 'overview') window.scrollTo({ top: restoreY, behavior: 'instant' });
+    });
 
     // Init charts for that page
     setTimeout(() => {
@@ -2043,14 +2058,11 @@ document.querySelectorAll('.nav-item').forEach(item => {
   });
 });
 
-// Overview links open their corresponding working tabs.
+// In-page links use the same navigation path so Back restores Overview position.
 document.querySelectorAll('[data-go]').forEach(link => {
   link.addEventListener('click', () => {
     const destination = document.querySelector('.site-nav .nav-item[data-page="' + link.dataset.go + '"]');
-    if (destination) {
-      destination.click();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    if (destination) destination.click();
   });
 });
 
