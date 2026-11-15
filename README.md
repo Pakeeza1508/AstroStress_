@@ -44,6 +44,10 @@ The server expects the generated `astrostress_output/` research/model artifacts.
 - **Pakeeza Khalid**
 - **Afifa Khalid**
 
+## AI / SI Usage Acknowledgement
+
+ChatGPT (OpenAI) and Claude (Anthropic) assisted with project brainstorming, research support, code development and debugging, interpretation of experimental results, and README/presentation writing. The team reviewed and integrated the assisted work. Reported research metrics come from the project's experiment outputs, not AI-generated data.
+
 ## References
 
 - [WESAD — official dataset page](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html)
