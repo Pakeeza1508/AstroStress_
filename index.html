@@ -1610,14 +1610,13 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         <div class="research-stat"><strong>78.35%</strong><span>Mean F1 score</span><p>Shows how well the AI finds stress while avoiding false alarms. We used this score to choose our model.</p></div>
         <div class="research-stat"><strong>0.9436</strong><span>Pooled ROC-AUC</span><p>Shows how well the AI separates stress from non-stress.</p></div>
       </div>
-      <p class="research-context">These scores come from testing on WESAD lab recordings. Our Random Forest had the highest average F1 of the four models we compared. We have not tested it on astronauts.</p>
+      <p class="research-context">These scores come from testing on WESAD lab recordings. Our Random Forest had the highest average F1 of the four models we compared.</p>
 
 
       <!-- Model comparison chart -->
       <div class="card" style="margin-bottom:var(--space-6)">
         <div class="card-header">
           <h3>Which of our four AI models worked best?</h3><p class="chart-explainer">We tested each model on people whose data it had not trained on.</p>
-          <span class="illustrative-banner"><i data-lucide="info" style="width:10px;height:10px"></i> Illustrative data</span>
         </div>
         <div class="card-body">
           <div id="chart-model-comparison" style="width:100%;height:320px"></div>
@@ -1638,7 +1637,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 
         <!-- Personalization -->
         <div class="card">
-          <div class="card-header"><h3>Does AI work better when it learns about a person?</h3><p class="chart-explainer">Generic = trained on other people. Personalized = also learns from some recordings of that person. Compare the results below.</p></div>
+          <div class="card-header"><h3>Does AI work better when it learns about a person?</h3></div>
           <div class="card-body">
             <div id="chart-personalization" style="width:100%;height:320px"></div>
             <p style="font-size:0.78rem;color:var(--text-tertiary);margin-top:var(--space-3);line-height:1.6">
@@ -1668,23 +1667,10 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
                 <div id="chart-reliability" style="height:285px;width:100%"></div>
               </div>
             </div>
-            <p id="reliability-takeaway" style="font-size:.85rem;line-height:1.75"></p>
           </div>
         </div>
       </section>
 
-      <!-- A brief guide to what the results show. Full technical limits stay in README. -->
-      <div class="card">
-        <div class="card-header">
-          <h3>What do these results tell us?</h3>
-          <p class="chart-explainer">Our results are strong overall, but the AI does not work equally well for every person.</p>
-        </div>
-        <div class="card-body">
-          <p style="font-size:.87rem;color:var(--text-secondary);line-height:1.8">
-            We compared four AI models using real WESAD recordings. Random Forest had the best average Stress F1 in our tests. Some people had lower scores, so there is still room to improve.
-          </p>
-        </div>
-      </div>
     </div>
 
     <!-- D1: NASA EDA quality-gated environmental research, NOT astronaut physiology -->
@@ -2429,13 +2415,6 @@ function renderReliabilityCharts() {
       {name:'Observed',type:'line',data:r.calibration_bins.map(x=>[x.mean_predicted*100,x.observed_stress_rate*100]),lineStyle:{color:'#0D7377',width:2},symbolSize:8,itemStyle:{color:'#0D7377'}}
     ]
   },true);
-  const reference=r.selective_curve.find(x=>Math.abs(x.threshold-0.8)<1e-7);
-  const nonOverlap=r.nonoverlap_curve.find(x=>Math.abs(x.threshold-0.8)<1e-7);
-  const baseline=r.selective_curve[0];
-  const improvement=reference&&baseline?(100*(reference.accuracy-baseline.accuracy)).toFixed(1):null;
-  byId('reliability-takeaway').textContent=reference&&baseline&&nonOverlap?
-    'In our held-out tests, all-window accuracy was '+(100*baseline.accuracy).toFixed(1)+'%. With an example 80% confidence cutoff, it was '+(100*reference.accuracy).toFixed(1)+'% ('+reference.n_accepted+' of '+r.n_windows+' windows kept), a '+improvement+' percentage-point increase. On the non-overlapping set, the result was '+(100*nonOverlap.accuracy).toFixed(1)+'% with '+(100*nonOverlap.coverage).toFixed(1)+'% kept.':
-    'Compare the full accuracy-and-coverage curve; no cutoff has been validated for deployment.';
   mainChart.resize();calibrationChart.resize();
 }
 
