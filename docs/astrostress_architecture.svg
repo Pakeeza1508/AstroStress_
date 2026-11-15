@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 635" role="img" aria-label="AstroStress research architecture: independent physiological model, NASA environmental aggregates, and browser-based daily check-in">
+<rect width="1100" height="635" fill="#f8fbfb"/>
+<text x="48" y="64" font-size="34" font-weight="700" font-family="Arial,sans-serif" fill="#103b42">AstroStress — Project Architecture</text>
+<text x="48" y="92" font-size="16" font-family="Arial,sans-serif" fill="#58747a">Independent research streams presented in a single web demo</text>
+<rect x="48" y="126" width="485" height="307" rx="18" fill="#e5f3f2" stroke="#198184" stroke-width="2"/>
+<text x="73" y="166" font-size="22" font-weight="700" font-family="Arial,sans-serif" fill="#14565a">Physiological stress research</text>
+<rect x="74" y="185" width="432" height="59" rx="10" fill="#fff" stroke="#b4d5d2"/>
+<text x="94" y="209" font-size="17" font-weight="700" font-family="Arial,sans-serif" fill="#203942">WESAD ECG and EDA recordings</text>
+<text x="94" y="230" font-size="14" font-family="Arial,sans-serif" fill="#537078">15 participants</text>
+<path d="M289 245 V259" stroke="#198184" stroke-width="3" fill="none"/><path d="M283 253 L289 261 L295 253" fill="none" stroke="#198184" stroke-width="3"/>
+<rect x="74" y="268" width="432" height="59" rx="10" fill="#fff" stroke="#b4d5d2"/>
+<text x="94" y="293" font-size="17" font-weight="700" font-family="Arial,sans-serif" fill="#203942">19 features + Random Forest</text>
+<text x="94" y="315" font-size="14" font-family="Arial,sans-serif" fill="#537078">LOSO, confidence analysis, SHAP</text>
+<path d="M289 328 V343" stroke="#198184" stroke-width="3" fill="none"/><path d="M283 337 L289 345 L295 337" fill="none" stroke="#198184" stroke-width="3"/>
+<rect x="74" y="354" width="432" height="55" rx="10" fill="#fff" stroke="#b4d5d2"/>
+<text x="94" y="386" font-size="18" font-weight="700" font-family="Arial,sans-serif" fill="#203942">Verified outputs → Flask API</text>
+<rect x="568" y="126" width="484" height="307" rx="18" fill="#eaf2fb" stroke="#3b6ea8" stroke-width="2"/>
+<text x="592" y="166" font-size="22" font-weight="700" font-family="Arial,sans-serif" fill="#234f80">Space environment research</text>
+<rect x="594" y="185" width="430" height="59" rx="10" fill="#fff" stroke="#b8cde5"/>
+<text x="614" y="210" font-size="17" font-weight="700" font-family="Arial,sans-serif" fill="#203942">NASA RR-1 / RR-6 telemetry</text>
+<text x="614" y="232" font-size="14" font-family="Arial,sans-serif" fill="#537078">Environmental sensor exports</text>
+<path d="M810 245 V259" stroke="#3b6ea8" stroke-width="3" fill="none"/><path d="M804 253 L810 261 L816 253" fill="none" stroke="#3b6ea8" stroke-width="3"/>
+<rect x="594" y="268" width="430" height="59" rx="10" fill="#fff" stroke="#b8cde5"/>
+<text x="614" y="293" font-size="17" font-weight="700" font-family="Arial,sans-serif" fill="#203942">CO₂, temperature and humidity</text>
+<text x="614" y="315" font-size="14" font-family="Arial,sans-serif" fill="#537078">Trends and quality checks</text>
+<path d="M810 328 V343" stroke="#3b6ea8" stroke-width="3" fill="none"/><path d="M804 337 L810 345 L816 337" fill="none" stroke="#3b6ea8" stroke-width="3"/>
+<rect x="594" y="354" width="430" height="55" rx="10" fill="#fff" stroke="#b8cde5"/>
+<text x="614" y="385" font-size="18" font-weight="700" font-family="Arial,sans-serif" fill="#203942">Verified aggregates → page data</text>
+<path d="M289 434 V456 H455 V478" stroke="#198184" stroke-width="4" fill="none"/>
+<path d="M810 434 V456 H645 V478" stroke="#3b6ea8" stroke-width="4" fill="none"/>
+<path d="M449 472 L455 480 L461 472" stroke="#198184" stroke-width="3" fill="none"/>
+<path d="M639 472 L645 480 L651 472" stroke="#3b6ea8" stroke-width="3" fill="none"/>
+<rect x="214" y="481" width="672" height="106" rx="16" fill="#10555c"/>
+<text x="550" y="519" text-anchor="middle" font-family="Arial,sans-serif" font-size="25" font-weight="700" fill="#fff">AstroStress web demo</text>
+<text x="550" y="548" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#d5f0ef">AI Stress Detection  ·  Test Results  ·  Space Environment Monitoring</text>
+<text x="550" y="573" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#d5f0ef">Daily Check-in: separate browser-side scenario assessment</text>
+<text x="550" y="618" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#5a777b">Physiological and NASA datasets are not fused.</text>
+</svg>
