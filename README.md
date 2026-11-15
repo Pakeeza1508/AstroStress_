@@ -1,8 +1,6 @@
-# AstroStress — Explainable AI for Stress Research
+**[Live Demo](https://astrostress-nasa-2026-33ym1m8wr-pakeeza-khalids-projects.vercel.app/)**
 
-A NASA Space Apps Challenge 2026 research prototype exploring physiological stress detection and independent space-environment monitoring.
-
-**[Live Demo (Vercel Preview)](https://astrostress-nasa-2026-33ym1m8wr-pakeeza-khalids-projects.vercel.app/)** · **[2026 NASA Space Apps Challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)**
+# AstroStress
 
 ## Project overview
 
@@ -52,7 +50,6 @@ The verified model/research artifacts must be available locally for research end
 
 - **Physiological research:** WESAD laboratory recordings, not astronaut measurements. Individual recorded WESAD windows are not exposed in the public demo.
 - **NASA environmental research:** RR-1/RR-6 environmental telemetry, analyzed separately from physiological stress.
-- **Current scope:** Research prototype only; no live wearable monitoring, astronaut stress validation, deployed physiological/environmental data fusion or clinical decision-making.
 - **Pre-existing work:** Development began before the November 2026 hackathon; the repository includes earlier research and subsequent demo work.
 
 **Sources:** [WESAD](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html) · [NASA Environmental Data Application](https://visualization.osdr.nasa.gov/eda/) · [NASA Space Apps challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)
