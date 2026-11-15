@@ -67,6 +67,16 @@ class OverviewLinkTests(unittest.TestCase):
         self.assertIn("window.scrollTo({ top: restoreY, behavior: 'instant' })", HTML)
         self.assertNotIn("window.scrollTo({ top: 0, behavior: 'smooth' })", HTML)
 
+    def test_datasets_used_sources_and_public_mode(self):
+        self.assertIn('data-page="physiology">Datasets Used</button>', HTML)
+        self.assertIn('id="page-physiology"', HTML)
+        self.assertIn('Prediction Confidence &amp; Reliability', HTML)
+        self.assertIn('NASA Environmental Telemetry Audit', HTML)
+        self.assertEqual(HTML.count('class="card dataset-source-card"'), 3)
+        self.assertNotIn('If WESAD is already downloaded on your computer', HTML)
+        self.assertNotIn('Why are individual ECG and EDA traces unavailable?', HTML)
+        self.assertIn("for (const el of [physSelector, physChart, physTables])", HTML)
+
     def test_public_access_disables_individual_predictions(self):
         self.assertIn("function applyRestrictedWindowMode(status)", HTML)
         self.assertIn("renderPublicResearchMode();", HTML)
