@@ -10,6 +10,16 @@ The project studies two separate data sources. **WESAD** provides ECG and skin-c
 
 The web demo also includes a **Daily Check-in** for self-reported mission-readiness scenarios. This runs separately from the trained sensor-based classifier. Performance charts and dataset details are available directly in the demo.
 
+## Research Experiments
+
+The research is organized into three complementary studies, summarized here; the demo contains the full charts and participant-level results.
+
+**1. Stress detection and model evaluation.** We extracted 19 heart- and skin-signal features from 608 WESAD windows across 15 participants. Four machine-learning models were compared using Leave-One-Subject-Out testing, so each person was evaluated without being included in that fold's training data. The selected Random Forest achieved **88.74% mean accuracy**, **78.35% mean Stress F1** and **0.9436 pooled ROC-AUC**. SHAP analysis shows which features most influenced the trained model.
+
+**2. Prediction confidence and reliability.** We examined how accuracy changes when lower-confidence classifications are set aside. On the held-out evaluation windows, accuracy was **88.65%** overall; it was **94.24%** on the **486 of 608** windows meeting an illustrative 80% confidence cutoff. This is a trade-off between accuracy and coverage, not a higher overall accuracy or a validated safety threshold.
+
+**3. NASA environmental data analysis.** We independently examined RR-1 (**12,087 readings**) and RR-6 (**17,572 readings**) environmental telemetry, including CO₂, temperature, humidity, weekly trends and recording-quality flags. These NASA measurements are **not paired with WESAD stress recordings**, and no combined prediction model has been implemented.
+
 ## System Architecture
 
 ![AstroStress system architecture](docs/astrostress_architecture.svg)
@@ -31,10 +41,15 @@ The server expects the generated `astrostress_output/` research/model artifacts.
 
 ## Team
 
-[Project contributors](https://github.com/Pakeeza1508/AstroStress_/graphs/contributors)
+- **Pakeeza Khalid**
+- **Afifa Khalid**
 
 ## References
 
-[WESAD dataset](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html) · [NASA Environmental Data Application](https://visualization.osdr.nasa.gov/eda/) · [NASA Space Apps Challenge 2026](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)
+- [WESAD — official dataset page](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html)
+- [WESAD — original dataset download](https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx)
+- [NASA OSDR — Environmental Data Application](https://visualization.osdr.nasa.gov/eda/)
+- [NASA OSDR — environmental data guide](https://github.com/nasa/OSDR_Tutorials/blob/main/source/pages/guides/environmental_data_application.md)
+- [NASA Space Apps 2026 — Health Monitoring Software challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)
 
 **License:** [Apache 2.0](LICENSE) for source code; external datasets follow their original terms.
