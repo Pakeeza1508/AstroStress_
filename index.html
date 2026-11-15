@@ -1209,7 +1209,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
       <div class="page-header">
         <h1 class="page-title">Daily Health Check-in</h1>
-        <p class="page-description">Choose a mission activity, enter crew self-check values, and review mission-specific readiness considerations. Explore training scenarios grounded in our stress-research workflow.</p>
+        <p class="page-description">Choose a mission activity, enter crew self-check values, and review mission-specific readiness considerations.</p>
       </div>
 
       <div class="card" style="display:none;margin-bottom:var(--space-6)">
@@ -1273,11 +1273,11 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         </div>
       </div>
       <div class="card" id="health-check-result" style="display:none;margin-bottom:var(--space-6)">
-        <div class="card-header"><h3>2. Mission readiness review</h3><p class="chart-explainer">Review how the reported factors may affect the selected mission task and what the crew can check next.</p></div>
+        <div class="card-header"><h3>2. Mission readiness review</h3></div>
         <div class="card-body">
           <p id="health-check-summary" role="status" class="checkin-result-title"></p>
           <div id="health-check-measures" class="checkin-measures" aria-label="Your recorded check-in values"></div>
-          <h4 style="margin:14px 0 10px">Mission factors and operational next steps</h4>
+          <h4 style="margin:14px 0 10px">Crew briefing</h4>
           <ul id="health-check-steps" class="health-advice-list"></ul>
         </div>
       </div>
@@ -2524,17 +2524,44 @@ healthForm.addEventListener('submit',event=>{
     const el=document.createElement('div'),lab=document.createElement('span'),val=document.createElement('strong');
     lab.textContent=name;val.textContent=value+suffix;el.append(lab,val);measures.appendChild(el);
   }
+  // Concise task-specific decision support from the entered crew self-check values.
   const points=[];
-  if(urgent)points.push('You requested urgent help: notify the on-duty crew medical officer or mission control through the approved emergency communication protocol now.');
-  if(sleep<=5&&focus<=4)points.push('Sleep and concentration are both reduced. Flag this combination at the task briefing before time-critical procedures.');
-  else if(sleep<=5)points.push('Limited sleep reported. Confirm task handover and planned rest opportunity with the crew lead.');
-  if(fatigue>=6&&workload>=6)points.push('Fatigue is elevated alongside workload. Request peer verification for precision steps and discuss how duties can be shared.');
-  else if(fatigue>=6)points.push('Fatigue is elevated. Review readiness before physically demanding or time-sensitive tasks.');
-  if(stress>=6&&focus<=4)points.push('Stress is elevated and focus is reduced. Include a second-person checklist review for safety-critical tasks.');
-  else if(stress>=6)points.push('Stress is elevated. Confirm instructions and communication during the next task briefing.');
-  if(feeling==='tired')points.push('Crew member reports feeling unwell or overwhelmed. Raise this in the crew health check rather than relying only on task-level screening.');
-  points.push(scenario.actions[mode]);
-  points.push('Assessment basis: '+scenario.title+' training workflow, combined with the values entered above. Thresholds are illustrative operational rules, not a WESAD-model classification.');
+  const sleepText=sleep===3?'under 4 hours':sleep===9?'9 or more hours':sleep+' hours';
+  const noted=[];
+  if(stress>=6)noted.push('stress '+stress+'/10');
+  if(sleep<=5)noted.push('sleep '+sleepText);
+  if(fatigue>=6)noted.push('fatigue '+fatigue+'/10');
+  if(focus<=4)noted.push('focus '+focus+'/10');
+  if(workload>=8)noted.push('workload '+workload+'/10');
+  if(feeling!=='okay')noted.push(feeling==='urgent'?'immediate assistance requested':'feeling unwell or overwhelmed');
+  points.push('Crew status: '+(noted.length?noted.join(' · '):'no major concerns in the selected responses')+'.');
+  const taskSteps={
+    pre_eva:{
+      high:'Pre-EVA: Report the flagged readings to the EVA lead before task assignment. Review the planned EVA timeline and readiness with the crew medical team.',
+      moderate:'Pre-EVA: Brief the EVA partner on the flagged readings and confirm who will cross-check critical checklist steps.',
+      normal:'Pre-EVA: Continue the standard readiness briefing and checklist review.'
+    },
+    science_ops:{
+      high:'Science operations: Notify the experiment lead before starting a time-sensitive procedure. Reassign critical handling or arrange an independent check where necessary.',
+      moderate:'Science operations: Use a second-person verification for delicate sample handling and time-sensitive operations.',
+      normal:'Science operations: Proceed with the scheduled protocol and usual sample-handling checks.'
+    },
+    post_shift:{
+      high:'Post-shift recovery: Record the concerns in the crew handover and request a crew medical check before the next demanding duty period.',
+      moderate:'Post-shift recovery: Include the flagged factors in handover and review rest time before the next scheduled shift.',
+      normal:'Post-shift recovery: Complete the standard handover and recovery period.'
+    },
+    mission_contingency:{
+      high:'Mission contingency: Contact the on-duty crew lead and medical support. Confirm crew roles and assistance before returning to critical duties.',
+      moderate:'Mission contingency: Review task responsibilities in the contingency briefing and cross-check safety-critical actions.',
+      normal:'Mission contingency: Continue the approved incident checklist and operational debrief.'
+    }
+  };
+  if(urgent)points.push('Immediate support: Request help from the on-duty crew medical officer or mission control through established crew procedures.');
+  const task=taskSteps[scenario.id];
+  if(task)points.push(task[mode]);
+  if(sleep<=5&&focus<=4)points.push('Before the next critical task: Schedule a second-person verification of steps requiring sustained attention.');
+  else if(fatigue>=6&&workload>=8)points.push('Before the next critical task: Recheck workload allocation with the crew lead.');
   const list=byId('health-check-steps');list.replaceChildren();
   for(const p of points){const li=document.createElement('li');li.textContent=p;list.appendChild(li);}
   byId('health-check-result').style.display='block';
