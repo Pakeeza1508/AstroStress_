@@ -905,6 +905,22 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 @media(max-width:900px){#page-overview .research-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){#page-overview .research-summary-grid{grid-template-columns:minmax(0,1fr)}#page-overview .research-story{min-height:0}}
 
+/* Dataset provenance page: source-first, compact research cards. */
+.dataset-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:22px}
+.dataset-source-card{min-width:0}
+.dataset-source-card .card-body{height:100%;display:flex;flex-direction:column;gap:12px;padding:24px}
+.dataset-source-card h3{font-size:1.1rem;line-height:1.4;letter-spacing:-.02em;margin:0}
+.dataset-source-card p{font-size:.87rem;line-height:1.75;color:var(--text-secondary);margin:0}
+.dataset-source-details{display:flex;flex-wrap:wrap;gap:8px}
+.dataset-source-details span{font-size:.73rem;border-radius:6px;padding:5px 9px;color:#0d7377;background:#e8f5f4}
+.dataset-source-card .dataset-source-credit{font-size:.77rem;color:var(--text-tertiary)}
+.dataset-source-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:auto;padding-top:6px}
+.dataset-source-actions .btn{font-size:.8rem}
+.dataset-source-boundary{font-size:.85rem;line-height:1.7;padding:16px 18px;background:#eef7f6;border-left:3px solid #0d7377;border-radius:8px;margin-bottom:30px}
+.dataset-local-title{margin:25px 0 9px;font-size:1.24rem}
+.dataset-local-caption{margin-bottom:19px;color:var(--text-secondary);font-size:.87rem}
+@media(max-width:850px){.dataset-source-grid{grid-template-columns:minmax(0,1fr)}}
+
 /* Narrow-screen refinements. Desktop visual language is unchanged. */
 #page-analysis .card-header,#page-results .card-header,#page-physiology .card-header{display:block}
 #page-analysis .card-header .chart-explainer,#page-results .card-header .chart-explainer,#page-physiology .card-header .chart-explainer{margin-top:8px}
@@ -1003,7 +1019,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <div class="site-brand">AstroStress</div>
       <nav class="site-nav" aria-label="Main navigation">
         <button class="nav-item active" data-page="overview">Overview</button>
-        <button class="nav-item" data-page="physiology">Physiological Data</button>
+        <button class="nav-item" data-page="physiology">Datasets Used</button>
         <button class="nav-item" data-page="analysis">AI Analysis</button>
         <button class="nav-item" data-page="checkin">Daily Check-in</button>
         <button class="nav-item" data-page="explainability">Explainability</button>
@@ -1117,13 +1133,13 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           </article>
           <article class="workflow-step">
             <div class="workflow-number">05</div>
-            <h3>Uncertainty &amp; Reliability — Experiment C</h3>
+            <h3>Prediction Confidence &amp; Reliability — Experiment C</h3>
             <p>Assess confidence, calibration, and the accuracy–coverage trade-off on held-out WESAD predictions.</p>
             <button class="workflow-link" type="button" data-go="results">Explore Experiment C <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">06</div>
-            <h3>ISS Environmental Analysis — Experiment D1</h3>
+            <h3>NASA Environmental Telemetry Audit — Experiment D1</h3>
             <p>Audit independent NASA RR-1 and RR-6 rodent-research telemetry for CO₂, temperature, humidity, and data-quality patterns.</p>
             <button class="workflow-link" type="button" data-go="nasa">Explore NASA D1 analysis <span>→</span></button>
           </article>
@@ -1139,7 +1155,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           </div>
         </div>
         <div class="overview-next-grid">
-          <button type="button" data-go="physiology"><span>Physiological Data</span><strong>What evidence supports our physiological study?</strong><small>View dataset and access details →</small></button>
+          <button type="button" data-go="physiology"><span>Datasets Used</span><strong>Which datasets power our experiments?</strong><small>Explore research data sources →</small></button>
           <button type="button" data-go="analysis"><span>AI Analysis</span><strong>How does the model perform across participants?</strong><small>View held-out evaluation →</small></button>
           <button type="button" data-go="checkin"><span>Daily Check-in</span><strong>How are you feeling today?</strong><small>Open self-check →</small></button>
         </div>
@@ -1234,33 +1250,56 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
     <div class="page" id="page-physiology">
       <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
       <div class="page-header">
-        <h1 class="page-title">Heart and Skin Signals</h1>
+        <h1 class="page-title">Datasets Used</h1>
         <p class="page-description">
-          Choose a person and a two-minute recording to see real heart and skin signals from the WESAD study.
+          Explore the real data sources behind our physiological stress model, prediction-reliability study, and independent NASA environmental telemetry audit.
         </p>
       </div>
 
-      <div class="card" style="margin-bottom:var(--space-6)">
-        <div class="card-body">
-          <h3 style="margin-bottom:8px">Where did we get the data?</h3>
-          <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7">
-            AstroStress uses <strong>WESAD (Wearable Stress and Affect Detection)</strong>, an Earth-based
-            laboratory dataset from the University of Siegen. The original dataset is about
-            <strong>2.5 GB compressed</strong> and includes chest and wrist sensor recordings from 15 participants.
-            Our recorded-window analysis uses locally extracted features; raw waveform plots are loaded only when the trusted WESAD recording is available locally. This is not astronaut or ISS data.
-          </p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:15px">
-            <a class="btn btn-primary" href="https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html" target="_blank" rel="noopener noreferrer">Official WESAD dataset page</a>
-            <a class="btn btn-secondary" href="https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx" target="_blank" rel="noopener noreferrer">Open official WESAD ZIP download (~2.5 GB)</a>
+      <div class="dataset-source-grid">
+        <article class="card dataset-source-card">
+          <div class="card-body">
+            <span class="overview-eyebrow">DATA SOURCE 01 · EXPERIMENTS A/B</span>
+            <h3>WESAD — Wearable Stress and Affect Detection</h3>
+            <p>Earth-based laboratory recordings from <strong>15 participants</strong>, collected with chest ECG and wrist electrodermal activity (EDA) sensors. We extract <strong>19 physiological features</strong> from valid <strong>120-second windows</strong> for the four-model stress classification and leave-one-subject-out evaluation. These recordings are <strong>not astronaut data</strong>.</p>
+            <div class="dataset-source-details"><span>ECG · 700 Hz</span><span>EDA · 4 Hz</span><span>608 valid analysis windows</span></div>
+            <p class="dataset-source-credit">Source: Schmidt et al., ICMI 2018, University of Siegen. Follow the dataset's published access and attribution conditions.</p>
+            <div class="dataset-source-actions">
+              <a class="btn btn-secondary" href="https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html" target="_blank" rel="noopener noreferrer">Official WESAD dataset page</a>
+              <a class="btn btn-secondary" href="https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx" target="_blank" rel="noopener noreferrer">Official WESAD ZIP</a>
+              <button class="workflow-link" type="button" data-go="analysis">View model evaluation <span>→</span></button>
+            </div>
           </div>
-          <p style="font-size:0.75rem;color:var(--text-tertiary);margin-top:12px">
-            Dataset credit: Schmidt et al., ICMI 2018. Scientific, non-commercial use with attribution.
-            If WESAD is already downloaded on your computer, you do not need to download it again.
-          </p>
-        </div>
+        </article>
+        <article class="card dataset-source-card">
+          <div class="card-body">
+            <span class="overview-eyebrow">DATA SOURCE 02 · EXPERIMENT C</span>
+            <h3>Prediction Confidence &amp; Reliability</h3>
+            <p><strong>Experiment C reuses WESAD</strong> rather than introducing another physiological dataset. It evaluates held-out model probabilities for <strong>608 recorded windows</strong>, examining calibration, prediction confidence and the accuracy–coverage trade-off. A separate non-overlapping sensitivity subset includes <strong>321 windows</strong>.</p>
+            <div class="dataset-source-details"><span>Original source: WESAD</span><span>Held-out model probabilities</span><span>Non-overlapping sensitivity analysis</span></div>
+            <p class="dataset-source-credit">Data provenance: predictions computed from WESAD leave-one-subject-out folds. The illustrative confidence cutoff is not a clinical or astronaut safety threshold.</p>
+            <div class="dataset-source-actions">
+              <button class="workflow-link" type="button" data-go="results">Explore Experiment C results <span>→</span></button>
+            </div>
+          </div>
+        </article>
+        <article class="card dataset-source-card">
+          <div class="card-body">
+            <span class="overview-eyebrow">DATA SOURCE 03 · EXPERIMENT D1</span>
+            <h3>NASA Environmental Telemetry Audit</h3>
+            <p>NASA Environmental Data Application (EDA) exports from <strong>Rodent Research RR-1 and RR-6</strong> supply environmental hardware readings of CO₂, temperature, and relative humidity. We analyze <strong>12,087 RR-1</strong> and <strong>17,572 RR-6</strong> telemetry rows for descriptive patterns, timestamp gaps, and repeated readings.</p>
+            <div class="dataset-source-details"><span>RR-1 · 2014</span><span>RR-6 · 2017–2018</span><span>RR-9 · summary only</span></div>
+            <p class="dataset-source-credit">Source: NASA EDA rodent-research hardware exports. RR-9 supplies a separate summary, not a time-series dataset. These measurements are not validated crew-cabin exposures and are not paired with WESAD.</p>
+            <div class="dataset-source-actions">
+              <button class="workflow-link" type="button" data-go="nasa">Explore NASA telemetry audit <span>→</span></button>
+            </div>
+          </div>
+        </article>
       </div>
+      <p class="dataset-source-boundary"><strong>Research boundary:</strong> WESAD human physiological recordings and NASA rodent-research environment telemetry were evaluated independently. AstroStress has not validated their fusion into an astronaut stress-prediction system.</p>
 
-
+      <h2 class="dataset-local-title">Recorded ECG and EDA explorer</h2>
+      <p class="dataset-local-caption">The following original-recording controls are intended for trusted local data access. Public research visitors can review the source descriptions and verified aggregate results above.</p>
 
       <div class="selector-row" style="margin-bottom:var(--space-6)">
         <div class="selector-group">
@@ -1699,25 +1738,9 @@ function renderPublicResearchMode() {
   const physChart = byId('chart-timeline')?.closest('.card');
   const physTables = byId('ecg-feature-table')?.closest('.grid-2');
   for (const el of [physSelector, physChart, physTables]) if (el) el.style.display = 'none';
-  if (physPage && !byId('public-physiology-note')) {
-    const card = document.createElement('section');
-    card.id = 'public-physiology-note';
-    card.className = 'card';
-    card.style.marginBottom = '24px';
-    const body = document.createElement('div'); body.className = 'card-body';
-    const title = document.createElement('h3'); title.textContent = 'Why are individual ECG and EDA traces unavailable?';
-    const p = document.createElement('p');
-    p.style.margin = '12px 0'; p.style.lineHeight = '1.8';
-    p.textContent = 'This public research demo does not redistribute the original WESAD recordings or derived per-window features. The original recorded-signal explorer remains available when using the trusted data locally. Public, verified aggregate study results are still available.';
-    const link = document.createElement('button'); link.type = 'button';
-    link.className = 'btn btn-primary'; link.textContent = 'Explore verified research results';
-    link.addEventListener('click', () => {
-      const nav = document.querySelector('[data-page="results"]');
-      if (nav) nav.click();
-    });
-    body.append(title, p, link); card.appendChild(body);
-    physSelector?.parentNode?.insertBefore(card, physSelector);
-  }
+  const localIntro = physPage?.querySelector('.dataset-local-title');
+  const localCaption = physPage?.querySelector('.dataset-local-caption');
+  for (const el of [localIntro, localCaption]) if (el) el.style.display = 'none';
   const aiPage = byId('page-analysis');
   const aiSelector = aiPage?.querySelector('.selector-row');
   if (aiSelector) aiSelector.style.display = 'none';
