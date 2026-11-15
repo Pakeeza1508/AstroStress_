@@ -921,6 +921,26 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 .dataset-local-caption{margin-bottom:19px;color:var(--text-secondary);font-size:.87rem}
 @media(max-width:850px){.dataset-source-grid{grid-template-columns:minmax(0,1fr)}}
 
+/* Public model evaluation: judge-friendly guided participant comparison */
+.ai-eval-intro{color:var(--text-secondary);line-height:1.75;font-size:.91rem;margin:10px 0 20px}
+.ai-eval-guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:25px}
+.ai-eval-guide>div{background:#f0f8f6;border:1px solid #d8ebe8;border-radius:10px;padding:15px;display:flex;flex-direction:column;gap:8px}
+.ai-eval-guide strong{font-size:.84rem}
+.ai-eval-guide span{font-size:.79rem;color:var(--text-secondary);line-height:1.6}
+.ai-eval-control{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 18px}
+.ai-eval-control label{font-weight:700;font-size:.85rem}
+.ai-eval-control select{border:1px solid #cbd9d8;border-radius:8px;padding:10px 14px;background:#fff;min-width:180px;font:inherit}
+.ai-eval-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 26px}
+.ai-eval-metric{padding:17px;border:1px solid var(--border-subtle);background:#fff;border-radius:10px;display:flex;flex-direction:column;gap:7px}
+.ai-eval-metric span{font-size:.77rem;font-weight:700;color:var(--text-secondary)}
+.ai-eval-metric strong{font-size:clamp(1.5rem,2.3vw,2rem);letter-spacing:-.03em;color:#0d7377}
+.ai-eval-metric small{font-size:.73rem;line-height:1.55;color:var(--text-secondary)}
+.ai-eval-chart-title{font-size:1rem;margin:0 0 7px}
+.ai-eval-chart-caption{font-size:.82rem;color:var(--text-secondary);line-height:1.6;margin:0 0 14px}
+.ai-eval-outcome{font-size:.85rem;font-weight:600;color:#24484a;margin:13px 0 7px;line-height:1.65}
+.ai-eval-footnote{font-size:.75rem;color:var(--text-secondary);line-height:1.6}
+@media(max-width:800px){.ai-eval-guide{grid-template-columns:1fr}.ai-eval-metric-grid{grid-template-columns:1fr}}
+
 /* Narrow-screen refinements. Desktop visual language is unchanged. */
 #page-analysis .card-header,#page-results .card-header,#page-physiology .card-header{display:block}
 #page-analysis .card-header .chart-explainer,#page-results .card-header .chart-explainer,#page-physiology .card-header .chart-explainer{margin-top:8px}
@@ -1367,7 +1387,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 
       <div class="card" style="margin-bottom:var(--space-6)">
         <div class="card-header">
-          <h3>What does our AI analyze, and why?</h3><p class="chart-explainer">Heart and skin responses can change under stress. We turn recorded signals into 19 measurable features, then use a trained Random Forest model to distinguish stress from non-stress in the WESAD laboratory study. The public demo shows verified research evaluation, not live astronaut monitoring.</p>
+          <h3>What does our AI analyze, and why?</h3><p class="chart-explainer">Heart and skin responses can change under stress. We turn recorded signals into 19 measurable features, then use a trained Random Forest model to distinguish stress from non-stress in the WESAD laboratory study.</p>
         </div>
         <div class="card-body">
           <!-- Pipeline visualization -->
@@ -1739,34 +1759,85 @@ function renderPublicResearchMode() {
   const aiSelector = aiPage?.querySelector('.selector-row');
   if (aiSelector) aiSelector.style.display = 'none';
   if (aiPage && !byId('public-ai-summary')) {
-    const card = document.createElement('section'); card.className = 'card';
-    card.id = 'public-ai-summary'; card.style.margin = '0 0 24px';
+    const card = document.createElement('section');
+    card.className = 'card';
+    card.id = 'public-ai-summary';
+    card.style.margin = '0 0 24px';
     const body = document.createElement('div'); body.className = 'card-body';
-    const title = document.createElement('h3'); title.textContent = 'Explore held-out model results by participant';
-    const description = document.createElement('p'); description.style.margin = '10px 0 16px';
-    description.textContent = 'Choose a laboratory study participant to view their aggregate leave-one-subject-out evaluation, not a recording or personal stress prediction.';
+    const title = document.createElement('h3');
+    title.textContent = 'Test our AI research results';
+    const intro = document.createElement('p');
+    intro.className = 'ai-eval-intro';
+    intro.textContent = 'We tested our stress-detection model on people it had not learned from. Select a study participant to see how accurately the model recognized stress in that person’s recordings.';
+    const guide = document.createElement('div');
+    guide.className = 'ai-eval-guide';
+    guide.innerHTML = '<div><strong>1. Choose a participant</strong><span>Select S2–S17 to view one person’s test results.</span></div><div><strong>2. Read the scores</strong><span>Accuracy shows how often the AI was right. F1 balances correct stress detection with missed or incorrect stress alerts.</span></div><div><strong>3. Compare participants</strong><span>Use the chart to see how results changed from one person to another.</span></div>';
+    const control = document.createElement('div'); control.className = 'ai-eval-control';
+    const label = document.createElement('label'); label.htmlFor = 'public-ai-subject'; label.textContent = 'Choose a study participant';
     const select = document.createElement('select'); select.id = 'public-ai-subject';
-    select.setAttribute('aria-label', 'Evaluation participant');
-    select.style.maxWidth = '320px'; select.style.width = '100%';
     const rows = Array.isArray(researchFromServer?.loso) ? researchFromServer.loso : [];
-    for (const row of rows) {
+    const sorted = [...rows].sort((a,b) => Number(String(a.subject).replace(/\D/g,'')) - Number(String(b.subject).replace(/\D/g,'')));
+    for (const row of sorted) {
       const option = document.createElement('option');
-      option.value = String(row.subject); option.textContent = String(row.subject);
+      option.value = String(row.subject); option.textContent = 'Participant ' + String(row.subject);
       select.appendChild(option);
     }
-    const results = document.createElement('p'); results.id = 'public-ai-metrics';
-    results.setAttribute('role', 'status'); results.style.marginTop = '18px';
-    results.style.lineHeight = '1.8';
+    if (sorted.some(r => String(r.subject) === 'S10')) select.value = 'S10';
+    control.append(label, select);
+    const metrics = document.createElement('div'); metrics.className = 'ai-eval-metric-grid';
+    const metricNodes = {};
+    for (const [key,heading,explain] of [
+      ['accuracy','Accuracy','How often the model classified stress or non-stress correctly'],
+      ['f1','F1 score','How well the model balances identifying stress and avoiding mistakes'],
+      ['samples','Test recordings','How many two-minute recording segments were evaluated']
+    ]) {
+      const item = document.createElement('div'); item.className = 'ai-eval-metric';
+      const headingNode = document.createElement('span'); headingNode.textContent = heading;
+      const number = document.createElement('strong'); number.textContent = '—'; metricNodes[key] = number;
+      const sub = document.createElement('small'); sub.textContent = explain;
+      item.append(headingNode, number, sub); metrics.appendChild(item);
+    }
+    const chartTitle = document.createElement('h4'); chartTitle.textContent = 'How does this participant compare with others?';
+    chartTitle.className = 'ai-eval-chart-title';
+    const chartIntro = document.createElement('p'); chartIntro.className = 'ai-eval-chart-caption';
+    chartIntro.textContent = 'Each bar shows the percentage of correct predictions for a different study participant. The selected participant is highlighted.';
+    const chart = document.createElement('div'); chart.id = 'public-ai-comparison-chart';
+    chart.setAttribute('role','img'); chart.setAttribute('aria-label','Verified accuracy of AI stress classification for 15 held-out study participants');
+    chart.style.cssText = 'width:100%;height:310px';
+    const outcome = document.createElement('p'); outcome.id = 'public-ai-metrics'; outcome.setAttribute('role','status');
+    outcome.className = 'ai-eval-outcome';
+    const breakdown = document.createElement('p'); breakdown.className = 'ai-eval-footnote';
+    breakdown.textContent = 'These results are from the WESAD research study. Each person was tested using a model trained on the other participants.';
     function update() {
-      const row = rows.find(x => String(x.subject) === select.value);
-      if (!row) { results.textContent = 'Participant-level evaluation unavailable.'; return; }
-      results.textContent = 'Held-out evaluation for ' + row.subject + ': Accuracy ' +
-        (100 * Number(row.accuracy)).toFixed(2) + '%, F1 ' +
-        (100 * Number(row.f1)).toFixed(2) + '%, test windows ' + row.n_test +
-        '. These metrics are aggregate research results, not a live or per-window prediction.';
+      const row = sorted.find(x => String(x.subject) === select.value);
+      if (!row) { outcome.textContent = 'Participant results are unavailable.'; return; }
+      const accuracy = 100*Number(row.accuracy), f1=100*Number(row.f1);
+      metricNodes.accuracy.textContent = Number.isFinite(accuracy) ? accuracy.toFixed(2)+'%' : '—';
+      metricNodes.f1.textContent = Number.isFinite(f1) ? f1.toFixed(2)+'%' : '—';
+      metricNodes.samples.textContent = Number.isFinite(Number(row.n_test)) ? String(row.n_test) : '—';
+      outcome.textContent = 'Participant ' + row.subject + ': the model correctly classified about ' +
+        (Number.isFinite(accuracy) ? accuracy.toFixed(1)+'%' : 'an unavailable percentage') +
+        ' of this person’s recorded segments.';
+      if (typeof echarts === 'undefined') return;
+      const instance = echarts.getInstanceByDom(chart) || echarts.init(chart);
+      const vals=sorted.map(x=>100*Number(x.accuracy));
+      instance.setOption({
+        animationDuration: 250,
+        grid:{left:42,right:18,top:20,bottom:55},
+        tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:params=>{
+          const x=params[0];return x.name+': '+Number(x.value).toFixed(2)+'% accuracy';
+        }},
+        xAxis:{type:'category',data:sorted.map(x=>String(x.subject)),axisLabel:{interval:0,fontSize:11},axisTick:{alignWithLabel:true}},
+        yAxis:{type:'value',min:0,max:100,name:'Accuracy (%)',axisLabel:{formatter:'{value}%'}},
+        series:[{type:'bar',barMaxWidth:34,
+          data:vals.map((v,i)=>({value:Number.isFinite(v)?v:0,itemStyle:{color:String(sorted[i].subject)===select.value?'#0d7377':'#a9d4d1'}})),
+          label:{show:false}}]
+      },true);
+      instance.resize();
     }
     select.addEventListener('change', update);
-    body.append(title, description, select, results); card.appendChild(body);
+    body.append(title,intro,guide,control,metrics,chartTitle,chartIntro,chart,outcome,breakdown);
+    card.appendChild(body);
     aiSelector?.parentNode?.insertBefore(card, aiSelector);
     update();
   }
@@ -1777,8 +1848,6 @@ function renderPublicResearchMode() {
   if (formTitle) formTitle.textContent = '1. Your self-check — available on this public demo';
   const resultTitle = byId('health-check-result')?.querySelector('.card-header h3');
   if (resultTitle) resultTitle.textContent = '2. Your next steps';
-  const description = aiPage?.querySelector('.page-description');
-  if (description) description.textContent = 'Explore verified study-level AI evaluation results. Individual WESAD recording predictions are available only in authorized local research mode.';
   const physDescription = physPage?.querySelector('.page-description');
   if (physDescription) physDescription.textContent = 'Learn about the original WESAD heart and skin recordings, and explore verified public research results.';
 }
