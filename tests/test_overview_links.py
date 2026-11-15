@@ -77,6 +77,15 @@ class OverviewLinkTests(unittest.TestCase):
         self.assertNotIn('Why are individual ECG and EDA traces unavailable?', HTML)
         self.assertIn("for (const el of [physSelector, physChart, physTables])", HTML)
 
+    def test_dataset_cards_are_judge_friendly(self):
+        self.assertIn('Source: Schmidt et al., ICMI 2018, University of Siegen.', HTML)
+        self.assertNotIn("Follow the dataset's published access and attribution conditions.", HTML)
+        self.assertIn('94.24%', HTML)
+        self.assertIn('https://visualization.osdr.nasa.gov/eda', HTML)
+        self.assertNotIn('View model evaluation <span>', HTML)
+        self.assertNotIn('Explore Experiment C results <span>', HTML)
+        self.assertNotIn('Explore NASA telemetry audit <span>', HTML)
+
     def test_public_access_disables_individual_predictions(self):
         self.assertIn("function applyRestrictedWindowMode(status)", HTML)
         self.assertIn("renderPublicResearchMode();", HTML)
