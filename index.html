@@ -1020,7 +1020,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <nav class="site-nav" aria-label="Main navigation">
         <button class="nav-item active" data-page="overview">Overview</button>
         <button class="nav-item" data-page="physiology">Datasets Used</button>
-        <button class="nav-item" data-page="analysis">AI Analysis</button>
+        <button class="nav-item" data-page="analysis">AI Stress Detection</button>
         <button class="nav-item" data-page="checkin">Daily Check-in</button>
         <button class="nav-item" data-page="explainability">Explainability</button>
         <button class="nav-item" data-page="results">Test Results</button>
@@ -1156,7 +1156,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         </div>
         <div class="overview-next-grid">
           <button type="button" data-go="physiology"><span>Datasets Used</span><strong>Which datasets power our experiments?</strong><small>Explore research data sources →</small></button>
-          <button type="button" data-go="analysis"><span>AI Analysis</span><strong>How does the model perform across participants?</strong><small>View held-out evaluation →</small></button>
+          <button type="button" data-go="analysis"><span>AI Stress Detection</span><strong>What does our AI predict from heart and skin signals?</strong><small>See the model and participant testing →</small></button>
           <button type="button" data-go="checkin"><span>Daily Check-in</span><strong>How are you feeling today?</strong><small>Open self-check →</small></button>
         </div>
       </section>
@@ -1359,15 +1359,15 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
     <div class="page" id="page-analysis">
       <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
       <div class="page-header">
-        <h1 class="page-title">AI Analysis</h1>
+        <h1 class="page-title">AI Stress Detection</h1>
         <p class="page-description">
-          Choose a person and a recorded window. Our trained AI will show its stress prediction and what helped it decide.
+          We use AI to analyze patterns in recorded heart and skin signals and classify stress versus non-stress. Explore what the model uses, why we test it, and how it performed on study participants.
         </p>
       </div>
 
       <div class="card" style="margin-bottom:var(--space-6)">
         <div class="card-header">
-          <h3>How does the AI check for stress?</h3><p class="chart-explainer">We turn two minutes of heart and skin signals into numbers. Our AI uses them to predict stress.</p>
+          <h3>What does our AI analyze, and why?</h3><p class="chart-explainer">Heart and skin responses can change under stress. We turn recorded signals into 19 measurable features, then use a trained Random Forest model to distinguish stress from non-stress in the WESAD laboratory study. The public demo shows verified research evaluation, not live astronaut monitoring.</p>
         </div>
         <div class="card-body">
           <!-- Pipeline visualization -->
@@ -1632,7 +1632,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             </div>
             <p id="reliability-takeaway" style="font-size:.85rem;line-height:1.75"></p>
             <p style="font-size:.77rem;color:var(--text-tertiary);line-height:1.7;margin-top:9px">
-              These are held-out Leave-One-Subject-Out test results, not the in-sample predictions in AI Analysis. Confidence cutoffs are examples from the measured curve, not independently tested safety rules. Data comes from WESAD, not astronauts.
+              These are held-out Leave-One-Subject-Out test results, not the in-sample predictions in AI Stress Detection. Confidence cutoffs are examples from the measured curve, not independently tested safety rules. Data comes from WESAD, not astronauts.
             </p>
           </div>
         </div>
