@@ -998,6 +998,16 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 .health-ai-example span{font-size:.78rem;color:var(--text-secondary)}
 .health-ai-example p{grid-column:1/-1;font-size:.78rem;color:var(--text-secondary);line-height:1.7}
 
+/* Research-grounded daily check-in */
+.checkin-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 25px}
+.checkin-input-grid .health-question{max-width:none}
+.checkin-input-grid .health-question small{font-size:.74rem;line-height:1.6;color:var(--text-secondary)}
+.checkin-result-title{font-weight:700;font-size:1.1rem;margin-bottom:16px;color:var(--text-primary)}
+.checkin-measures{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.checkin-measures>div{border:1px solid #dae6e3;background:#f7faf9;border-radius:10px;padding:13px 10px;display:flex;flex-direction:column;gap:7px}
+.checkin-measures span{font-size:.75rem;color:var(--text-secondary)}
+.checkin-measures strong{font-size:1.3rem;color:#0d7377}
+@media(max-width:720px){.checkin-input-grid{grid-template-columns:1fr}.checkin-measures{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* Judge-friendly first screen. Research pages and numerical results stay unchanged. */
 .mission-hero{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(330px,.88fr);gap:30px;align-items:start;padding:23px 0 30px}
 .mission-hero-copy{max-width:none;padding:24px 0 0}
@@ -1199,10 +1209,10 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
       <div class="page-header">
         <h1 class="page-title">Daily Health Check-in</h1>
-        <p class="page-description">Tell us how you feel and get simple next steps. Your answers are separate from the AI's WESAD recordings.</p>
+        <p class="page-description">Record stress, sleep, fatigue, focus and workload; understand which factors stand out and see how they change over repeated check-ins. Explore the research evidence behind AstroStress below.</p>
       </div>
 
-      <div class="card" style="margin-bottom:var(--space-6)">
+      <div class="card" style="display:none;margin-bottom:var(--space-6)">
         <div class="card-header"><h3>1. Recorded AI example</h3><p class="chart-explainer">See what the model predicts from a WESAD study recording. This recording is not your own health data and is not linked to your check-in.</p></div>
         <div class="card-body">
           <div class="health-example-controls">
@@ -1220,59 +1230,66 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         </div>
       </div>
       <div class="card" style="margin-bottom:var(--space-6)">
-        <div class="card-header">
-          <h3>2. Your self-check</h3>
-          <p class="chart-explainer">Three quick questions. Your answers stay on this page and are not saved or sent to a server.</p>
-        </div>
+        <div class="card-header"><h3>1. Record how you feel today</h3>
+          <p class="chart-explainer">Compare your own check-ins across a session. These measurements come from your answers—not from the WESAD sensor study.</p></div>
         <div class="card-body">
           <form id="health-check-form">
-            <div class="health-question">
-              <label for="health-stress">How stressed do you feel?</label>
-              <select id="health-stress" required>
-                <option value="" selected disabled>Select an answer</option>
-                <option value="low">Not stressed</option>
-                <option value="medium">A little stressed</option>
-                <option value="high">Very stressed</option>
-              </select>
+            <div class="checkin-input-grid">
+              <div class="health-question"><label for="health-stress">Perceived stress right now</label>
+                <select id="health-stress" required><option value="" disabled selected>Choose stress level</option><option value="0">0 — None</option><option value="2">2 — Very low</option><option value="4">4 — Mild</option><option value="6">6 — Moderate</option><option value="8">8 — High</option><option value="10">10 — Extreme</option></select>
+                <small>Your own rating, from 0 (none) to 10 (extreme)</small>
+              </div>
+              <div class="health-question"><label for="health-sleep">Hours of sleep last night</label>
+                <select id="health-sleep" required><option value="" disabled selected>Choose hours</option><option value="3">Less than 4 hours</option><option value="4">4 hours</option><option value="5">5 hours</option><option value="6">6 hours</option><option value="7">7 hours</option><option value="8">8 hours</option><option value="9">9 or more hours</option></select>
+                <small>Helps you track changes alongside how stressed you feel</small>
+              </div>
+              <div class="health-question"><label for="health-fatigue">Fatigue right now</label>
+                <select id="health-fatigue" required><option value="" disabled selected>Choose fatigue level</option><option value="0">0 — None</option><option value="2">2 — Low</option><option value="4">4 — Mild</option><option value="6">6 — Moderate</option><option value="8">8 — High</option><option value="10">10 — Extreme</option></select>
+                <small>How physically or mentally exhausted you feel</small>
+              </div>
+              <div class="health-question"><label for="health-focus">Ability to focus right now</label>
+                <select id="health-focus" required><option value="" disabled selected>Choose focus level</option><option value="0">0 — Cannot focus</option><option value="2">2 — Very difficult</option><option value="4">4 — Difficult</option><option value="6">6 — Fair</option><option value="8">8 — Good</option><option value="10">10 — Excellent</option></select>
+                <small>Your self-rated ability to concentrate</small>
+              </div>
+              <div class="health-question"><label for="health-workload">Current workload or pressure</label>
+                <select id="health-workload" required><option value="" disabled selected>Choose workload</option><option value="0">0 — None</option><option value="2">2 — Very low</option><option value="4">4 — Low</option><option value="6">6 — Moderate</option><option value="8">8 — High</option><option value="10">10 — Extreme</option></select>
+                <small>How demanding your work or activities feel today</small>
+              </div>
+              <div class="health-question"><label for="health-feeling">Do you feel unwell or need urgent help?</label>
+                <select id="health-feeling" required><option value="" disabled selected>Choose an answer</option><option value="okay">No</option><option value="tired">I feel overwhelmed or unwell</option><option value="urgent">Yes, I need help now</option></select>
+                <small>Urgent concerns should not depend on a software assessment</small>
+              </div>
             </div>
-            <div class="health-question">
-              <label for="health-sleep">How did you sleep?</label>
-              <select id="health-sleep" required>
-                <option value="" selected disabled>Select an answer</option>
-                <option value="good">Slept well</option>
-                <option value="poor">Did not sleep well</option>
-              </select>
-            </div>
-            <div class="health-question">
-              <label for="health-feeling">How do you feel right now?</label>
-              <select id="health-feeling" required>
-                <option value="" selected disabled>Select an answer</option>
-                <option value="okay">Okay</option>
-                <option value="tired">Tired or overwhelmed</option>
-                <option value="urgent">Unwell or need help</option>
-              </select>
-            </div>
-            <button class="btn btn-primary" type="submit">See my next steps</button>
-            <button class="btn btn-secondary" type="reset" style="margin-left:8px">Clear</button>
+            <button class="btn btn-primary" type="submit">Analyze my check-in</button>
+            <button class="btn btn-secondary" type="reset" style="margin-left:8px">Reset inputs</button>
           </form>
         </div>
       </div>
       <div class="card" id="health-check-result" style="display:none;margin-bottom:var(--space-6)">
-        <div class="card-header"><h3>3. Your next steps</h3><p class="chart-explainer">Based on your answers only, not the recorded AI example or an AI diagnosis.</p></div>
+        <div class="card-header"><h3>2. Your assessment</h3><p class="chart-explainer">Personalized feedback based on the answers you entered. There is no model-generated diagnosis or medical risk score.</p></div>
         <div class="card-body">
-          <p id="health-check-summary" role="status" style="font-weight:700;margin-bottom:12px"></p>
+          <p id="health-check-summary" role="status" class="checkin-result-title"></p>
+          <div id="health-check-measures" class="checkin-measures" aria-label="Your recorded check-in values"></div>
+          <h4 style="margin:14px 0 10px">What contributed to your result?</h4>
           <ul id="health-check-steps" class="health-advice-list"></ul>
-          <p style="font-size:.79rem;color:var(--text-secondary);margin-top:16px">During a mission, follow crew health procedures and contact your medical team if concerned. This demo does not prescribe treatment.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:var(--space-6)">
+        <div class="card-header"><h3>3. Track changes between check-ins</h3>
+          <p class="chart-explainer">Submit another check-in to compare how stress, fatigue and focus change. Only entries from this open page are shown; refreshing clears the history.</p></div>
+        <div class="card-body">
+          <p id="health-check-history-status" class="chart-explainer">No check-ins recorded in this session yet.</p>
+          <div id="health-check-history-chart" style="width:100%;height:300px;display:none" role="img" aria-label="Stress, fatigue and focus across check-ins in this session"></div>
+          <button id="health-check-clear-history" class="btn btn-secondary" type="button" style="display:none;margin-top:12px">Clear check-in history</button>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><h3>What does AstroStress measure?</h3></div>
-        <div class="card-body"><p style="font-size:.87rem;line-height:1.8;color:var(--text-secondary)">
-          <strong>AI:</strong> Heart and skin signals from real WESAD lab recordings.
-          <strong>Self-check:</strong> Your own answers about stress, sleep and how you feel.
-          Blood pressure, body temperature and astronaut sensors are not connected.
-          The study participant and you are different people. We do not combine these sources into a health score. These answers do not change the model or research results.
-        </p></div>
+        <div class="card-header"><h3>4. How this connects to AstroStress research</h3></div>
+        <div class="card-body">
+          <p style="font-size:.88rem;line-height:1.8;color:var(--text-secondary)">Our WESAD research measured patterns in actual heart and skin signals using <strong>19 physiological features</strong>. The selected Random Forest model achieved <strong>88.74% mean participant test accuracy</strong> and <strong>78.35% mean F1</strong>. Those are verified study results, not scores calculated from this questionnaire.</p>
+          <p style="font-size:.85rem;line-height:1.8;color:var(--text-secondary);margin-top:10px">This check-in provides a separate <strong>self-reported view</strong> of stress, sleep, fatigue and focus. It helps someone track how they feel over time; it does not claim to measure their ECG, EDA or trained-model stress classification.</p>
+          <button class="workflow-link" type="button" data-go="results" style="margin-top:12px">See verified AI research results <span>→</span></button>
+        </div>
       </div>
     </div>
 
@@ -1888,9 +1905,9 @@ function renderPublicResearchMode() {
   const recordedCard = byId('checkin-example-button')?.closest('.card');
   if (recordedCard) recordedCard.style.display = 'none';
   const formTitle = checkin?.querySelector('#health-check-form')?.closest('.card')?.querySelector('.card-header h3');
-  if (formTitle) formTitle.textContent = '1. Your self-check — available on this public demo';
+  // The interactive check-in has the same steps in local and public modes.
   const resultTitle = byId('health-check-result')?.querySelector('.card-header h3');
-  if (resultTitle) resultTitle.textContent = '2. Your next steps';
+  // Assessment headings are authored directly in the page.
   const physDescription = physPage?.querySelector('.page-description');
   if (physDescription) physDescription.textContent = 'Learn about the original WESAD heart and skin recordings, and explore verified public research results.';
 }
@@ -2462,44 +2479,74 @@ byId('checkin-example-button').addEventListener('click',async()=>{
   }catch(err){if(token===checkinExampleSerial)message('checkin-ai-status','Unable to load verified prediction: '+err.message,true);}
 });
 const healthForm=byId('health-check-form');
-healthForm.addEventListener('submit', event=>{
-  event.preventDefault();
-  const stress=byId('health-stress').value;
-  const sleep=byId('health-sleep').value;
-  const feeling=byId('health-feeling').value;
-  if(!stress||!sleep||!feeling)return;
-  const steps=[];
-  let heading='Your check-in is ready.';
-  if(feeling==='urgent'){
-    heading='You said you feel unwell or need help.';
-    steps.push('Tell a crew member and contact the mission medical team using the approved procedure.');
-    steps.push('Do not rely on an AI stress score to decide whether to ask for help.');
-  }else{
-    if(stress==='high'){
-      heading='You said you feel very stressed.';
-      steps.push('When it is safe and your duties allow, take a short pause and try slow, comfortable breathing.');
-      steps.push('Tell your crew or mission health team if the feeling continues or gets worse.');
-    }else if(stress==='medium'){
-      heading='You said you feel a little stressed.';
-      steps.push('Consider a short break and check how you feel afterward, when duties allow.');
-    }else{
-      heading='You said you do not feel stressed.';
-      steps.push('Keep following your usual health check routine.');
-    }
-    if(sleep==='poor')steps.push('You said you did not sleep well. Mention it during your crew health check and discuss rest with your team.');
-    if(feeling==='tired')steps.push('You said you feel tired. Tell your team if this may affect your work or safety.');
+const checkinEntries=[];
+const checkinChartEl=byId('health-check-history-chart');
+const checkinHistoryStatus=byId('health-check-history-status');
+const checkinClear=byId('health-check-clear-history');
+function renderCheckinHistory(){
+  if(!checkinEntries.length){
+    checkinChartEl.style.display='none';checkinClear.style.display='none';
+    checkinHistoryStatus.textContent='No check-ins recorded in this session yet.';
+    if(typeof echarts!=='undefined'){const chart=echarts.getInstanceByDom(checkinChartEl);if(chart)chart.dispose();}
+    return;
   }
+  checkinClear.style.display='';
+  checkinHistoryStatus.textContent=checkinEntries.length+' check-in'+(checkinEntries.length===1?'':'s')+' this session. Each point is an answer you personally entered, not a sensor reading.';
+  if(checkinEntries.length<2){checkinChartEl.style.display='none';return;}
+  checkinChartEl.style.display='block';
+  if(typeof echarts==='undefined'){checkinHistoryStatus.textContent+=' Graphs are temporarily unavailable.';return;}
+  const chart=echarts.getInstanceByDom(checkinChartEl)||echarts.init(checkinChartEl);
+  const mk=(key,color)=>({type:'line',name:key.charAt(0).toUpperCase()+key.slice(1),data:checkinEntries.map(e=>e[key]),showSymbol:true,symbolSize:9,smooth:false,lineStyle:{width:3,color},itemStyle:{color}});
+  chart.setOption({grid:{left:38,right:16,top:32,bottom:48},tooltip:{trigger:'axis'},legend:{top:0},xAxis:{type:'category',data:checkinEntries.map((_,i)=>'#'+(i+1)),name:'Check-in'},yAxis:{type:'value',min:0,max:10,name:'Self-rating (0–10)'},series:[mk('stress','#c36d51'),mk('fatigue','#3366cc'),mk('focus','#0d7377')]},true);
+  chart.resize();
+}
+healthForm.addEventListener('submit',event=>{
+  event.preventDefault();
+  if(!healthForm.reportValidity())return;
+  const get=id=>Number(byId(id).value);
+  const stress=get('health-stress'),sleep=get('health-sleep'),fatigue=get('health-fatigue'),focus=get('health-focus'),workload=get('health-workload');
+  const feeling=byId('health-feeling').value;
+  if([stress,sleep,fatigue,focus,workload].some(x=>!Number.isFinite(x))||!feeling)return;
+  const entry={stress,sleep,fatigue,focus,workload,feeling};
+  // These are direct self-reports; do not invent model probabilities or a medical risk index.
+  const factors=[];
+  if(stress>=8)factors.push('You reported high stress ('+stress+'/10). Consider a pause when safe, and speak with someone you trust if it persists.');
+  else if(stress>=6)factors.push('Your stress rating is '+stress+'/10. Check whether a short break or a reduced workload helps.');
+  else factors.push('Your perceived stress is '+stress+'/10. Use the next check-in to notice if it changes.');
+  if(sleep<=5)factors.push('You reported '+(sleep===3?'less than 4':sleep)+' hours of sleep. Limited sleep may affect alertness; prioritize rest when possible.');
+  else factors.push('You reported approximately '+(sleep===9?'9 or more':sleep)+' hours of sleep. Watch how sleep and your other ratings change together.');
+  if(fatigue>=6)factors.push('Fatigue is '+fatigue+'/10. Consider rest or discussing demanding tasks before continuing.');
+  if(focus<=4)factors.push('Focus is '+focus+'/10. If concentrating is difficult, consider reducing complex tasks until you feel able to continue.');
+  if(workload>=8)factors.push('Your workload rating is '+workload+'/10. A demanding day may be worth discussing with your team.');
+  if(feeling==='urgent'){
+    factors.unshift('You said you need help now. Contact local emergency services or your medical/support team immediately; do not wait for this check-in.');
+  }else if(feeling==='tired'){
+    factors.push('You reported feeling unwell or overwhelmed. Consider speaking with a health professional or trusted support person.');
+  }
+  let heading='Your self-reported check-in';
+  if(feeling==='urgent')heading='Immediate support is the priority';
+  else if(stress>=8&&fatigue>=8)heading='High stress and fatigue reported';
+  else if(stress>=6||fatigue>=6||focus<=4)heading='Some areas may need attention today';
+  else heading='Your check-in is recorded';
   byId('health-check-summary').textContent=heading;
+  const measures=byId('health-check-measures');measures.replaceChildren();
+  for(const [name,value,suffix] of [['Stress',stress,'/10'],['Sleep',sleep===3?'<4':sleep===9?'9+':sleep,' h'],['Fatigue',fatigue,'/10'],['Focus',focus,'/10'],['Workload',workload,'/10']]){
+    const box=document.createElement('div');const label=document.createElement('span');label.textContent=name;const strong=document.createElement('strong');strong.textContent=value+suffix;box.append(label,strong);measures.appendChild(box);
+  }
   const list=byId('health-check-steps');list.replaceChildren();
-  for(const step of steps){const li=document.createElement('li');li.textContent=step;list.appendChild(li);}
+  for(const factor of factors){const li=document.createElement('li');li.textContent=factor;list.appendChild(li);}
   byId('health-check-result').style.display='block';
+  checkinEntries.push(entry);if(checkinEntries.length>12)checkinEntries.shift();
+  renderCheckinHistory();
 });
 healthForm.addEventListener('reset',()=>{
   byId('health-check-result').style.display='none';
   byId('health-check-summary').textContent='';
+  byId('health-check-measures').replaceChildren();
   byId('health-check-steps').replaceChildren();
 });
-
+checkinClear.addEventListener('click',()=>{checkinEntries.splice(0);renderCheckinHistory();});
+renderCheckinHistory();
 
 // ============================================================
 // NASA D1: offline-verified, aggregate environmental research
