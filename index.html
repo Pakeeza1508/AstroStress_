@@ -1064,7 +1064,6 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         <button class="nav-item" data-page="physiology">Datasets Used</button>
         <button class="nav-item" data-page="analysis">AI Stress Detection</button>
         <button class="nav-item" data-page="checkin">Daily Check-in</button>
-        <button class="nav-item" data-page="explainability">Explainability</button>
         <button class="nav-item" data-page="results">Test Results</button>
         <button class="nav-item" data-page="nasa">NASA EDA</button>
       </nav>
@@ -1171,7 +1170,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             <div class="workflow-number">04</div>
             <h3>Explainable AI</h3>
             <p>Use global SHAP explanations to show which features influence model predictions, without implying causation.</p>
-            <button class="workflow-link" type="button" data-go="explainability">Explore SHAP explanations <span>→</span></button>
+            <button class="workflow-link" type="button" data-go="analysis">Explore SHAP explanations <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">05</div>
@@ -1508,20 +1507,8 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- ============================================================
-         PAGE: EXPLAINABILITY
-         ============================================================ -->
-    <div class="page" id="page-explainability">
-      <button type="button" class="simple-back" data-go="overview" aria-label="Back to overview">← Back</button>
-      <div class="page-header">
-        <h1 class="page-title">Explainability</h1>
-        <p class="page-description">
-          See which heart and skin measurements mattered most to the AI's answer.
-        </p>
-      </div>
-
+      <section id="analysis-explainability" style="margin-top:var(--space-10)">
+        <div class="page-header"><h2 class="page-title">Explainability</h2><p class="page-description">See which heart and skin measurements mattered most to the AI's answer.</p></div>
       <div class="card" style="margin-bottom:var(--space-6)">
         <div class="card-header">
           <h3>Which physiological features matter most overall?</h3><p class="chart-explainer">Compare feature attribution magnitudes across the model. Larger values mean greater modeled influence, not a medical diagnosis.</p>
@@ -1591,6 +1578,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           </div>
         </div>
       </div>
+      </section>
     </div>
 
     <!-- ============================================================
@@ -2114,7 +2102,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
       if (page === 'physiology') initPhysiologyCharts();
       if (page === 'analysis' && byId('ai-result-area').style.display !== 'none') { const chart=echarts.getInstanceByDom(byId('chart-ai-gauge')); if(chart) chart.resize(); }
       if (page === 'analysis') { const el=byId('public-ai-comparison-chart'); const chart=el && typeof echarts !== 'undefined' ? echarts.getInstanceByDom(el) : null; if(chart) chart.resize(); else if(el) byId('public-ai-subject')?.dispatchEvent(new Event('change')); }
-      if (page === 'explainability') initExplainabilityCharts();
+      if (page === 'analysis') initExplainabilityCharts();
       if (page === 'results') initResultsCharts();
       if (page === 'results') renderReliabilityCharts();
       if (page === 'nasa') initNasaD1Chart();
