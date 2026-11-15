@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Crew operations self-check and synthetic training scenarios; not a clinical instrument or WESAD model inference",
+  "research_reference": {
+    "dataset": "WESAD (Schmidt et al., 2018)",
+    "summary": "Separate, verified leave-one-subject-out stress classification research; ECG/EDA features require actual sensor data",
+    "note": "Scenarios are invented training examples; no WESAD participant records or model probabilities are included."
+  },
+  "scenarios": [
+    {
+      "id": "pre_eva",
+      "title": "Pre-EVA readiness",
+      "description": "Before a planned extravehicular activity: check readiness to focus on procedures and safety-critical steps.",
+      "task": "EVA",
+      "sample": {
+        "stress": 6,
+        "sleep": 5,
+        "fatigue": 6,
+        "focus": 4,
+        "workload": 8,
+        "feeling": "okay"
+      },
+      "actions": {
+        "high": "Flag reduced focus or fatigue during EVA planning; tell the crew lead and request an additional readiness review before proceeding.",
+        "moderate": "Run a checklist cross-check with the EVA partner and confirm workload distribution.",
+        "normal": "Continue the normal EVA preparation checklist and team briefing."
+      }
+    },
+    {
+      "id": "science_ops",
+      "title": "Science operations",
+      "description": "During precision laboratory work: monitor workload, concentration and operational errors.",
+      "task": "SCIENCE",
+      "sample": {
+        "stress": 4,
+        "sleep": 8,
+        "fatigue": 2,
+        "focus": 8,
+        "workload": 6,
+        "feeling": "okay"
+      },
+      "actions": {
+        "high": "Tell the operations lead before handling time-sensitive experiments; request a second-person verification.",
+        "moderate": "Add a peer check for high-consequence steps and plan a recovery break between tasks.",
+        "normal": "Continue the established experiment checklist, including routine peer verification."
+      }
+    },
+    {
+      "id": "post_shift",
+      "title": "Post-shift recovery",
+      "description": "Following a demanding duty period: review perceived stress, sleep, fatigue and readiness for the next shift.",
+      "task": "RECOVERY",
+      "sample": {
+        "stress": 8,
+        "sleep": 4,
+        "fatigue": 8,
+        "focus": 4,
+        "workload": 8,
+        "feeling": "tired"
+      },
+      "actions": {
+        "high": "Raise the concern at crew health check and agree on a recovery plan before the next critical assignment.",
+        "moderate": "Discuss rest opportunities and adjust the upcoming task load with the duty team.",
+        "normal": "Follow the normal end-of-shift recovery and handover routine."
+      }
+    },
+    {
+      "id": "mission_contingency",
+      "title": "Mission contingency",
+      "description": "After an unexpected operational event: check whether crew members need support and whether tasks require reassignment.",
+      "task": "CONTINGENCY",
+      "sample": {
+        "stress": 10,
+        "sleep": 3,
+        "fatigue": 8,
+        "focus": 2,
+        "workload": 10,
+        "feeling": "urgent"
+      },
+      "actions": {
+        "high": "Notify mission control or the on-duty crew medical officer under the approved contingency protocol, and request help immediately.",
+        "moderate": "Notify the crew lead, conduct a briefing, and verify roles before resuming demanding tasks.",
+        "normal": "Resume duties only through the approved contingency checklist and debrief."
+      }
+    }
+  ]
+}
