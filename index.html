@@ -1263,11 +1263,11 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             <h3>WESAD — Wearable Stress and Affect Detection</h3>
             <p>Earth-based laboratory recordings from <strong>15 participants</strong>, collected with chest ECG and wrist electrodermal activity (EDA) sensors. We extract <strong>19 physiological features</strong> from valid <strong>120-second windows</strong> for the four-model stress classification and leave-one-subject-out evaluation. These recordings are <strong>not astronaut data</strong>.</p>
             <div class="dataset-source-details"><span>ECG · 700 Hz</span><span>EDA · 4 Hz</span><span>608 valid analysis windows</span></div>
-            <p class="dataset-source-credit">Source: Schmidt et al., ICMI 2018, University of Siegen. Follow the dataset's published access and attribution conditions.</p>
+            <p class="dataset-source-credit">Source: Schmidt et al., ICMI 2018, University of Siegen.</p>
             <div class="dataset-source-actions">
               <a class="btn btn-secondary" href="https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html" target="_blank" rel="noopener noreferrer">Official WESAD dataset page</a>
               <a class="btn btn-secondary" href="https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx" target="_blank" rel="noopener noreferrer">Official WESAD ZIP</a>
-              <button class="workflow-link" type="button" data-go="analysis">View model evaluation <span>→</span></button>
+              
             </div>
           </div>
         </article>
@@ -1275,12 +1275,10 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <div class="card-body">
             <span class="overview-eyebrow">DATA SOURCE 02 · EXPERIMENT C</span>
             <h3>Prediction Confidence &amp; Reliability</h3>
-            <p><strong>Experiment C reuses WESAD</strong> rather than introducing another physiological dataset. It evaluates held-out model probabilities for <strong>608 recorded windows</strong>, examining calibration, prediction confidence and the accuracy–coverage trade-off. A separate non-overlapping sensitivity subset includes <strong>321 windows</strong>.</p>
-            <div class="dataset-source-details"><span>Original source: WESAD</span><span>Held-out model probabilities</span><span>Non-overlapping sensitivity analysis</span></div>
-            <p class="dataset-source-credit">Data provenance: predictions computed from WESAD leave-one-subject-out folds. The illustrative confidence cutoff is not a clinical or astronaut safety threshold.</p>
-            <div class="dataset-source-actions">
-              <button class="workflow-link" type="button" data-go="results">Explore Experiment C results <span>→</span></button>
-            </div>
+            <p>We extended our original <strong>WESAD stress-detection research</strong> to test how confidently the AI can identify stress and when it should be less certain. On the full test data, the model classified <strong>88.65%</strong> correctly. When we considered only predictions with at least <strong>80% confidence</strong>, accuracy reached <strong>94.24%</strong> on approximately <strong>80% of the test data</strong>. This helps demonstrate the trade-off between making more predictions and making more reliable predictions.</p>
+            <div class="dataset-source-details"><span>Uses the same WESAD dataset</span><span>88.65% overall test accuracy</span><span>94.24% on higher-confidence predictions</span></div>
+            <p class="dataset-source-credit">The higher accuracy applies only to the predictions the model was more confident about; it is not the model's overall accuracy.</p>
+            
           </div>
         </article>
         <article class="card dataset-source-card">
@@ -1289,9 +1287,9 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             <h3>NASA Environmental Telemetry Audit</h3>
             <p>NASA Environmental Data Application (EDA) exports from <strong>Rodent Research RR-1 and RR-6</strong> supply environmental hardware readings of CO₂, temperature, and relative humidity. We analyze <strong>12,087 RR-1</strong> and <strong>17,572 RR-6</strong> telemetry rows for descriptive patterns, timestamp gaps, and repeated readings.</p>
             <div class="dataset-source-details"><span>RR-1 · 2014</span><span>RR-6 · 2017–2018</span><span>RR-9 · summary only</span></div>
-            <p class="dataset-source-credit">Source: NASA EDA rodent-research hardware exports. RR-9 supplies a separate summary, not a time-series dataset. These measurements are not validated crew-cabin exposures and are not paired with WESAD.</p>
+            
             <div class="dataset-source-actions">
-              <button class="workflow-link" type="button" data-go="nasa">Explore NASA telemetry audit <span>→</span></button>
+              <a class="btn btn-secondary" href="https://visualization.osdr.nasa.gov/eda" target="_blank" rel="noopener noreferrer">Open original NASA EDA data</a>
             </div>
           </div>
         </article>
