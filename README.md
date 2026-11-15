@@ -37,14 +37,16 @@ The project also evaluates prediction-confidence/coverage trade-offs and uses SH
 
 ## Run locally
 
-Install the dependencies and start the Flask app:
+Install dependencies and start the trusted local research server:
 
 ```bash
 python -m pip install -r requirements.txt
-python app.py
+python app_server.py
 ```
 
-The verified model/research artifacts must be available locally for research endpoints to work. For research reproduction and deployment details, see [deployment notes](DEPLOY_VERCEL.md) and the Python research scripts.
+Open `http://127.0.0.1:8000/`.
+
+The verified model/research artifacts must be available locally for research endpoints to work. For further technical information, see the repository's Python research scripts and [deployment notes](DEPLOY_VERCEL.md) (these notes may describe an earlier branch).
 
 ## Scope and sources
 
