@@ -1276,8 +1276,6 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             <span class="overview-eyebrow">DATA SOURCE 02 · CONFIDENCE RESEARCH</span>
             <h3>Prediction Confidence &amp; Reliability</h3>
             <p>We extended our original <strong>WESAD stress-detection research</strong> to test how confidently the AI can identify stress and when it should be less certain. On the full test data, the model classified <strong>88.65%</strong> correctly. When we considered only predictions with at least <strong>80% confidence</strong>, accuracy reached <strong>94.24%</strong> on approximately <strong>80% of the test data</strong>. This helps demonstrate the trade-off between making more predictions and making more reliable predictions.</p>
-            <div class="dataset-source-details"><span>Uses the same WESAD dataset</span><span>88.65% overall test accuracy</span><span>94.24% on higher-confidence predictions</span></div>
-            <p class="dataset-source-credit">The higher accuracy applies only to the predictions the model was more confident about; it is not the model's overall accuracy.</p>
             
           </div>
         </article>
@@ -1285,8 +1283,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <div class="card-body">
             <span class="overview-eyebrow">DATA SOURCE 03 · NASA TELEMETRY</span>
             <h3>NASA Environmental Telemetry Audit</h3>
-            <p>NASA Environmental Data Application (EDA) exports from <strong>Rodent Research RR-1 and RR-6</strong> supply environmental hardware readings of CO₂, temperature, and relative humidity. We analyze <strong>12,087 RR-1</strong> and <strong>17,572 RR-6</strong> telemetry rows for descriptive patterns, timestamp gaps, and repeated readings.</p>
-            <div class="dataset-source-details"><span>RR-1 · 2014</span><span>RR-6 · 2017–2018</span><span>RR-9 · summary only</span></div>
+            <p>We used real NASA environmental sensor records from the <strong>RR-1 and RR-6 space research missions</strong> to study how CO₂, temperature, and humidity changed over time. We also checked for missing measurements and readings that stayed exactly the same for unusually long periods. <strong>Our result is an interactive environmental data-quality analysis</strong> that highlights patterns and possible gaps researchers would need to investigate before using such readings in a future space-health monitoring system.</p>
             
             <div class="dataset-source-actions">
               <a class="btn btn-secondary" href="https://visualization.osdr.nasa.gov/eda" target="_blank" rel="noopener noreferrer">Open original NASA EDA data</a>
