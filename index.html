@@ -1688,22 +1688,13 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <div class="card" style="margin-bottom:var(--space-5)">
         <div class="card-header">
           <h3>05 · What does the data-quality check reveal?</h3>
-          <p class="chart-explainer">We inspect unusually spaced timestamps and runs where multiple sensor channels repeat the same values. These are investigation flags, not proof that a sensor failed.</p>
         </div>
         <div class="card-body">
           <p id="nasa-quality-summary" style="line-height:1.85;color:var(--text-secondary)"></p>
           <p id="nasa-flat-summary" style="margin-top:12px;line-height:1.8;color:var(--text-secondary)"></p>
-          <p style="margin-top:14px;line-height:1.75;font-size:.82rem;color:var(--text-secondary)">Weekly values are medians of observed rows, not time-weighted averages. The exports may include readings outside the on-orbit mission phase; no mission-phase filtering has been validated. RR-1 and RR-6 are from different years and should not be treated as controlled before-and-after comparisons.</p>
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:var(--space-5)">
-        <div class="card-header"><h3>About the source datasets</h3></div>
-        <div class="card-body">
-          <p style="font-size:.85rem;line-height:1.8;color:var(--text-secondary)">This tab uses NASA Environmental Data Application telemetry CSV exports associated with Rodent Research RR-1 and RR-6. The separate RR-9 file contains only 10 summary rows, not a timestamped series, so it is not plotted as a time trend. Its radiation unit label is ambiguous and is not interpreted as a dose rate.</p>
-          <p style="font-size:.82rem;line-height:1.8;color:var(--text-secondary);margin-top:10px">The source CSVs were checked using SHA-256 against the project research audit. This is an exploratory environmental-data analysis; it does not establish astronaut stress, personal exposure, or NASA-STD-3001 compliance.</p>
-        </div>
-      </div>
     </div>
   </main>
 </div>
