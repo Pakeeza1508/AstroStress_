@@ -58,7 +58,14 @@ class OverviewLinkTests(unittest.TestCase):
     def test_inactive_hero_prediction_card_is_hidden(self):
         self.assertRegex(HTML, r'<section class="overview-demo"[^>]*hidden[^>]*style="display:none"')
         self.assertIn('id="overview-demo-run"', HTML)  # Keep API callback compatible.
-        self.assertIn("Context-Aware, Uncertainty-Guided Space Health Intelligence", HTML)
+        self.assertIn("What if astronauts' stress could be", HTML)
+
+    def test_overview_return_restores_previous_scroll_position(self):
+        self.assertIn("const pageScrollPositions = new Map", HTML)
+        self.assertIn("pageScrollPositions.set(currentPage, window.scrollY)", HTML)
+        self.assertIn("pageScrollPositions.get('overview')", HTML)
+        self.assertIn("window.scrollTo({ top: restoreY, behavior: 'instant' })", HTML)
+        self.assertNotIn("window.scrollTo({ top: 0, behavior: 'smooth' })", HTML)
 
     def test_public_access_disables_individual_predictions(self):
         self.assertIn("function applyRestrictedWindowMode(status)", HTML)
