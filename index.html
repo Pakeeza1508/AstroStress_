@@ -1423,7 +1423,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             </div>
             <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
             <div style="background:var(--coral-100);color:var(--coral-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
-              Random Forest Classifier<br><span style="font-weight:400;font-size:0.72rem">stress / non-stress</span>
+              Random Forest Classifier
             </div>
             <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
             <div style="background:var(--green-100);color:var(--green-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
@@ -2242,7 +2242,7 @@ async function initExplainabilityCharts() {
       series:[{name:'Real global importance',type:'bar',data:values,itemStyle:{color:'#0D7377',borderRadius:[0,4,4,0]},barMaxWidth:20,label:{show:true,position:'right',formatter:p=>Number(p.value).toFixed(4)}}],
       tooltip:{trigger:'axis',axisPointer:{type:'shadow'}}
     },true);
-    status.textContent='Actual global SHAP values from '+result.model+' · '+result.n_windows_explained+' WESAD windows. In-sample model explanations, not held-out testing or physiological causes.';
+    status.textContent='';
     badge.textContent='Verified saved SHAP data';
     chart.resize();
   } catch(err) {
