@@ -1065,7 +1065,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         <button class="nav-item" data-page="analysis">AI Stress Detection</button>
         <button class="nav-item" data-page="checkin">Daily Check-in</button>
         <button class="nav-item" data-page="results">Test Results</button>
-        <button class="nav-item" data-page="nasa">NASA EDA</button>
+        <button class="nav-item" data-page="nasa">Space Environment Monitoring</button>
       </nav>
     </div>
   </header>
@@ -1608,45 +1608,103 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
     <div class="page" id="page-nasa">
       <button type="button" class="simple-back" data-go="overview">← Back</button>
       <div class="page-header">
-        <h1 class="page-title">NASA Environmental Data</h1>
-        <p class="page-description">Real NASA Environmental Data Application exports from rodent-research hardware. This is an exploratory, descriptive data-quality audit — not astronaut stress data, a crew-cabin exposure assessment, or NASA-STD-3001 compliance testing.</p>
+        <h1 class="page-title">Space Environment Monitoring</h1>
+        <p class="page-description">Explore real environmental sensor records from NASA Rodent Research hardware. Compare the recorded CO₂, temperature and humidity patterns, then review where missing or repeated measurements affect interpretation.</p>
       </div>
-      <div class="card" style="margin-bottom:20px">
+
+      <div class="card" style="margin-bottom:var(--space-5)">
+        <div class="card-header">
+          <h3>01 · Choose a NASA research dataset</h3>
+          <p class="chart-explainer">RR-1 and RR-6 are separate rodent-research experiments. Their environmental telemetry was recorded in different periods, so each dataset is explored on its own.</p>
+        </div>
         <div class="card-body">
-          <label for="nasa-mission-select" class="label" style="display:block;margin-bottom:8px">Mission telemetry export</label>
-          <select id="nasa-mission-select" style="width:100%;max-width:310px;padding:10px">
+          <label for="nasa-mission-select" class="label" style="display:block;margin-bottom:8px">Research dataset</label>
+          <select id="nasa-mission-select" style="width:100%;max-width:340px;padding:10px">
             <option value="RR-1">RR-1 · 2014</option><option value="RR-6">RR-6 · 2017–2018</option>
           </select>
-          <p id="nasa-period" role="status" style="font-size:.85rem;color:var(--text-secondary);margin-top:12px"></p>
+          <p id="nasa-period" role="status" style="font-size:.84rem;color:var(--text-secondary);margin-top:12px;line-height:1.7"></p>
+          <p id="nasa-mission-intro" style="margin-top:8px;font-size:.84rem;line-height:1.7;color:var(--text-secondary)"></p>
         </div>
       </div>
-      <div class="research-stat-grid" aria-live="polite">
-        <div class="research-stat"><strong id="nasa-rows">—</strong><span>Recorded observations</span><p>Unfiltered export, including possible prelaunch/post-return records.</p></div>
-        <div class="research-stat"><strong id="nasa-co2">—</strong><span>Rows with ISS-channel CO₂ &gt; 4,000 ppm</span><p>Exploratory row count, not a compliance violation or exposure duration.</p></div>
-        <div class="research-stat"><strong id="nasa-gaps">—</strong><span>Gaps longer than 10 minutes</span><p>Missing time means sample counts cannot describe continuous exposure.</p></div>
-      </div>
-      <div class="card" style="margin:20px 0">
-        <div class="card-header"><div><h3>Weekly median environmental signals</h3><p class="chart-explainer">Seven-day bins from each export's first timestamp; sampled medians, not duration-weighted. Select a parameter below.</p></div></div>
-        <div class="card-body">
-          <label for="nasa-metric-select" class="label">Parameter</label>
-          <select id="nasa-metric-select" style="margin:8px 0 16px;width:100%;max-width:310px;padding:10px">
-            <option value="co2">ISS-channel CO₂ (ppm)</option><option value="temp">ISS-channel temperature (°C)</option><option value="humidity">ISS-channel relative humidity (%)</option>
-          </select>
-          <div id="chart-nasa-d1" role="img" aria-label="Median NASA environmental hardware readings by week" style="height:310px;width:100%"></div>
-          <p id="nasa-chart-caveat" role="note" style="margin-top:12px;font-size:.85rem;line-height:1.7;color:var(--text-secondary)"></p>
-        </div>
-      </div>
-      <div class="card" style="margin-bottom:18px">
-        <div class="card-header"><h3>Measurement quality and limitations</h3></div>
-        <div class="card-body">
-          <p id="nasa-quality-summary" style="line-height:1.9"></p>
-          <p style="margin-top:14px;color:var(--text-secondary);line-height:1.8">Extended identical-value runs and simultaneous flat sensor channels are flags for investigation, not evidence of defective hardware. No mission-phase filtering has been validated. RR-1 and RR-6 cover different years and cannot support causal comparisons.</p>
-          <p style="margin-top:12px;color:var(--text-secondary);line-height:1.8"><strong>RR-9:</strong> the supplied file contains only 10 summary rows, not a timestamped timeline. Its radiation unit label is ambiguous; no dose-rate interpretation is made.</p>
-        </div>
-      </div>
-      <p style="font-size:.78rem;color:var(--text-tertiary);line-height:1.8">Source: NASA EDA RR-1 / RR-6 telemetry CSVs and RR-9 summary CSV, SHA-256 checked against the source-data research audit. All numbers are descriptive; 4,000 ppm is a sensitivity cutoff, not a validated crew exposure threshold. Q-MEEF is a project working name.</p>
-    </div>
 
+      <div class="card" style="margin-bottom:var(--space-5)">
+        <div class="card-header">
+          <h3>02 · What do these sensors measure?</h3>
+          <p class="chart-explainer">These are environmental measurements reported by the dataset's ISS-designated channels, not readings from a person's body.</p>
+        </div>
+        <div class="card-body">
+          <div class="grid-2" style="gap:var(--space-4)">
+            <div style="padding:16px;border:1px solid var(--border-color,#e5e7eb);border-radius:12px">
+              <strong style="display:block;margin-bottom:6px">CO₂ · Carbon dioxide (ppm)</strong>
+              <p style="font-size:.83rem;line-height:1.7;color:var(--text-secondary)">Tracks the reported carbon dioxide concentration. Higher and lower readings show changes in the measured environment; a single reading cannot establish human exposure.</p>
+            </div>
+            <div style="padding:16px;border:1px solid var(--border-color,#e5e7eb);border-radius:12px">
+              <strong style="display:block;margin-bottom:6px">Temperature · °C</strong>
+              <p style="font-size:.83rem;line-height:1.7;color:var(--text-secondary)">Shows the recorded environmental temperature. Weekly medians help reveal broad changes across the export.</p>
+            </div>
+            <div style="padding:16px;border:1px solid var(--border-color,#e5e7eb);border-radius:12px">
+              <strong style="display:block;margin-bottom:6px">Relative humidity · %</strong>
+              <p style="font-size:.83rem;line-height:1.7;color:var(--text-secondary)">Describes moisture in the measured air relative to its capacity at that temperature. It is an environmental reading, not a physiological signal.</p>
+            </div>
+            <div style="padding:16px;border:1px solid var(--border-color,#e5e7eb);border-radius:12px">
+              <strong style="display:block;margin-bottom:6px">Why review data quality?</strong>
+              <p style="font-size:.83rem;line-height:1.7;color:var(--text-secondary)">Missing timestamps and long sequences of repeated values can affect how confidently we interpret trends, even when the original readings are preserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-4)">
+        <div class="card-header">
+          <h3>03 · Dataset at a glance</h3>
+          <p class="chart-explainer">The figures below update when you choose RR-1 or RR-6. They count recorded rows and timestamp gaps; they do not describe how long any condition lasted.</p>
+        </div>
+        <div class="card-body">
+          <div class="research-stat-grid" aria-live="polite">
+            <div class="research-stat"><strong id="nasa-rows">—</strong><span>Recorded observations</span><p>Rows in the unfiltered source export.</p></div>
+            <div class="research-stat"><strong id="nasa-co2">—</strong><span>CO₂ readings above 4,000 ppm</span><p>Exploratory count of rows, not an exposure or safety verdict.</p></div>
+            <div class="research-stat"><strong id="nasa-gaps">—</strong><span>Gaps longer than 10 minutes</span><p>Intervals between consecutive recorded timestamps.</p></div>
+          </div>
+          <p style="font-size:.81rem;line-height:1.7;color:var(--text-secondary)">The 4,000 ppm value is used only as a descriptive comparison cutoff in this research audit. It is not presented as a validated crew health limit.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-5)">
+        <div class="card-header">
+          <h3>04 · Explore environmental trends</h3>
+          <p class="chart-explainer">Choose CO₂, temperature or humidity to see how the median recorded value changed across consecutive seven-day groups. The horizontal axis shows each group's starting date (GMT).</p>
+        </div>
+        <div class="card-body">
+          <label for="nasa-metric-select" class="label" style="display:block;margin-bottom:8px">Environmental measurement</label>
+          <select id="nasa-metric-select" style="margin-bottom:16px;width:100%;max-width:340px;padding:10px">
+            <option value="co2">CO₂ concentration (ppm)</option><option value="temp">Temperature (°C)</option><option value="humidity">Relative humidity (%)</option>
+          </select>
+          <div id="chart-nasa-d1" role="img" aria-label="Weekly medians of recorded NASA environmental telemetry" style="height:330px;width:100%"></div>
+          <p id="nasa-metric-explanation" style="margin-top:12px;font-size:.84rem;line-height:1.7;color:var(--text-secondary)"></p>
+          <p id="nasa-chart-caveat" role="note" style="margin-top:10px;font-size:.81rem;line-height:1.7;color:var(--text-secondary)"></p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-5)">
+        <div class="card-header">
+          <h3>05 · What does the data-quality check reveal?</h3>
+          <p class="chart-explainer">We inspect unusually spaced timestamps and runs where multiple sensor channels repeat the same values. These are investigation flags, not proof that a sensor failed.</p>
+        </div>
+        <div class="card-body">
+          <p id="nasa-quality-summary" style="line-height:1.85;color:var(--text-secondary)"></p>
+          <p id="nasa-flat-summary" style="margin-top:12px;line-height:1.8;color:var(--text-secondary)"></p>
+          <p style="margin-top:14px;line-height:1.75;font-size:.82rem;color:var(--text-secondary)">Weekly values are medians of observed rows, not time-weighted averages. The exports may include readings outside the on-orbit mission phase; no mission-phase filtering has been validated. RR-1 and RR-6 are from different years and should not be treated as controlled before-and-after comparisons.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:var(--space-5)">
+        <div class="card-header"><h3>About the source datasets</h3></div>
+        <div class="card-body">
+          <p style="font-size:.85rem;line-height:1.8;color:var(--text-secondary)">This tab uses NASA Environmental Data Application telemetry CSV exports associated with Rodent Research RR-1 and RR-6. The separate RR-9 file contains only 10 summary rows, not a timestamped series, so it is not plotted as a time trend. Its radiation unit label is ambiguous and is not interpreted as a dose rate.</p>
+          <p style="font-size:.82rem;line-height:1.8;color:var(--text-secondary);margin-top:10px">The source CSVs were checked using SHA-256 against the project research audit. This is an exploratory environmental-data analysis; it does not establish astronaut stress, personal exposure, or NASA-STD-3001 compliance.</p>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -2495,24 +2553,34 @@ function initNasaD1Chart() {
   document.getElementById('nasa-rows').textContent = fmt(r.rows);
   document.getElementById('nasa-co2').textContent = fmt(r.co2_above_4000_rows);
   document.getElementById('nasa-gaps').textContent = fmt(r.gaps_over_10m);
-  document.getElementById('nasa-period').textContent = 'GMT export: ' + r.first_gmt + ' to ' + r.last_gmt + ' · Not filtered to on-orbit mission dates.';
+  document.getElementById('nasa-period').textContent = 'Recorded period (GMT): ' + r.first_gmt + ' to ' + r.last_gmt + '.';
+  document.getElementById('nasa-mission-intro').textContent = mission === 'RR-1' ? 'This 2014 export includes 12,087 observations. Use the controls below to inspect the environmental patterns and measurement quality.' : 'This 2017–2018 export includes 17,572 observations. Its longer timeline includes a substantial timestamp gap that deserves attention.';
   document.getElementById('nasa-quality-summary').textContent =
-    'Median ISS-channel CO₂: ' + fmt(r.co2_median_ppm) + ' ppm · Temperature: ' +
-    r.temperature_median_c + '°C · Humidity: ' + r.humidity_median_pct + '%.' +
-    ' Intervals shorter than the nominal five minutes: ' + r.short_intervals_under_5m +
-    '. Largest timestamp gap: ' + fmt(r.largest_gap_minutes) + ' minutes.' +
-    ' At exactly 4,000 ppm, strict > counts ' + r.co2_above_4000_rows +
-    ' rows; >= would count ' + r.co2_at_or_above_4000_rows + '.';
+    'Across the recorded rows, median CO₂ was ' + fmt(r.co2_median_ppm) + ' ppm, median temperature was ' +
+    r.temperature_median_c + ' °C and median humidity was ' + r.humidity_median_pct + '%. ' +
+    'The largest gap between timestamps was ' + fmt(r.largest_gap_minutes) + ' minutes. ' +
+    r.gaps_over_10m + ' intervals exceeded 10 minutes, while ' + r.short_intervals_under_5m +
+    ' were shorter than the nominal five-minute sampling interval.';
   const fields = {co2:{idx:3,label:'Median CO₂ (ppm)',color:'#0D7377'},
                   temp:{idx:1,label:'Median temperature (°C)',color:'#4A7AE5'},
                   humidity:{idx:2,label:'Median relative humidity (%)',color:'#E07A5F'}};
   const field = fields[metric];
   // Repeated identical ISS readings dominate some weekly medians; flag them instead of hiding or editing values.
   const flat = r.simultaneous_flat_run;
+  document.getElementById('nasa-flat-summary').textContent = flat ?
+    'One notable repeated-reading period began ' + flat.first_gmt + ' GMT and ended ' + flat.last_gmt +
+    ' GMT. Across that span, the three reported channels held the same values (' + flat.iss_values +
+    '). This pattern is retained in the data and flagged for review.' : '';
   document.getElementById('nasa-chart-caveat').textContent = flat ?
     'Data caution (dashed line, week of ' + flat.week_start_gmt + '): ' + fmt(flat.rows) + ' of ' + fmt(flat.week_rows) +
     ' rows (' + Math.round(100 * flat.rows / flat.week_rows) + '%) are one run of identical ISS-channel readings (' +
     flat.iss_values + ') from ' + flat.first_gmt + ' to ' + flat.last_gmt + ' GMT. That week\'s median is shown unchanged but may reflect repeated sensor values rather than actual conditions.' : '';
+  const metricHelp = {
+    co2:'You are viewing weekly median CO₂ readings in parts per million (ppm). A point represents the median of rows recorded in that seven-day group, not a continuous exposure estimate.',
+    temp:'You are viewing weekly median temperature in degrees Celsius. Compare the point heights to see broad temperature changes across recorded weeks.',
+    humidity:'You are viewing weekly median relative humidity as a percentage. These are grouped measurements rather than continuous room-condition estimates.'
+  };
+  document.getElementById('nasa-metric-explanation').textContent = metricHelp[metric];
   const node = document.getElementById('chart-nasa-d1');
   if (!node || typeof echarts === 'undefined') return;
   const chart = echarts.getInstanceByDom(node) || echarts.init(node);
