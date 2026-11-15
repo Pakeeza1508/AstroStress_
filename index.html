@@ -1511,73 +1511,16 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         <div class="page-header"><h2 class="page-title">Explainability</h2><p class="page-description">See which heart and skin measurements mattered most to the AI's answer.</p></div>
       <div class="card" style="margin-bottom:var(--space-6)">
         <div class="card-header">
-          <h3>Which physiological features matter most overall?</h3><p class="chart-explainer">Compare feature attribution magnitudes across the model. Larger values mean greater modeled influence, not a medical diagnosis.</p>
+          <h3>Which Heart and Skin Signals Influence Our AI Most?</h3><p class="chart-explainer">Our AI analyzes 19 features extracted from heart (ECG/HRV) and skin (EDA) signals. This chart uses SHAP analysis to show which features influenced the trained Random Forest model most across the WESAD study. Each bar represents one physiological feature; longer bars indicate greater average influence on the model’s stress classifications.</p>
           <span id="global-shap-badge" class="illustrative-banner">Requires local verified artifacts</span>
         </div>
         <div class="card-body">
           <div id="chart-global-shap" style="width:100%;height:360px"></div>
+          <p class="chart-explainer" style="margin-top:14px;line-height:1.7"><strong>How to read this chart:</strong> Feature names are listed on the left. Bar length shows average SHAP importance: longer bars mean the model relied more on that feature across the analyzed recordings. SHAP measures influence on model output, not the cause or severity of stress.</p>
           <p id="global-shap-status" role="status" style="font-size:.79rem;color:var(--text-secondary);line-height:1.65;margin-top:10px">Open through the local Python server to load actual SHAP values.</p>
         </div>
       </div>
 
-      <div class="grid-2" style="margin-bottom:var(--space-6)">
-        <div class="card">
-          <div class="card-header"><h3>How should the AI explanation be interpreted?</h3><p class="chart-explainer">Understand the difference between a feature influencing a prediction and causing stress.</p></div>
-          <div class="card-body">
-            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7;margin-bottom:var(--space-4)">
-              <strong>SHAP (SHapley Additive exPlanations)</strong> assigns each feature a value representing its
-              contribution to the model's prediction for a specific window. Positive SHAP values push the prediction
-              toward stress; negative values push toward no-stress.
-            </p>
-            <div class="expandable-trigger" onclick="toggleExpand(this)">
-              <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
-              Why is explainability important?
-            </div>
-            <div class="expandable-content">
-              In safety-critical applications like astronaut health monitoring, it is not sufficient for a model to be
-              accurate. Clinicians and mission planners need to understand <em>why</em> a stress classification was made,
-              verify it against physiological intuition, and identify potential failure modes.
-            </div>
-            <div class="expandable-trigger" onclick="toggleExpand(this)">
-              <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
-              Computation details
-            </div>
-            <div class="expandable-content">
-              SHAP values are computed using <code>TreeExplainer</code> on the best model from the corrected Leave-One-Subject-Out (LOSO) evaluation.
-              The local server can provide per-window in-sample SHAP for the saved final model. Attribution is not an average of Leave-One-Subject-Out (LOSO) folds.
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3>What physiological information is analyzed?</h3><p class="chart-explainer">An overview of heart-rate, heart-rate-variability and electrodermal activity measurements.</p></div>
-          <div class="card-body">
-            <div style="margin-bottom:var(--space-4)">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2)">
-                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary)">❤️ Heart Rate Features</span>
-                <span style="font-size:0.78rem;color:var(--text-tertiary)">2 features</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:72%;background:var(--coral-500)"></div></div>
-              <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:var(--space-1)">HR mean, HR standard deviation</div>
-            </div>
-            <div style="margin-bottom:var(--space-4)">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2)">
-                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary)">💓 HRV Features</span>
-                <span style="font-size:0.78rem;color:var(--text-tertiary)">11 features</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:88%;background:var(--teal-500)"></div></div>
-              <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:var(--space-1)">MeanNN, SDNN, RMSSD, pNN50, LF, HF, LF/HF, SampEn, SD1, SD2, MedianNN</div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2)">
-                <span style="font-size:0.85rem;font-weight:600;color:var(--text-primary)">💧 EDA Features</span>
-                <span style="font-size:0.78rem;color:var(--text-tertiary)">6 features</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:54%;background:var(--blue-500)"></div></div>
-              <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:var(--space-1)">Mean, std, min, max, range, SCR peaks</div>
-            </div>
-          </div>
-        </div>
-      </div>
       </section>
     </div>
 
