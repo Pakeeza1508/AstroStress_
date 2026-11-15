@@ -2081,6 +2081,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
     setTimeout(() => {
       if (page === 'physiology') initPhysiologyCharts();
       if (page === 'analysis' && byId('ai-result-area').style.display !== 'none') { const chart=echarts.getInstanceByDom(byId('chart-ai-gauge')); if(chart) chart.resize(); }
+      if (page === 'analysis') { const el=byId('public-ai-comparison-chart'); const chart=el && typeof echarts !== 'undefined' ? echarts.getInstanceByDom(el) : null; if(chart) chart.resize(); }
       if (page === 'explainability') initExplainabilityCharts();
       if (page === 'results') initResultsCharts();
       if (page === 'results') renderReliabilityCharts();
