@@ -1133,15 +1133,15 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           </article>
           <article class="workflow-step">
             <div class="workflow-number">05</div>
-            <h3>Prediction Confidence &amp; Reliability — Experiment C</h3>
+            <h3>Prediction Confidence &amp; Reliability</h3>
             <p>Assess confidence, calibration, and the accuracy–coverage trade-off on held-out WESAD predictions.</p>
-            <button class="workflow-link" type="button" data-go="results">Explore Experiment C <span>→</span></button>
+            <button class="workflow-link" type="button" data-go="results">Explore reliability results <span>→</span></button>
           </article>
           <article class="workflow-step">
             <div class="workflow-number">06</div>
-            <h3>NASA Environmental Telemetry Audit — Experiment D1</h3>
+            <h3>NASA Environmental Telemetry Audit</h3>
             <p>Audit independent NASA RR-1 and RR-6 rodent-research telemetry for CO₂, temperature, humidity, and data-quality patterns.</p>
-            <button class="workflow-link" type="button" data-go="nasa">Explore NASA D1 analysis <span>→</span></button>
+            <button class="workflow-link" type="button" data-go="nasa">Explore NASA data analysis <span>→</span></button>
           </article>
         </div>
       </section>
@@ -1259,7 +1259,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <div class="dataset-source-grid">
         <article class="card dataset-source-card">
           <div class="card-body">
-            <span class="overview-eyebrow">DATA SOURCE 01 · EXPERIMENTS A/B</span>
+            <span class="overview-eyebrow">DATA SOURCE 01 · WESAD</span>
             <h3>WESAD — Wearable Stress and Affect Detection</h3>
             <p>Earth-based laboratory recordings from <strong>15 participants</strong>, collected with chest ECG and wrist electrodermal activity (EDA) sensors. We extract <strong>19 physiological features</strong> from valid <strong>120-second windows</strong> for the four-model stress classification and leave-one-subject-out evaluation. These recordings are <strong>not astronaut data</strong>.</p>
             <div class="dataset-source-details"><span>ECG · 700 Hz</span><span>EDA · 4 Hz</span><span>608 valid analysis windows</span></div>
@@ -1273,7 +1273,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         </article>
         <article class="card dataset-source-card">
           <div class="card-body">
-            <span class="overview-eyebrow">DATA SOURCE 02 · EXPERIMENT C</span>
+            <span class="overview-eyebrow">DATA SOURCE 02 · CONFIDENCE RESEARCH</span>
             <h3>Prediction Confidence &amp; Reliability</h3>
             <p>We extended our original <strong>WESAD stress-detection research</strong> to test how confidently the AI can identify stress and when it should be less certain. On the full test data, the model classified <strong>88.65%</strong> correctly. When we considered only predictions with at least <strong>80% confidence</strong>, accuracy reached <strong>94.24%</strong> on approximately <strong>80% of the test data</strong>. This helps demonstrate the trade-off between making more predictions and making more reliable predictions.</p>
             <div class="dataset-source-details"><span>Uses the same WESAD dataset</span><span>88.65% overall test accuracy</span><span>94.24% on higher-confidence predictions</span></div>
@@ -1283,7 +1283,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         </article>
         <article class="card dataset-source-card">
           <div class="card-body">
-            <span class="overview-eyebrow">DATA SOURCE 03 · EXPERIMENT D1</span>
+            <span class="overview-eyebrow">DATA SOURCE 03 · NASA TELEMETRY</span>
             <h3>NASA Environmental Telemetry Audit</h3>
             <p>NASA Environmental Data Application (EDA) exports from <strong>Rodent Research RR-1 and RR-6</strong> supply environmental hardware readings of CO₂, temperature, and relative humidity. We analyze <strong>12,087 RR-1</strong> and <strong>17,572 RR-6</strong> telemetry rows for descriptive patterns, timestamp gaps, and repeated readings.</p>
             <div class="dataset-source-details"><span>RR-1 · 2014</span><span>RR-6 · 2017–2018</span><span>RR-9 · summary only</span></div>
@@ -1620,7 +1620,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <p class="chart-explainer">We checked how often the AI was correct when it gave a higher-confidence answer. These are tests on people the model had not trained on.</p>
         </div>
         <div class="card-body">
-          <p id="reliability-status" role="status" style="font-size:.83rem;color:var(--text-secondary);margin-bottom:16px">Checking for Experiment C results…</p>
+          <p id="reliability-status" role="status" style="font-size:.83rem;color:var(--text-secondary);margin-bottom:16px">Checking confidence and reliability results…</p>
           <div id="reliability-content" style="display:none">
             <div class="grid-2" style="gap:16px;margin-bottom:14px">
               <div>
@@ -1660,7 +1660,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
     <div class="page" id="page-nasa">
       <button type="button" class="simple-back" data-go="overview">← Back</button>
       <div class="page-header">
-        <h1 class="page-title">NASA Environmental Data · Experiment D1</h1>
+        <h1 class="page-title">NASA Environmental Data</h1>
         <p class="page-description">Real NASA Environmental Data Application exports from rodent-research hardware. This is an exploratory, descriptive data-quality audit — not astronaut stress data, a crew-cabin exposure assessment, or NASA-STD-3001 compliance testing.</p>
       </div>
       <div class="card" style="margin-bottom:20px">
@@ -1696,7 +1696,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
           <p style="margin-top:12px;color:var(--text-secondary);line-height:1.8"><strong>RR-9:</strong> the supplied file contains only 10 summary rows, not a timestamped timeline. Its radiation unit label is ambiguous; no dose-rate interpretation is made.</p>
         </div>
       </div>
-      <p style="font-size:.78rem;color:var(--text-tertiary);line-height:1.8">Source: NASA EDA RR-1 / RR-6 telemetry CSVs and RR-9 summary CSV, SHA-256 checked against the D1 research audit. All numbers are descriptive; 4,000 ppm is a sensitivity cutoff, not a validated crew exposure threshold. Q-MEEF is a project working name.</p>
+      <p style="font-size:.78rem;color:var(--text-tertiary);line-height:1.8">Source: NASA EDA RR-1 / RR-6 telemetry CSVs and RR-9 summary CSV, SHA-256 checked against the source-data research audit. All numbers are descriptive; 4,000 ppm is a sensitivity cutoff, not a validated crew exposure threshold. Q-MEEF is a project working name.</p>
     </div>
 
   </main>
@@ -2286,7 +2286,7 @@ async function loadReliabilityResults() {
   } catch(err) {
     reliabilityFromServer=null;
     byId('reliability-content').style.display='none';
-    byId('reliability-status').textContent='Experiment C results are not available yet. Run python experiment_c.py on this computer, then refresh.';
+    byId('reliability-status').textContent='Confidence and reliability results are not available yet. Run python experiment_c.py on this computer, then refresh.';
   }
 }
 function renderReliabilityCharts() {
