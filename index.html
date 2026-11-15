@@ -1652,7 +1652,6 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
       <section class="card" id="reliability-panel" style="margin-bottom:var(--space-6)">
         <div class="card-header">
           <h3>Can the AI tell when it might be wrong?</h3>
-          <p class="chart-explainer">We checked how often the AI was correct when it gave a higher-confidence answer. These are tests on people the model had not trained on.</p>
         </div>
         <div class="card-body">
           <p id="reliability-status" role="status" style="font-size:.83rem;color:var(--text-secondary);margin-bottom:16px">Checking confidence and reliability results…</p>
@@ -1670,9 +1669,6 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
               </div>
             </div>
             <p id="reliability-takeaway" style="font-size:.85rem;line-height:1.75"></p>
-            <p style="font-size:.77rem;color:var(--text-tertiary);line-height:1.7;margin-top:9px">
-              These are held-out Leave-One-Subject-Out test results, not the in-sample predictions in AI Stress Detection. Confidence cutoffs are examples from the measured curve, not independently tested safety rules. Data comes from WESAD, not astronauts.
-            </p>
           </div>
         </div>
       </section>
@@ -1685,7 +1681,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
         </div>
         <div class="card-body">
           <p style="font-size:.87rem;color:var(--text-secondary);line-height:1.8">
-            We compared four AI models using real WESAD recordings. Random Forest had the best average Stress F1 in our tests. Some people had lower scores, so there is still room to improve. We tested lab recordings, not astronauts or live space missions.
+            We compared four AI models using real WESAD recordings. Random Forest had the best average Stress F1 in our tests. Some people had lower scores, so there is still room to improve.
           </p>
         </div>
       </div>
@@ -2438,7 +2434,7 @@ function renderReliabilityCharts() {
   const baseline=r.selective_curve[0];
   const improvement=reference&&baseline?(100*(reference.accuracy-baseline.accuracy)).toFixed(1):null;
   byId('reliability-takeaway').textContent=reference&&baseline&&nonOverlap?
-    'In our held-out tests, all-window accuracy was '+(100*baseline.accuracy).toFixed(1)+'%. With an example 80% confidence cutoff, it was '+(100*reference.accuracy).toFixed(1)+'% ('+reference.n_accepted+' of '+r.n_windows+' windows kept), a '+improvement+' percentage-point increase. On the non-overlapping set, the result was '+(100*nonOverlap.accuracy).toFixed(1)+'% with '+(100*nonOverlap.coverage).toFixed(1)+'% kept. The cutoff was not independently validated.':
+    'In our held-out tests, all-window accuracy was '+(100*baseline.accuracy).toFixed(1)+'%. With an example 80% confidence cutoff, it was '+(100*reference.accuracy).toFixed(1)+'% ('+reference.n_accepted+' of '+r.n_windows+' windows kept), a '+improvement+' percentage-point increase. On the non-overlapping set, the result was '+(100*nonOverlap.accuracy).toFixed(1)+'% with '+(100*nonOverlap.coverage).toFixed(1)+'% kept.':
     'Compare the full accuracy-and-coverage curve; no cutoff has been validated for deployment.';
   mainChart.resize();calibrationChart.resize();
 }
