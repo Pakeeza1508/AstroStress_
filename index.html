@@ -1423,7 +1423,7 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
             </div>
             <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
             <div style="background:var(--coral-100);color:var(--coral-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
-              Random Forest Classifier<br><span style="font-weight:400;font-size:0.72rem">binary prediction</span>
+              Random Forest Classifier<br><span style="font-weight:400;font-size:0.72rem">stress / non-stress</span>
             </div>
             <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-tertiary)"></i>
             <div style="background:var(--green-100);color:var(--green-500);padding:var(--space-3) var(--space-5);border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;text-align:center">
@@ -1957,6 +1957,8 @@ async function connectResearch() {
     if (!windowRecordsPublic) applyRestrictedWindowMode(status);
     document.querySelectorAll('#page-results .illustrative-banner').forEach(node => { node.textContent='Verified research outputs'; node.style.color='var(--teal-600)'; });
     if (byId('page-results').classList.contains('active')) initResultsCharts();
+    // Refresh the SHAP chart if the user opened AI Stress Detection before research finished loading.
+    if (byId('page-analysis').classList.contains('active')) initExplainabilityCharts();
     document.querySelectorAll('.research-stat strong').forEach((node,i) => {
       const values=[(research.accuracy*100).toFixed(2)+'%',(research.f1*100).toFixed(2)+'%',Number(research.auc).toFixed(4)];
       if(i<values.length)node.textContent=values[i];
@@ -2045,7 +2047,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
       if (page === 'physiology') initPhysiologyCharts();
       if (page === 'analysis' && byId('ai-result-area').style.display !== 'none') { const chart=echarts.getInstanceByDom(byId('chart-ai-gauge')); if(chart) chart.resize(); }
       if (page === 'analysis') { const el=byId('public-ai-comparison-chart'); const chart=el && typeof echarts !== 'undefined' ? echarts.getInstanceByDom(el) : null; if(chart) chart.resize(); else if(el) byId('public-ai-subject')?.dispatchEvent(new Event('change')); }
-      if (page === 'analysis') initExplainabilityCharts();
+      if (page === 'analysis') requestAnimationFrame(() => initExplainabilityCharts());
       if (page === 'results') initResultsCharts();
       if (page === 'results') renderReliabilityCharts();
       if (page === 'nasa') initNasaD1Chart();
@@ -2213,6 +2215,7 @@ async function runAIAnalysis() {
 let globalShapRequest = null;
 async function initExplainabilityCharts() {
   const node=byId('chart-global-shap');
+  if (!node || !node.clientWidth || typeof echarts === 'undefined') return;
   const chart=echarts.getInstanceByDom(node)||echarts.init(node);
   const status=byId('global-shap-status');
   const badge=byId('global-shap-badge');
