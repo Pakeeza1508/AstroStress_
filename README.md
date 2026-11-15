@@ -2,56 +2,39 @@
 
 # AstroStress
 
-## Project overview
+AstroStress explores explainable AI for physiological stress detection, alongside independent analysis of NASA space-environment telemetry.
 
-AstroStress evaluates machine learning on wearable heart and skin signals from the [WESAD dataset](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html). A separate module explores CO₂, temperature, humidity and data quality from [NASA's Environmental Data Application](https://visualization.osdr.nasa.gov/eda/), using RR-1 and RR-6 environmental telemetry. These two datasets are **not paired or fused**.
+## How AstroStress Works
 
-## Explore the demo
+The project studies two separate data sources. **WESAD** provides ECG and skin-conductance recordings for training and evaluating a Random Forest stress classifier. We use Leave-One-Subject-Out testing, SHAP explanations and confidence analysis to understand model performance. **NASA RR-1/RR-6** telemetry provides CO₂, temperature and humidity readings for environmental trend and data-quality analysis. The data sources are displayed together, but have **not been combined into one prediction model**.
 
-| Tab | What it shows |
-|---|---|
-| **Overview** | Project concept and research workflow |
-| **Datasets Used** | Research data sources |
-| **AI Stress Detection** | Physiological features, 15-participant evaluation and SHAP explainability |
-| **Daily Check-in** | Mission-focused, self-reported readiness assessment and example scenarios |
-| **Test Results** | Model comparison, participant results and prediction-confidence analysis |
-| **Space Environment Monitoring** | RR-1/RR-6 CO₂, temperature and humidity trends, plus data-quality findings |
+The web demo also includes a **Daily Check-in** for self-reported mission-readiness scenarios. This runs separately from the trained sensor-based classifier. Performance charts and dataset details are available directly in the demo.
 
-The Daily Check-in is a **scenario-based demonstration**, not an inference from the trained WESAD model.
+## System Architecture
 
-## Research results
+![AstroStress system architecture](docs/astrostress_architecture.svg)
 
-Using 15 WESAD participants and Leave-One-Subject-Out evaluation, the selected **Random Forest** achieved:
+## Run Locally
 
-| Metric | Value |
-|---|---:|
-| Mean accuracy | **88.74%** |
-| Mean Stress F1 | **78.35%** |
-| Pooled ROC-AUC | **0.9436** |
-| Evaluated 120-second windows | **608** |
-| Candidate physiological features | **19** |
-
-The project also evaluates prediction-confidence/coverage trade-offs and uses SHAP to explain feature importance. These are experimental research results, not validated medical decisions.
-
-## Run locally
-
-Install dependencies and start the trusted local research server:
+Use Python 3.12 and a trusted local copy of the verified research artifacts.
 
 ```bash
+git clone https://github.com/Pakeeza1508/AstroStress_.git
+cd AstroStress_
 python -m pip install -r requirements.txt
 python app_server.py
 ```
 
-Open `http://127.0.0.1:8000/`.
+Open **http://127.0.0.1:8000/**.
 
-The verified model/research artifacts must be available locally for research endpoints to work. For further technical information, see the repository's Python research scripts and [deployment notes](DEPLOY_VERCEL.md) (these notes may describe an earlier branch).
+The server expects the generated `astrostress_output/` research/model artifacts. To reproduce them, download WESAD from the [dataset source](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html) and follow the feature-extraction and evaluation scripts (`astrostress_complete.py` and `astrostress_v2.py`). Research training may require additional Python packages beyond the deployment requirements.
 
-## Scope and sources
+## Team
 
-- **Physiological research:** WESAD laboratory recordings, not astronaut measurements. Individual recorded WESAD windows are not exposed in the public demo.
-- **NASA environmental research:** RR-1/RR-6 environmental telemetry, analyzed separately from physiological stress.
-- **Pre-existing work:** Development began before the November 2026 hackathon; the repository includes earlier research and subsequent demo work.
+[Project contributors](https://github.com/Pakeeza1508/AstroStress_/graphs/contributors)
 
-**Sources:** [WESAD](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html) · [NASA Environmental Data Application](https://visualization.osdr.nasa.gov/eda/) · [NASA Space Apps challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)
+## References
 
-**License:** [Apache-2.0](LICENSE) for project source code; third-party datasets retain their own terms.
+[WESAD dataset](https://ubi29.informatik.uni-siegen.de/usi/data_wesad.html) · [NASA Environmental Data Application](https://visualization.osdr.nasa.gov/eda/) · [NASA Space Apps Challenge 2026](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/)
+
+**License:** [Apache 2.0](LICENSE) for source code; external datasets follow their original terms.
