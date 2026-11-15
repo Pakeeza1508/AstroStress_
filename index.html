@@ -941,6 +941,18 @@ select:focus { outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3
 .ai-eval-footnote{font-size:.75rem;color:var(--text-secondary);line-height:1.6}
 @media(max-width:800px){.ai-eval-guide{grid-template-columns:1fr}.ai-eval-metric-grid{grid-template-columns:1fr}}
 
+/* Explanatory guide to the measured 19-feature input */
+.ai-feature-details{padding:18px;border:1px solid #cfe5e1;background:#f7fbfa;border-radius:12px;margin:0 0 24px}
+.ai-feature-details summary{font-weight:700;cursor:pointer;color:#0d7377;line-height:1.6}
+.ai-feature-details .ai-eval-intro{margin:13px 0}
+.ai-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ai-feature-group{min-width:0;background:#fff;border:1px solid #e2eae9;border-radius:10px;padding:16px}
+.ai-feature-group h4{font-size:.87rem;margin-bottom:12px}
+.ai-feature-table{width:100%;border-collapse:collapse;font-size:.75rem;line-height:1.6}
+.ai-feature-table tr+tr{border-top:1px solid #e9efed}
+.ai-feature-table th{text-align:left;vertical-align:top;padding:8px 10px 8px 0;color:#0d7377;white-space:normal;overflow-wrap:anywhere;width:34%}
+.ai-feature-table td{padding:8px 0;color:var(--text-secondary)}
+@media(max-width:750px){.ai-feature-grid{grid-template-columns:1fr}#public-ai-comparison-chart{height:580px!important}}
 /* Narrow-screen refinements. Desktop visual language is unchanged. */
 #page-analysis .card-header,#page-results .card-header,#page-physiology .card-header{display:block}
 #page-analysis .card-header .chart-explainer,#page-results .card-header .chart-explainer,#page-physiology .card-header .chart-explainer{margin-top:8px}
@@ -1759,87 +1771,120 @@ function renderPublicResearchMode() {
   const aiSelector = aiPage?.querySelector('.selector-row');
   if (aiSelector) aiSelector.style.display = 'none';
   if (aiPage && !byId('public-ai-summary')) {
-    const card = document.createElement('section');
-    card.className = 'card';
-    card.id = 'public-ai-summary';
-    card.style.margin = '0 0 24px';
-    const body = document.createElement('div'); body.className = 'card-body';
-    const title = document.createElement('h3');
-    title.textContent = 'Test our AI research results';
-    const intro = document.createElement('p');
-    intro.className = 'ai-eval-intro';
-    intro.textContent = 'We tested our stress-detection model on people it had not learned from. Select a study participant to see how accurately the model recognized stress in that person’s recordings.';
-    const guide = document.createElement('div');
-    guide.className = 'ai-eval-guide';
-    guide.innerHTML = '<div><strong>1. Choose a participant</strong><span>Select S2–S17 to view one person’s test results.</span></div><div><strong>2. Read the scores</strong><span>Accuracy shows how often the AI was right. F1 balances correct stress detection with missed or incorrect stress alerts.</span></div><div><strong>3. Compare participants</strong><span>Use the chart to see how results changed from one person to another.</span></div>';
-    const control = document.createElement('div'); control.className = 'ai-eval-control';
-    const label = document.createElement('label'); label.htmlFor = 'public-ai-subject'; label.textContent = 'Choose a study participant';
-    const select = document.createElement('select'); select.id = 'public-ai-subject';
-    const rows = Array.isArray(researchFromServer?.loso) ? researchFromServer.loso : [];
-    const sorted = [...rows].sort((a,b) => Number(String(a.subject).replace(/\D/g,'')) - Number(String(b.subject).replace(/\D/g,'')));
-    for (const row of sorted) {
-      const option = document.createElement('option');
-      option.value = String(row.subject); option.textContent = 'Participant ' + String(row.subject);
-      select.appendChild(option);
+    const card=document.createElement('section');card.className='card';card.id='public-ai-summary';card.style.margin='0 0 24px';
+    const body=document.createElement('div');body.className='card-body';
+    const heading=document.createElement('h3');heading.textContent='Test and understand our stress-detection AI';
+    const intro=document.createElement('p');intro.className='ai-eval-intro';
+    intro.textContent='Our AI studies changes in recorded heart and skin signals to classify stress or non-stress. We evaluated it using the WESAD study: each participant was tested with a model trained on the other 14 people.';
+    const guide=document.createElement('div');guide.className='ai-eval-guide';
+    guide.innerHTML='<div><strong>1 · Understand the input</strong><span>Heart and skin sensors record signals. Each 2-minute segment becomes 19 measurable features, explained below.</span></div><div><strong>2 · Choose a participant</strong><span>Choose a person from the study. Their recordings were not used to train the model for that test.</span></div><div><strong>3 · Read and compare results</strong><span>Accuracy and F1 show performance for that participant. Compare their scores with all 15 people in the chart.</span></div>';
+    const details=document.createElement('details');details.className='ai-feature-details';details.open=false;
+    const summary=document.createElement('summary');summary.textContent='See all 19 input features — names and simple explanations';
+    const featureLead=document.createElement('p');featureLead.className='ai-eval-intro';
+    featureLead.textContent='ECG measures the electrical rhythm of the heart. EDA measures how skin conductance varies. We calculated these 19 candidate measurements from each two-minute segment; unusable or nearly constant features may be excluded within an evaluation fold.';
+    const featureGrid=document.createElement('div');featureGrid.className='ai-feature-grid';
+    const groups=[
+      ['13 heart-signal features (ECG / HRV)',[
+        ['HR_mean','Average heart rate, in beats per minute'],
+        ['HR_std','How much heart rate changes within the segment'],
+        ['HRV_MeanNN','Average time between consecutive heartbeats'],
+        ['HRV_SDNN','Overall variation in heartbeat intervals'],
+        ['HRV_RMSSD','Short-term variation between heartbeat intervals'],
+        ['HRV_pNN50','Percentage of successive intervals differing by more than 50 ms'],
+        ['HRV_MedianNN','Median time between heartbeats'],
+        ['HRV_LF','Low-frequency component of heart-rate variability'],
+        ['HRV_HF','High-frequency component of heart-rate variability'],
+        ['HRV_LFHF','Ratio between the low- and high-frequency components'],
+        ['HRV_SampEn','Irregularity or complexity of heartbeat intervals'],
+        ['HRV_SD1','Short-term heartbeat variability from a Poincaré plot'],
+        ['HRV_SD2','Longer-term heartbeat variability from a Poincaré plot']
+      ]],
+      ['6 skin-signal features (EDA)',[
+        ['EDA_mean','Average skin conductance'],
+        ['EDA_std','How much skin conductance varies'],
+        ['EDA_min','Lowest skin conductance measured'],
+        ['EDA_max','Highest skin conductance measured'],
+        ['EDA_range','Difference between highest and lowest readings'],
+        ['EDA_peaks','Number of local peaks detected in the skin signal']
+      ]]
+    ];
+    for(const [title,features] of groups){
+      const section=document.createElement('section');section.className='ai-feature-group';
+      const h=document.createElement('h4');h.textContent=title;
+      const table=document.createElement('table');table.className='ai-feature-table';
+      const tbody=document.createElement('tbody');
+      for(const [name,meaning] of features){
+        const tr=document.createElement('tr');const th=document.createElement('th');th.scope='row';th.textContent=name;
+        const td=document.createElement('td');td.textContent=meaning;tr.append(th,td);tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);section.append(h,table);featureGrid.appendChild(section);
     }
-    if (sorted.some(r => String(r.subject) === 'S10')) select.value = 'S10';
-    control.append(label, select);
-    const metrics = document.createElement('div'); metrics.className = 'ai-eval-metric-grid';
-    const metricNodes = {};
-    for (const [key,heading,explain] of [
-      ['accuracy','Accuracy','How often the model classified stress or non-stress correctly'],
-      ['f1','F1 score','How well the model balances identifying stress and avoiding mistakes'],
-      ['samples','Test recordings','How many two-minute recording segments were evaluated']
-    ]) {
-      const item = document.createElement('div'); item.className = 'ai-eval-metric';
-      const headingNode = document.createElement('span'); headingNode.textContent = heading;
-      const number = document.createElement('strong'); number.textContent = '—'; metricNodes[key] = number;
-      const sub = document.createElement('small'); sub.textContent = explain;
-      item.append(headingNode, number, sub); metrics.appendChild(item);
+    details.append(summary,featureLead,featureGrid);
+    const control=document.createElement('div');control.className='ai-eval-control';
+    const label=document.createElement('label');label.htmlFor='public-ai-subject';label.textContent='Select the person whose model evaluation you want to examine';
+    const select=document.createElement('select');select.id='public-ai-subject';
+    const rows=Array.isArray(researchFromServer?.loso)?researchFromServer.loso:[];
+    const sorted=[...rows].sort((a,b)=>Number(String(a.subject).replace(/\D/g,''))-Number(String(b.subject).replace(/\D/g,'')));
+    for(const row of sorted){const opt=document.createElement('option');opt.value=String(row.subject);opt.textContent='Participant '+String(row.subject);select.appendChild(opt);}
+    if(sorted.some(r=>String(r.subject)==='S10'))select.value='S10';
+    control.append(label,select);
+    const metricGrid=document.createElement('div');metricGrid.className='ai-eval-metric-grid';
+    const metricNodes={};
+    const info=[
+      ['accuracy','Stress/non-stress accuracy','Percentage of this participant’s tested two-minute segments that the AI classified correctly.'],
+      ['f1','Stress detection F1','Score summarizing how well the AI identified stress while limiting false stress alarms and missed stress. A lower F1 can occur even when accuracy is high.'],
+      ['samples','Test segments','Number of two-minute recorded sections used to test this person. This is not the number of participants.']
+    ];
+    for(const [key,name,desc] of info){
+      const tile=document.createElement('div');tile.className='ai-eval-metric';
+      const k=document.createElement('span');k.textContent=name;
+      const val=document.createElement('strong');val.textContent='—';metricNodes[key]=val;
+      const expl=document.createElement('small');expl.textContent=desc;
+      tile.append(k,val,expl);metricGrid.appendChild(tile);
     }
-    const chartTitle = document.createElement('h4'); chartTitle.textContent = 'How does this participant compare with others?';
-    chartTitle.className = 'ai-eval-chart-title';
-    const chartIntro = document.createElement('p'); chartIntro.className = 'ai-eval-chart-caption';
-    chartIntro.textContent = 'Each bar shows the percentage of correct predictions for a different study participant. The selected participant is highlighted.';
-    const chart = document.createElement('div'); chart.id = 'public-ai-comparison-chart';
-    chart.setAttribute('role','img'); chart.setAttribute('aria-label','Verified accuracy of AI stress classification for 15 held-out study participants');
-    chart.style.cssText = 'width:100%;height:310px';
-    const outcome = document.createElement('p'); outcome.id = 'public-ai-metrics'; outcome.setAttribute('role','status');
-    outcome.className = 'ai-eval-outcome';
-    const breakdown = document.createElement('p'); breakdown.className = 'ai-eval-footnote';
-    breakdown.textContent = 'These results are from the WESAD research study. Each person was tested using a model trained on the other participants.';
-    function update() {
-      const row = sorted.find(x => String(x.subject) === select.value);
-      if (!row) { outcome.textContent = 'Participant results are unavailable.'; return; }
-      const accuracy = 100*Number(row.accuracy), f1=100*Number(row.f1);
-      metricNodes.accuracy.textContent = Number.isFinite(accuracy) ? accuracy.toFixed(2)+'%' : '—';
-      metricNodes.f1.textContent = Number.isFinite(f1) ? f1.toFixed(2)+'%' : '—';
-      metricNodes.samples.textContent = Number.isFinite(Number(row.n_test)) ? String(row.n_test) : '—';
-      outcome.textContent = 'Participant ' + row.subject + ': the model correctly classified about ' +
-        (Number.isFinite(accuracy) ? accuracy.toFixed(1)+'%' : 'an unavailable percentage') +
-        ' of this person’s recorded segments.';
-      if (typeof echarts === 'undefined') return;
-      const instance = echarts.getInstanceByDom(chart) || echarts.init(chart);
-      const vals=sorted.map(x=>100*Number(x.accuracy));
+    const chartHeading=document.createElement('h4');chartHeading.className='ai-eval-chart-title';
+    chartHeading.textContent='How did the AI perform on all 15 study participants?';
+    const chartExplanation=document.createElement('p');chartExplanation.className='ai-eval-chart-caption';
+    chartExplanation.textContent='Each row represents one participant tested on recordings that were not used to train their evaluation model. Teal bars show overall classification accuracy; blue bars show the stress-detection F1 score. The darker bars highlight your selection.';
+    const chart=document.createElement('div');chart.id='public-ai-comparison-chart';chart.style.cssText='width:100%;height:560px;min-width:0';
+    chart.setAttribute('role','img');chart.setAttribute('aria-label','Verified held-out accuracy and F1 by participant');
+    const output=document.createElement('p');output.id='public-ai-metrics';output.className='ai-eval-outcome';output.setAttribute('role','status');
+    const foot=document.createElement('p');foot.className='ai-eval-footnote';
+    foot.textContent='Testing method: leave-one-subject-out evaluation. The model is trained on 14 participants and evaluated on the remaining person, repeated for all 15. Nearby two-minute segments can overlap because segments start every 60 seconds.';
+    function draw(){
+      const row=sorted.find(x=>String(x.subject)===select.value);
+      if(!row){output.textContent='No participant evaluation data available.';return;}
+      const acc=100*Number(row.accuracy),f1=100*Number(row.f1),n=Number(row.n_test);
+      metricNodes.accuracy.textContent=Number.isFinite(acc)?acc.toFixed(2)+'%':'—';
+      metricNodes.f1.textContent=Number.isFinite(f1)?f1.toFixed(2)+'%':'—';
+      metricNodes.samples.textContent=Number.isFinite(n)?String(n):'—';
+      const correct=Number.isFinite(acc)&&Number.isFinite(n)?Math.round(acc*n/100):null;
+      output.textContent='Selected '+row.subject+': '+(correct===null?'—':correct)+' of '+(Number.isFinite(n)?n:'—')+' test segments correctly classified. Its F1 score describes the quality of detecting stress, which is different from simply getting the most classifications right.';
+      if(typeof echarts==='undefined'){chart.textContent='Chart library unavailable. The participant scores above remain available.';return;}
+      if(chart.clientWidth<100)return;
+      const instance=echarts.getInstanceByDom(chart)||echarts.init(chart);
+      const vals=(key,selected,other)=>sorted.map(x=>({
+        value:Number((100*Number(x[key])).toFixed(2)),
+        itemStyle:{color:String(x.subject)===select.value?selected:other}
+      }));
       instance.setOption({
-        animationDuration: 250,
-        grid:{left:42,right:18,top:20,bottom:55},
-        tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:params=>{
-          const x=params[0];return x.name+': '+Number(x.value).toFixed(2)+'% accuracy';
-        }},
-        xAxis:{type:'category',data:sorted.map(x=>String(x.subject)),axisLabel:{interval:0,fontSize:11},axisTick:{alignWithLabel:true}},
-        yAxis:{type:'value',min:0,max:100,name:'Accuracy (%)',axisLabel:{formatter:'{value}%'}},
-        series:[{type:'bar',barMaxWidth:34,
-          data:vals.map((v,i)=>({value:Number.isFinite(v)?v:0,itemStyle:{color:String(sorted[i].subject)===select.value?'#0d7377':'#a9d4d1'}})),
-          label:{show:false}}]
+        animationDuration:220,
+        grid:{left:68,right:34,top:16,bottom:38},
+        tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:p=>p.map(x=>x.marker+' '+x.seriesName+': '+Number(x.value).toFixed(2)+'%').join('<br>')},
+        legend:{bottom:0,data:['Accuracy','Stress F1']},
+        xAxis:{type:'value',min:0,max:100,axisLabel:{formatter:'{value}%'},splitLine:{lineStyle:{color:'#e9efed'}}},
+        yAxis:{type:'category',inverse:true,data:sorted.map(x=>String(x.subject)),axisTick:{show:false}},
+        series:[
+          {name:'Accuracy',type:'bar',barMaxWidth:14,data:vals('accuracy','#0d7377','#a5cfcb')},
+          {name:'Stress F1',type:'bar',barMaxWidth:14,data:vals('f1','#3366cc','#c3d5ed')}
+        ]
       },true);
       instance.resize();
     }
-    select.addEventListener('change', update);
-    body.append(title,intro,guide,control,metrics,chartTitle,chartIntro,chart,outcome,breakdown);
-    card.appendChild(body);
-    aiSelector?.parentNode?.insertBefore(card, aiSelector);
-    update();
+    select.addEventListener('change',draw);
+    body.append(heading,intro,guide,details,control,metricGrid,chartHeading,chartExplanation,chart,output,foot);
+    card.appendChild(body);aiSelector?.parentNode?.insertBefore(card,aiSelector);
+    draw();
   }
   const checkin = byId('page-checkin');
   const recordedCard = byId('checkin-example-button')?.closest('.card');
@@ -2081,7 +2126,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
     setTimeout(() => {
       if (page === 'physiology') initPhysiologyCharts();
       if (page === 'analysis' && byId('ai-result-area').style.display !== 'none') { const chart=echarts.getInstanceByDom(byId('chart-ai-gauge')); if(chart) chart.resize(); }
-      if (page === 'analysis') { const el=byId('public-ai-comparison-chart'); const chart=el && typeof echarts !== 'undefined' ? echarts.getInstanceByDom(el) : null; if(chart) chart.resize(); }
+      if (page === 'analysis') { const el=byId('public-ai-comparison-chart'); const chart=el && typeof echarts !== 'undefined' ? echarts.getInstanceByDom(el) : null; if(chart) chart.resize(); else if(el) byId('public-ai-subject')?.dispatchEvent(new Event('change')); }
       if (page === 'explainability') initExplainabilityCharts();
       if (page === 'results') initResultsCharts();
       if (page === 'results') renderReliabilityCharts();
