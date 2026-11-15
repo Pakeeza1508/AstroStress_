@@ -3,7 +3,7 @@
 **NASA Space Apps Challenge 2026 · Health-monitoring software concept**  
 **Status:** Public, research-focused MVP — **not** a clinical device, astronaut monitor, or flight-qualified system.
 
-[**Launch the live MVP**](https://astrostress-nasa-2026-13af09n01-pakeeza-khalids-projects.vercel.app) · [NASA Space Apps challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/) · [Deployment instructions](DEPLOY_VERCEL.md)
+[**Launch the live MVP**](https://astrostress-nasa-2026-hp1lwaxvk-pakeeza-khalids-projects.vercel.app) · [NASA Space Apps challenge](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/) · [Deployment instructions](DEPLOY_VERCEL.md)
 
 > **Two independent research sources, not one paired dataset.** WESAD contains Earth-based laboratory ECG and electrodermal activity (EDA) recordings used to evaluate a stress classifier. NASA Environmental Data Application (EDA) exports contain environmental readings from **rodent-research hardware**, not astronaut physiology. AstroStress presents the two streams separately; it **does not** establish a relationship between NASA hardware readings and human stress.
 
@@ -21,7 +21,7 @@ The application does **not** predict stress in astronauts, read live wearables, 
 
 ## Try the public demo
 
-**Latest tested Preview:** https://astrostress-nasa-2026-13af09n01-pakeeza-khalids-projects.vercel.app
+**Latest tested Preview:** https://astrostress-nasa-2026-hp1lwaxvk-pakeeza-khalids-projects.vercel.app
 
 The public UI contains six original pages plus the **NASA EDA** research tab:
 
@@ -37,9 +37,11 @@ The public UI contains six original pages plus the **NASA EDA** research tab:
 
 **Cold-start caveat:** a fresh Vercel Preview visit has sometimes taken **19–31 seconds** to initialize; subsequent warm visits were faster in recorded checks. The UI says it is connecting to verified research data during startup. This is a current operational limitation, not a guarantee of load time. Prepare the tab before a live demonstration.
 
-### Most recently reported deployment verification
+### Latest Preview deployment
 
-The D1-integrated Preview was built from commit **`66921b593e34b9d637da4dd714e8f6ee0fc8c0c9`** on **`develop-nasa-2026`**. The recorded verification report found **106/106 automated tests** and **143/143 browser checks** passing on desktop and mobile, with no app JavaScript errors. These numbers describe that specific deployment/check run, not an independent external certification. The `main` branch was not changed.
+The latest confirmed READY Vercel Preview includes the updated Overview, problem statement, six-step research workflow, and six-card "What We Tested" section, alongside the independently displayed WESAD and NASA Experiment D1 research. The deployed source corresponds to GitHub commit **`0001d4adcf07596749dfc7007e7631ead31b6a5f`** on **`main`**.
+
+**Historical validation, not a fresh test of this Preview:** the earlier D1-integrated Preview from commit **`66921b593e34b9d637da4dd714e8f6ee0fc8c0c9`** recorded **106/106 automated tests** and **143/143 browser checks** passing. A later PR #4 Preview recorded **181 browser checks** passing. These checks should not be interpreted as new browser-test results for the latest Preview.
 
 ## Verified WESAD model research
 
